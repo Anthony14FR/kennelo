@@ -158,7 +158,7 @@ if [ -n "$FRONTEND_FILES" ]; then
 
     git diff --name-only > /tmp/before_eslint
 
-    pnpm lint --fix
+    pnpm lint:fix
     ESLINT_EXIT_CODE=$?
 
     git diff --name-only > /tmp/after_eslint
