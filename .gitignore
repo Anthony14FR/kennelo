@@ -1,10 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# IDEs
+.idea
+.vscode
+
 # Dependencies
 node_modules
 .pnp
 .pnp.js
-.vscode
+vendor/
+composer.lock
 
 # Local env files
 .env
@@ -15,6 +20,7 @@ node_modules
 
 # Testing
 coverage
+.phpunit.result.cache
 
 # Turbo
 .turbo
@@ -28,9 +34,15 @@ out/
 build
 dist
 
+# Laravel
+/storage/logs/
+/bootstrap/cache/
+database/database.sqlite
 
 # Debug
 npm-debug.log*
+npm-debug.log.*
+pnpm-debug.log*
 
 # Misc
 .DS_Store
