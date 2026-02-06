@@ -1,0 +1,17 @@
+api/
+node_modules
+dist
+build
+.next
+.turbo
+coverage
+*.log
+.env
+.env.*
+pnpm-lock.yaml
+composer.lock
+vendor
+storage
+bootstrap/cache
+public/hot
+public/storage
