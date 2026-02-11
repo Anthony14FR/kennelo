@@ -1,0 +1,47 @@
+import { UserDto } from "./dtos/user.dto";
+
+export class UserModel {
+    private constructor(
+        public readonly id: string,
+        public readonly firstName: string,
+        public readonly lastName: string,
+        public readonly email: string,
+        public readonly phone: string | null,
+        public readonly avatarUrl: string | null,
+        public readonly isIdVerified: boolean,
+        public readonly status: string,
+        public readonly locale: string,
+        public readonly emailVerifiedAt: string | null,
+        public readonly createdAt: string,
+        public readonly updatedAt: string,
+    ) {}
+
+    static from(dto: UserDto): UserModel {
+        return new UserModel(
+            dto.id,
+            dto.first_name,
+            dto.last_name,
+            dto.email,
+            dto.phone,
+            dto.avatar_url,
+            dto.is_id_verified,
+            dto.status,
+            dto.locale,
+            dto.email_verified_at,
+            dto.created_at,
+            dto.updated_at,
+        );
+    }
+
+    getFullName(): string {
+        return `${this.firstName} ${this.lastName}`;
+    }
+
+    getInitials(): string {
+        return `${this.firstName.charAt(0)}${this.lastName.charAt(0)}`.toUpperCase();
+    }
+
+    isEmailVerified(): boolean {
+        return this.emailVerifiedAt !== null;
+    }
+}
