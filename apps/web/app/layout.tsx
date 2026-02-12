@@ -1,9 +1,9 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Bricolage_Grotesque } from "next/font/google";
 
 import "@workspace/ui/globals.css";
 import { Providers } from "@/components/providers";
 
-const fontSans = Geist({
+const fontSans = Bricolage_Grotesque({
     subsets: ["latin"],
     variable: "--font-sans",
 });

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { AuthProvider } from "@/features/users/hooks/use-auth";
+import { TooltipProvider } from "@workspace/ui/components/tooltip";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
@@ -13,7 +14,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
             disableTransitionOnChange
             enableColorScheme
         >
-            <AuthProvider>{children}</AuthProvider>
+            <TooltipProvider>
+                <AuthProvider>{children}</AuthProvider>
+            </TooltipProvider>
         </NextThemesProvider>
     );
 }

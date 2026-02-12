@@ -55,9 +55,9 @@ class ApiClient {
 
         const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
-        const headers: HeadersInit = {
+        const headers: Record<string, string> = {
             "Content-Type": "application/json",
-            ...config.options.headers,
+            ...(config.options.headers as Record<string, string>),
         };
 
         if (token) {

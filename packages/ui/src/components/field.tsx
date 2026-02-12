@@ -12,7 +12,7 @@ function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
         <fieldset
             data-slot="field-set"
             className={cn(
-                "gap-4 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3 flex flex-col",
+                "gap-6 has-[>[data-slot=checkbox-group]]:gap-3 has-[>[data-slot=radio-group]]:gap-3 flex flex-col",
                 className,
             )}
             {...props}
@@ -30,7 +30,7 @@ function FieldLegend({
             data-slot="field-legend"
             data-variant={variant}
             className={cn(
-                "mb-1.5 font-medium data-[variant=label]:text-sm data-[variant=legend]:text-base",
+                "mb-3 font-medium data-[variant=label]:text-sm data-[variant=legend]:text-base",
                 className,
             )}
             {...props}
@@ -43,7 +43,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
         <div
             data-slot="field-group"
             className={cn(
-                "gap-5 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4 group/field-group @container/field-group flex w-full flex-col",
+                "gap-7 data-[slot=checkbox-group]:gap-3 *:data-[slot=field-group]:gap-4 group/field-group @container/field-group flex w-full flex-col",
                 className,
             )}
             {...props}
@@ -51,7 +51,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
     );
 }
 
-const fieldVariants = cva("data-[invalid=true]:text-destructive gap-2 group/field flex w-full", {
+const fieldVariants = cva("data-[invalid=true]:text-destructive gap-3 group/field flex w-full", {
     variants: {
         orientation: {
             vertical: "flex-col *:w-full [&>.sr-only]:w-auto",
@@ -86,10 +86,7 @@ function FieldContent({ className, ...props }: React.ComponentProps<"div">) {
     return (
         <div
             data-slot="field-content"
-            className={cn(
-                "gap-0.5 group/field-content flex flex-1 flex-col leading-snug",
-                className,
-            )}
+            className={cn("gap-1 group/field-content flex flex-1 flex-col leading-snug", className)}
             {...props}
         />
     );
@@ -100,7 +97,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
         <Label
             data-slot="field-label"
             className={cn(
-                "has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 group-data-[disabled=true]/field:opacity-50 has-[>[data-slot=field]]:rounded-lg has-[>[data-slot=field]]:border *:data-[slot=field]:p-2.5 group/field-label peer/field-label flex w-fit leading-snug",
+                "has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 group-data-[disabled=true]/field:opacity-50 has-[>[data-slot=field]]:rounded-xl has-[>[data-slot=field]]:border *:data-[slot=field]:p-4 group/field-label peer/field-label flex w-fit leading-snug",
                 "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col",
                 className,
             )}
@@ -127,7 +124,7 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
         <p
             data-slot="field-description"
             className={cn(
-                "text-muted-foreground text-left text-sm [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal group-has-data-horizontal/field:text-balance",
+                "text-muted-foreground text-start text-sm [[data-variant=legend]+&]:-mt-1.5 leading-normal font-normal group-has-data-horizontal/field:text-balance",
                 "last:mt-0 nth-last-2:-mt-1",
                 "[&>a:hover]:text-primary [&>a]:underline [&>a]:underline-offset-4",
                 className,
@@ -191,7 +188,7 @@ function FieldError({
         }
 
         return (
-            <ul className="ml-4 flex list-disc flex-col gap-1">
+            <ul className="ms-4 flex list-disc flex-col gap-1">
                 {uniqueErrors.map(
                     (error, index) => error?.message && <li key={index}>{error.message}</li>,
                 )}
