@@ -4,15 +4,19 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "build:mobile": "MOBILE_BUILD=true next build",
-    "sync:ios": "npm run build:mobile && npx cap sync ios",
-    "sync:android": "npm run build:mobile && npx cap sync android",
+    "dev": "concurrently \"pnpm:watch:routes\" \"pnpm:dev:next\"",
+    "dev:next": "dotenv -e .env -- next dev --turbopack",
+    "dev:mobile": "dotenv -e .env.mobile -- concurrently \"pnpm:watch:routes\" \"pnpm:dev:next\"",
+    "build": "pnpm generate:routes && dotenv -e .env -- next build",
+    "build:mobile": "dotenv -e .env.mobile -- pnpm generate:routes && next build",
+    "sync:ios": "pnpm build:mobile && npx cap sync ios",
+    "sync:android": "pnpm build:mobile && npx cap sync android",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate:routes": "node lib/scripts/generate-routes.mjs",
+    "watch:routes": "node --watch-path=./app lib/scripts/generate-routes-watch.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
@@ -36,12 +40,17 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/babel__traverse": "^7.28.0",
     "@types/node": "^25.1.0",
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
+    "concurrently": "^9.2.1",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }

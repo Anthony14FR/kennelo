@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LoginForm } from "@/features/users/components/forms/login-form";
 import {
@@ -11,12 +10,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@workspace/ui/components/card";
+import { useNavigation } from "@/hooks/use-navigation";
 
-export default function LoginPage() {
-    const router = useRouter();
+export default function Login() {
+    const { routes, router } = useNavigation();
 
     const handleSuccess = () => {
-        router.push("/");
+        router.push(routes.Home());
     };
 
     return (
@@ -32,7 +32,7 @@ export default function LoginPage() {
                 <CardFooter className="flex flex-col space-y-2">
                     <div className="text-sm text-muted-foreground text-center">
                         Don&apos;t have an account?{" "}
-                        <Link href="/register" className="text-primary hover:underline">
+                        <Link href={routes.Register()} className="text-primary hover:underline">
                             Register here
                         </Link>
                     </div>

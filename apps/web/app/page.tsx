@@ -4,8 +4,10 @@ import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { useAuth } from "@/features/users/hooks/use-auth";
 import Link from "next/link";
+import { useNavigation } from "@/hooks/use-navigation";
 
-export default function Page() {
+export default function Home() {
+    const { routes } = useNavigation();
     const { user, isLoading, isAuthenticated, logout } = useAuth();
 
     if (isLoading) {
@@ -29,10 +31,10 @@ export default function Page() {
                         </p>
                         <div className="flex gap-2">
                             <Button asChild className="flex-1">
-                                <Link href="/login">Login</Link>
+                                <Link href={routes.Login()}>Login</Link>
                             </Button>
                             <Button asChild variant="outline" className="flex-1">
-                                <Link href="/register">Register</Link>
+                                <Link href={routes.Register()}>Register</Link>
                             </Button>
                         </div>
                     </CardContent>

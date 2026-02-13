@@ -1,7 +1,6 @@
-/* eslint-env node */
+/* global process */
 
-// eslint-disable-next-line no-undef
-const isMobileBuild = process.env.MOBILE_BUILD === 'true';
+const isMobileBuild = process.env.NEXT_PUBLIC_PLATFORM === 'mobile';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
