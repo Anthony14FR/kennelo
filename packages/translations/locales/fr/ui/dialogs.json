@@ -1,0 +1,13 @@
+{
+    "confirmTitle": "Confirmer l'action",
+    "deleteTitle": "Confirmation de suppression",
+    "warningTitle": "Avertissement",
+    "errorTitle": "Erreur",
+    "successTitle": "Succès",
+    "confirmAction": "Êtes-vous sûr de vouloir continuer ?",
+    "cannotUndo": "Cette action est irréversible",
+    "yes": "Oui",
+    "no": "Non",
+    "ok": "OK",
+    "close": "Fermer"
+}

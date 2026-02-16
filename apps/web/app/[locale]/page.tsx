@@ -2,39 +2,33 @@
 
 import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
-import { useAuth } from "@/features/users/hooks/use-auth";
+import { useAuth } from "@/features/auth/hooks/use-auth";
 import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
+import { useTranslations } from "next-intl";
 
 export default function Home() {
     const { routes } = useNavigation();
-    const { user, isLoading, isAuthenticated, logout } = useAuth();
-
-    if (isLoading) {
-        return (
-            <div className="flex items-center justify-center min-h-svh">
-                <p className="text-muted-foreground">Loading...</p>
-            </div>
-        );
-    }
+    const { user, isAuthenticated, logout } = useAuth();
+    const t = useTranslations();
 
     if (!isAuthenticated || !user) {
         return (
             <div className="flex items-center justify-center min-h-svh">
                 <Card className="w-full max-w-md">
                     <CardHeader>
-                        <CardTitle>Welcome</CardTitle>
+                        <CardTitle>{t("features.auth.welcome")}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <p className="text-muted-foreground">
-                            Please login to access your account.
-                        </p>
+                        <p className="text-muted-foreground">{t("features.auth.description")}</p>
                         <div className="flex gap-2">
                             <Button asChild className="flex-1">
-                                <Link href={routes.Login()}>Login</Link>
+                                <Link href={routes.Login()}>{t("features.auth.login.title")}</Link>
                             </Button>
                             <Button asChild variant="outline" className="flex-1">
-                                <Link href={routes.Register()}>Register</Link>
+                                <Link href={routes.Register()}>
+                                    {t("features.auth.register.title")}
+                                </Link>
                             </Button>
                         </div>
                     </CardContent>
@@ -47,20 +41,28 @@ export default function Home() {
         <div className="flex items-center justify-center min-h-svh p-4">
             <Card className="w-full max-w-2xl">
                 <CardHeader>
-                    <CardTitle>Welcome back, {user.getFullName()}!</CardTitle>
+                    <CardTitle>
+                        {t("features.auth.welcomeBack", { name: user.getFullName() })}
+                    </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Email</p>
+                            <p className="text-sm font-medium text-muted-foreground">
+                                {t("common.fields.email")}
+                            </p>
                             <p className="text-sm">{user.email}</p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Phone</p>
+                            <p className="text-sm font-medium text-muted-foreground">
+                                {t("common.fields.phone")}
+                            </p>
                             <p className="text-sm">{user.phone || "Not provided"}</p>
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground">Locale</p>
+                            <p className="text-sm font-medium text-muted-foreground">
+                                {t("common.fields.locale")}
+                            </p>
                             <p className="text-sm">{user.locale}</p>
                         </div>
                         <div>
@@ -80,7 +82,7 @@ export default function Home() {
                     </div>
                     <div className="pt-4 flex gap-2">
                         <Button onClick={logout} variant="outline">
-                            Logout
+                            {t("features.auth.logout")}
                         </Button>
                     </div>
                 </CardContent>

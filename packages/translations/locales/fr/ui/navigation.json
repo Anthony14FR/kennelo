@@ -1,0 +1,11 @@
+{
+    "menu": "Menu",
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "bookings": "Réservations",
+    "profile": "Profil",
+    "conversations": "Messages",
+    "notifications": "Notifications",
+    "logout": "Déconnexion",
+    "settings": "Paramètres"
+}

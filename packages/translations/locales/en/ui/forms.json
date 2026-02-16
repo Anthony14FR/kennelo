@@ -1,0 +1,12 @@
+{
+    "required": "Required field",
+    "optional": "Optional",
+    "requiredFields": "Fields marked with * are required",
+    "uploadFile": "Upload file",
+    "dragDropFile": "Drag and drop a file or click to browse",
+    "fileSelected": "File selected",
+    "removeFile": "Remove file",
+    "selectOption": "Select an option",
+    "noOptions": "No options available",
+    "search": "Search..."
+}

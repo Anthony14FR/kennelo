@@ -1,31 +1,31 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "ui": "stream",
-  "tasks": {
-    "barrels": {
-      "cache": false,
-      "outputs": ["src/**/index.ts"]
-    },
-    "build": {
-      "dependsOn": ["^build", "barrels"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["NEXT_PUBLIC_API_URL", "MOBILE_BUILD", "NODE_ENV"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"],
-      "outputs": []
-    },
-    "lint:fix": {
-      "dependsOn": ["^lint:fix"],
-      "outputs": []
-    },
-    "check-types": {
-      "dependsOn": ["^check-types"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
+    "$schema": "https://turbo.build/schema.json",
+    "ui": "stream",
+    "tasks": {
+        "barrels": {
+            "cache": false,
+            "outputs": ["src/**/index.ts"]
+        },
+        "build": {
+            "dependsOn": ["^build", "barrels"],
+            "inputs": ["$TURBO_DEFAULT$", ".env*"],
+            "outputs": [".next/**", "!.next/cache/**"],
+            "env": ["NEXT_PUBLIC_API_URL", "MOBILE_BUILD", "NODE_ENV"]
+        },
+        "lint": {
+            "dependsOn": ["^lint"],
+            "outputs": []
+        },
+        "lint:fix": {
+            "dependsOn": ["^lint:fix"],
+            "outputs": []
+        },
+        "check-types": {
+            "dependsOn": ["^check-types"]
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        }
     }
-  }
 }

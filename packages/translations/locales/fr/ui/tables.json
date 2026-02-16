@@ -1,0 +1,16 @@
+{
+    "noData": "Aucune donnée disponible",
+    "loading": "Chargement des données...",
+    "rowsPerPage": "Lignes par page :",
+    "of": "sur",
+    "page": "Page",
+    "firstPage": "Première page",
+    "lastPage": "Dernière page",
+    "nextPage": "Page suivante",
+    "previousPage": "Page précédente",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner",
+    "selected": "{{count}} sélectionné(s)",
+    "sortBy": "Trier par",
+    "filterBy": "Filtrer par"
+}

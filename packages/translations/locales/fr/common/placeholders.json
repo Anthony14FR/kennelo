@@ -1,0 +1,14 @@
+{
+    "emailPlaceholder": "exemple@email.com",
+    "passwordPlaceholder": "••••••••",
+    "firstNamePlaceholder": "Jean",
+    "lastNamePlaceholder": "Dupont",
+    "amountPlaceholder": "Ex: 10000",
+    "searchPlaceholder": "Rechercher...",
+    "selectPlaceholder": "Sélectionner...",
+    "password": "••••••••",
+    "email": "votre-email@exemple.com",
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "phone": "+33 1 23 45 56 78"
+}

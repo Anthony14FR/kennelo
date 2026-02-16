@@ -1,4 +1,5 @@
 /* global process */
+import createNextIntlPlugin from 'next-intl/plugin';
 
 const isMobileBuild = process.env.NEXT_PUBLIC_PLATFORM === 'mobile';
 
@@ -14,4 +15,5 @@ const nextConfig = {
   }),
 }
 
-export default nextConfig
+const withNextIntl = createNextIntlPlugin('./lib/i18n/request.ts');
+export default withNextIntl(nextConfig);

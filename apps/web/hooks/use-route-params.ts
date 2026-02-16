@@ -8,25 +8,20 @@ export function useRouteParams<T extends Record<string, string>>(): T {
     const searchParams = useSearchParams();
     const mode = routesConfig.mode;
 
-    if (mode === "static") {
-        const result: Record<string, string> = {};
-
-        Object.entries(params).forEach(([key, value]) => {
-            result[key] = Array.isArray(value) ? value[0] : value;
-        });
-
-        searchParams.forEach((value, key) => {
-            result[key] = value;
-        });
-
-        return result as T;
-    }
-
     const result: Record<string, string> = {};
 
     Object.entries(params).forEach(([key, value]) => {
-        result[key] = Array.isArray(value) ? value[0] : value;
+        const stringValue = Array.isArray(value) ? value[0] : value;
+        if (stringValue !== undefined) {
+            result[key] = stringValue;
+        }
     });
+
+    if (mode === "static") {
+        searchParams.forEach((value, key) => {
+            result[key] = value;
+        });
+    }
 
     return result as T;
 }

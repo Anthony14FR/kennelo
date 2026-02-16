@@ -1,20 +1,10 @@
 "use client";
 
-import { useLocale } from "@/contexts/locale.context";
-import { routes, routesWithDefaultLocale } from "@/lib/routes";
+import { routes } from "@/lib/routes";
+import { useLocale } from "next-intl";
 
-type MakeLocaleOptional<T> = T extends (params: infer P) => string
-    ? P extends { locale: unknown }
-        ? (params?: Omit<P, "locale"> & { locale?: P["locale"] }) => string
-        : T
-    : T;
-
-type RoutesWithOptionalLocale = {
-    [K in keyof typeof routes]: MakeLocaleOptional<(typeof routes)[K]>;
-};
-
-export function useRoutes(): RoutesWithOptionalLocale {
-    const { locale } = useLocale();
+export function useRoutes() {
+    const locale = useLocale();
 
     return new Proxy(routes, {
         get(target, prop: string) {
@@ -24,15 +14,10 @@ export function useRoutes(): RoutesWithOptionalLocale {
                 return routeFunction;
             }
 
-            if (prop in routesWithDefaultLocale) {
-                return (params?: unknown) =>
-                    routesWithDefaultLocale[prop as keyof typeof routesWithDefaultLocale](
-                        params || {},
-                        locale,
-                    );
-            }
-
-            return routeFunction;
+            return (params?: Record<string, string | number>) => {
+                const mergedParams = params?.locale ? params : { ...params, locale };
+                return routeFunction(mergedParams as unknown as never);
+            };
         },
-    }) as RoutesWithOptionalLocale;
+    }) as typeof routes;
 }

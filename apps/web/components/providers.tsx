@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { AuthProvider } from "@/features/users/hooks/use-auth";
+import { AuthProvider } from "@/features/auth/hooks/use-auth";
 import { TooltipProvider } from "@workspace/ui/components/tooltip";
+import { Toaster } from "@workspace/ui/components/sonner";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
@@ -17,6 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <TooltipProvider>
                 <AuthProvider>{children}</AuthProvider>
             </TooltipProvider>
+            <Toaster />
         </NextThemesProvider>
     );
 }

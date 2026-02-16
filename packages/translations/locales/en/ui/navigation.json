@@ -1,0 +1,11 @@
+{
+    "menu": "Menu",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "bookings": "Bookings",
+    "conversations": "Messages",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "logout": "Logout"
+}

@@ -11,16 +11,16 @@ const appDir = join(rootDir, 'app');
 
 function generateRoutes() {
     // eslint-disable-next-line sonarjs/no-os-command-from-path
-    execSync('node lib/scripts/generate-routes.mjs', { 
-      stdio: 'inherit',
-      cwd: rootDir
+    execSync('node lib/scripts/generate-routes.mjs', {
+        stdio: 'inherit',
+        cwd: rootDir
     });
 }
 
 generateRoutes();
 
-watch(appDir, { recursive: true }, (eventType, filename) => {
-  if (filename && filename.endsWith('page.tsx') || filename.endsWith('page.ts')) {
-    generateRoutes();
-  }
+watch(appDir, { recursive: true }, (_, filename) => {
+    if (filename && filename.endsWith('page.tsx') || filename.endsWith('page.ts')) {
+        generateRoutes();
+    }
 });

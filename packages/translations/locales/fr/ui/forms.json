@@ -1,0 +1,12 @@
+{
+    "required": "Champ obligatoire",
+    "optional": "Optionnel",
+    "requiredFields": "Les champs marqués d'un * sont obligatoires",
+    "uploadFile": "Télécharger un fichier",
+    "dragDropFile": "Glissez-déposez un fichier ou cliquez pour parcourir",
+    "fileSelected": "Fichier sélectionné",
+    "removeFile": "Supprimer le fichier",
+    "selectOption": "Sélectionnez une option",
+    "noOptions": "Aucune option disponible",
+    "search": "Rechercher..."
+}
