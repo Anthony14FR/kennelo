@@ -1,0 +1,11 @@
+{
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "passwordConfirmation": "تأكيد كلمة المرور",
+    "phone": "الهاتف",
+    "optional": "اختياري",
+    "locale": "الموقع"
+}

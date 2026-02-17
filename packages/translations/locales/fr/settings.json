@@ -1,0 +1,10 @@
+{
+    "name": "Français",
+    "dir": "ltr",
+    "selectLanguage": "Sélectionner la langue",
+    "language": {
+        "en": "Anglais",
+        "fr": "Français",
+        "ar": "Arabe"
+    }
+}

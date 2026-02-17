@@ -6,6 +6,7 @@ import { useAuth } from "@/features/auth/hooks/use-auth";
 import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
 import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export default function Home() {
     const { routes } = useNavigation();
@@ -25,11 +26,12 @@ export default function Home() {
                             <Button asChild className="flex-1">
                                 <Link href={routes.Login()}>{t("features.auth.login.title")}</Link>
                             </Button>
-                            <Button asChild variant="outline" className="flex-1">
+                            <Button asChild variant="secondary" className="flex-1">
                                 <Link href={routes.Register()}>
                                     {t("features.auth.register.title")}
                                 </Link>
                             </Button>
+                            <LanguageSwitcher showDetails variant="outline" />
                         </div>
                     </CardContent>
                 </Card>

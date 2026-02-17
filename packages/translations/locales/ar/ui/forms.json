@@ -1,0 +1,12 @@
+{
+    "required": "حقل مطلوب",
+    "optional": "اختياري",
+    "requiredFields": "الحقول المشار إليها بـ * مطلوبة",
+    "uploadFile": "تحميل ملف",
+    "dragDropFile": "اسحب وأفلت ملفاً أو انقر للتصفح",
+    "fileSelected": "تم اختيار الملف",
+    "removeFile": "إزالة الملف",
+    "selectOption": "اختر خياراً",
+    "noOptions": "لا توجد خيارات متاحة",
+    "search": "بحث..."
+}

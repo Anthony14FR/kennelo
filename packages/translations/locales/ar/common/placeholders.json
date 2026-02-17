@@ -1,0 +1,15 @@
+{
+    "emailPlaceholder": "example@email.com",
+    "passwordPlaceholder": "••••••••",
+    "firstNamePlaceholder": "محمد",
+    "lastNamePlaceholder": "أحمد",
+    "amountPlaceholder": "مثال: 10000",
+    "searchPlaceholder": "بحث...",
+    "selectPlaceholder": "اختر...",
+    "password": "••••••••",
+    "email": "your-email@example.com",
+    "firstName": "محمد",
+    "lastName": "أحمد",
+    "phone": "+966 12 345 6789",
+    "search-for-a-pension": "البحث عن معاش تقاعدي"
+}

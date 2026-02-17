@@ -1,0 +1,22 @@
+{
+    "menu": "القائمة",
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "bookings": "الحجوزات",
+    "profile": "الملف الشخصي",
+    "conversations": "الرسائل",
+    "notifications": "الإشعارات",
+    "logout": "تسجيل الخروج",
+    "settings": "الإعدادات",
+    "my-profile": "ملفي الشخصي",
+    "preferences": "التفضيلات",
+    "theme": "سمة",
+    "appearance": "مظهر",
+    "language": "لغة",
+    "theme_light": "ضوء",
+    "theme_dark": "مظلم",
+    "theme_system": "نظام",
+    "explore": "يستكشف",
+    "messages": "رسائل",
+    "pets": "الحيوانات"
+}

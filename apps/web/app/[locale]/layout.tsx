@@ -1,12 +1,23 @@
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/lib/i18n/routing";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
-import { getDictionary } from "@/dictionaries";
-import { Suspense } from "react";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { LocaleDirection } from "@/dictionaries";
+import AppLayout from "@/components/layouts/app-layout";
+import LocaleUpdater from "@/components/locale-updater";
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: { params: { locale: string } }) {
+    const { locale } = await params;
+    const t = await getTranslations({ locale });
+
+    return {
+        title: "Kennelo",
+        description: t("app.description"),
+    };
 }
 
 export default async function LocaleLayout({
@@ -22,10 +33,14 @@ export default async function LocaleLayout({
     }
 
     setRequestLocale(locale);
+    const t = await getTranslations({ locale });
 
     return (
-        <NextIntlClientProvider locale={locale} messages={await getDictionary(locale)}>
-            <Suspense>{children}</Suspense>
-        </NextIntlClientProvider>
+        <>
+            <LocaleUpdater locale={locale} direction={t("settings.dir") as LocaleDirection} />
+            <NextIntlClientProvider locale={locale}>
+                <AppLayout>{children}</AppLayout>
+            </NextIntlClientProvider>
+        </>
     );
 }

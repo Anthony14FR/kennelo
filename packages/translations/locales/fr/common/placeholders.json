@@ -10,5 +10,6 @@
     "email": "votre-email@exemple.com",
     "firstName": "Jean",
     "lastName": "Dupont",
-    "phone": "+33 1 23 45 56 78"
+    "phone": "+33 1 23 45 56 78",
+    "search-for-a-pension": "Rechercher une pension"
 }
