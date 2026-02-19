@@ -8,7 +8,7 @@ export async function registerUser(input: RegisterUserInput): Promise<AuthModel>
         first_name: input.firstName,
         last_name: input.lastName,
         email: input.email,
-        phone: input.phone,
+        // phone: input.phone,
         password: input.password,
         password_confirmation: input.passwordConfirmation,
         locale: input.locale,

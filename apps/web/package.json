@@ -5,10 +5,10 @@
     "private": true,
     "scripts": {
         "dev": "concurrently \"pnpm:watch:routes\" \"pnpm:dev:next\"",
-        "dev:next": "dotenv -e .env -- next dev --turbopack",
-        "dev:mobile": "dotenv -e .env.mobile -- concurrently \"pnpm:watch:routes\" \"pnpm:dev:next\"",
-        "build": "pnpm generate:routes && dotenv -e .env -- next build",
-        "build:mobile": "dotenv -e .env.mobile -- pnpm generate:routes && next build",
+        "dev:next": "next dev --turbopack",
+        "dev:mobile": "cross-env NODE_ENV=mobile concurrently \"pnpm:watch:routes\" \"pnpm:dev:next\"",
+        "build": "pnpm generate:routes && next build",
+        "build:mobile": "cross-env NODE_ENV=mobile pnpm generate:routes && next build",
         "sync:ios": "pnpm build:mobile && npx cap sync ios",
         "sync:android": "pnpm build:mobile && npx cap sync android",
         "start": "next start",
@@ -54,7 +54,7 @@
         "@workspace/eslint-config": "workspace:^",
         "@workspace/typescript-config": "workspace:*",
         "concurrently": "^9.2.1",
-        "dotenv-cli": "^11.0.0",
+        "cross-env": "^10.1.0",
         "eslint": "^9.39.2",
         "typescript": "^5.9.3"
     }

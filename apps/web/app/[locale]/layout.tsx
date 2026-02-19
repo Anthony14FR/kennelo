@@ -2,9 +2,9 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/lib/i18n/routing";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { DirectionProvider } from "@workspace/ui/components/direction";
 import { LocaleDirection } from "@/dictionaries";
-import AppLayout from "@/components/layouts/app-layout";
-import LocaleUpdater from "@/components/locale-updater";
+import LocaleUpdater from "@/components/i18n/locale-updater";
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));
@@ -34,13 +34,12 @@ export default async function LocaleLayout({
 
     setRequestLocale(locale);
     const t = await getTranslations({ locale });
+    const dir = t("settings.dir") as LocaleDirection;
 
     return (
-        <>
-            <LocaleUpdater locale={locale} direction={t("settings.dir") as LocaleDirection} />
-            <NextIntlClientProvider locale={locale}>
-                <AppLayout>{children}</AppLayout>
-            </NextIntlClientProvider>
-        </>
+        <DirectionProvider direction={dir} dir={dir}>
+            <LocaleUpdater locale={locale} direction={dir} />
+            <NextIntlClientProvider locale={locale}>{children}</NextIntlClientProvider>
+        </DirectionProvider>
     );
 }

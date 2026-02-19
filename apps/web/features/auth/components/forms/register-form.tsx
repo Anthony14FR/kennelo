@@ -1,22 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUserSchema, type RegisterUserInput, registerUser } from "@workspace/modules/users";
 import { Button } from "@workspace/ui/components/button";
-import { Input } from "@workspace/ui/components/input";
-import { Field, FieldLabel, FieldError } from "@workspace/ui/components/field";
-import { useTranslations } from "next-intl";
-import { toast } from "sonner";
+import { useLocale, useTranslations } from "next-intl";
+import { KEnvelope1, KLocked2 } from "@workspace/ui/components/icons";
+import { useAsyncState } from "@/hooks/use-async-state";
+import { InputController } from "@/components/forms/input-controller";
 
-interface RegisterFormProps {
-    onSuccess?: () => void;
-}
-
-export function RegisterForm({ onSuccess }: RegisterFormProps) {
-    const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
+    const locale = useLocale();
+    const { isLoading, execute } = useAsyncState();
     const t = useTranslations();
 
     const { handleSubmit, control } = useForm<RegisterUserInput>({
@@ -25,103 +20,52 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
             firstName: "",
             lastName: "",
             email: "",
-            phone: "",
+            // phone: "",
             password: "",
             passwordConfirmation: "",
-            locale: "en",
+            locale,
         },
     });
 
     const onSubmit = async (data: RegisterUserInput) => {
-        setIsLoading(true);
-        setError(null);
-
-        try {
-            await registerUser(data);
-            onSuccess?.();
-        } catch (err) {
-            toast.error(error, {
-                position: "top-center",
-                classNames: {
-                    icon: "text-red-400",
-                    content: "text-red-400",
-                    toast: "bg-red-900/80 backdrop-blur-sm border border-red-800",
-                },
-            });
-
-            setError(err instanceof Error ? err.message : "An error occurred during registration");
-        } finally {
-            setIsLoading(false);
-        }
+        await execute(() => registerUser(data), { onSuccess });
     };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-                <Controller
+                <InputController
                     name="firstName"
+                    type="text"
                     control={control}
-                    render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor={field.name}>
-                                {t("common.fields.firstName")}
-                            </FieldLabel>
-                            <Input
-                                {...field}
-                                id={field.name}
-                                aria-invalid={fieldState.invalid}
-                                placeholder={t("common.placeholders.firstName")}
-                                disabled={isLoading}
-                                autoComplete="given-name"
-                            />
-                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                        </Field>
-                    )}
+                    label={t("common.fields.firstName")}
+                    placeholder={t("common.placeholders.firstName")}
+                    isLoading={isLoading}
+                    autoComplete="given-name"
                 />
-
-                <Controller
+                <InputController
                     name="lastName"
+                    type="text"
                     control={control}
-                    render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                            <FieldLabel htmlFor={field.name}>
-                                {t("common.fields.lastName")}
-                            </FieldLabel>
-                            <Input
-                                {...field}
-                                id={field.name}
-                                aria-invalid={fieldState.invalid}
-                                placeholder={t("common.placeholders.lastName")}
-                                disabled={isLoading}
-                                autoComplete="family-name"
-                            />
-                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                        </Field>
-                    )}
+                    label={t("common.fields.lastName")}
+                    placeholder={t("common.placeholders.lastName")}
+                    isLoading={isLoading}
+                    autoComplete="family-name"
                 />
             </div>
 
-            <Controller
+            <InputController
                 name="email"
+                type="email"
                 control={control}
-                render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>{t("common.fields.email")}</FieldLabel>
-                        <Input
-                            {...field}
-                            id={field.name}
-                            type="email"
-                            aria-invalid={fieldState.invalid}
-                            placeholder={t("common.placeholders.email")}
-                            disabled={isLoading}
-                            autoComplete="email"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                )}
+                label={t("common.fields.email")}
+                placeholder={t("common.placeholders.email")}
+                isLoading={isLoading}
+                autoComplete="email"
+                Icon={KEnvelope1}
             />
 
-            <Controller
+            {/* <Controller
                 name="phone"
                 control={control}
                 render={({ field, fieldState }) => (
@@ -141,51 +85,31 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                     </Field>
                 )}
-            />
+            /> */}
 
-            <Controller
+            <InputController
                 name="password"
+                type="password"
                 control={control}
-                render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>{t("common.fields.password")}</FieldLabel>
-                        <Input
-                            {...field}
-                            id={field.name}
-                            type="password"
-                            aria-invalid={fieldState.invalid}
-                            placeholder={t("common.placeholders.password")}
-                            disabled={isLoading}
-                            autoComplete="new-password"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                )}
+                label={t("common.fields.password")}
+                placeholder={t("common.placeholders.password")}
+                isLoading={isLoading}
+                autoComplete="new-password"
+                Icon={KLocked2}
+                description={t("common.fields.passwordDescription")}
+                showPasswordIndicator
             />
-
-            <Controller
+            <InputController
                 name="passwordConfirmation"
+                type="password"
                 control={control}
-                render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>
-                            {t("common.fields.passwordConfirmation")}
-                        </FieldLabel>
-                        <Input
-                            {...field}
-                            id={field.name}
-                            type="password"
-                            aria-invalid={fieldState.invalid}
-                            placeholder={t("common.placeholders.password")}
-                            disabled={isLoading}
-                            autoComplete="new-password"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                )}
+                label={t("common.fields.passwordConfirmation")}
+                placeholder={t("common.placeholders.passwordConfirmation")}
+                isLoading={isLoading}
+                autoComplete="new-password"
+                Icon={KLocked2}
             />
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full p-6 font-medium text-md" disabled={isLoading}>
                 {isLoading
                     ? t("features.auth.register.loading")
                     : t("features.auth.create-account")}

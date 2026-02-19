@@ -9,7 +9,7 @@ import {
 } from "@workspace/ui/components/dropdown-menu";
 import { Button } from "@workspace/ui/components/button";
 import { LOCALE_INFO, type Locale } from "@/dictionaries";
-import { LanguageSelectorItems, useLanguageSelector } from "@/components/language-selector";
+import { LanguageSelectorItems, useLanguageSelector } from "@/components/i18n/language-selector";
 
 export function LanguageSwitcher({
     variant = "ghost",

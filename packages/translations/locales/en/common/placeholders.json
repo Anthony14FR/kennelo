@@ -1,11 +1,12 @@
 {
-    "email": "your-email@example.com",
-    "password": "••••••••",
+    "email": "Your email",
+    "password": "Your password",
     "firstName": "John",
     "lastName": "Doe",
     "amount": "e.g.: 10000",
     "search": "Search...",
     "select": "Select...",
     "phone": "+1 234 567 8900",
-    "search-for-a-pension": "Search for a pension"
+    "search-for-a-pension": "Search for a pension",
+    "passwordConfirmation": "Confirm your password"
 }

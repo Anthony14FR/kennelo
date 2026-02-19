@@ -7,7 +7,6 @@ export async function loginUser(input: LoginUserInput): Promise<AuthModel> {
     const response = await api.post<AuthResponseDto>("/login", {
         email: input.email,
         password: input.password,
-        remember: input.remember,
     });
 
     if (response.status !== 200) {

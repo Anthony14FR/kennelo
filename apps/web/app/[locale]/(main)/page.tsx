@@ -6,7 +6,7 @@ import { useAuth } from "@/features/auth/hooks/use-auth";
 import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
 import { useTranslations } from "next-intl";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { LanguageSwitcher } from "@/components/i18n/language-switcher";
 
 export default function Home() {
     const { routes } = useNavigation();

@@ -29,7 +29,6 @@ interface NavigationItem {
 interface AppLayoutProps {
     children: React.ReactNode;
     className?: string;
-    isAuthenticated?: boolean;
 }
 
 export default function AppLayout({ children, className }: AppLayoutProps) {
@@ -65,14 +64,33 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
     ];
 
     return (
-        <div className="bg-background h-full">
-            {/* Desktop Header */}
+        <div className="bg-background h-full relative">
+            <Image
+                className="absolute top-0 left-0 w-168"
+                src="/left-shape.svg"
+                width={120}
+                height={100}
+                alt="Kennelo logo"
+            />
+
+            <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-20">
+                <div className="hidden">{/* Chat box */}</div>
+                <div className="h-fit w-fit">
+                    <Image
+                        className="w-14"
+                        src="/face.svg"
+                        width={120}
+                        height={100}
+                        alt="Keny Face"
+                    />
+                </div>
+            </div>
+
             {!isMobile && (
-                <header className="fixed top-0 left-0 w-full h-16 border-b border-primary/10 bg-background flex items-center z-10">
+                <header className="fixed top-0 left-0 w-full h-16 flex items-center z-20">
                     <div className="container mx-auto h-full flex justify-between items-center px-4">
-                        {/* Search Bar */}
                         <div className="flex justify-start items-center w-full max-w-xs">
-                            <InputGroup className="rounded-full px-1.5 !py-5 w-full border border-primary/20">
+                            <InputGroup className="rounded-full px-1.5 !py-5 w-full border border-primary/20 bg-white/30 backdrop-blur-sm">
                                 <InputGroupInput
                                     placeholder={t("common.placeholders.search-for-a-pension")}
                                     className="px-2 placeholder:text-base"
@@ -88,19 +106,15 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                 </InputGroupAddon>
                             </InputGroup>
                         </div>
-
-                        {/* Logo */}
                         <div className="relative w-full h-full flex justify-center items-center font-semibold text-lg">
                             <Image
-                                className="object-cover max-h-full"
+                                className="object-cover max-h-full h-1/2 w-auto"
                                 src="/logo_type.svg"
-                                width={170}
-                                height={100}
+                                height={120}
+                                width={30}
                                 alt="Kennelo logo"
                             />
                         </div>
-
-                        {/* Navigation or Auth Buttons */}
                         <div className="flex justify-end items-center">
                             {isAuthenticated ? (
                                 <div className="flex items-center gap-3">
@@ -118,7 +132,6 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                                 {item.text}
                                             </NavItem>
                                         ))}
-
                                         <UserMenu user={user ?? undefined} onLogout={logout} />
                                     </div>
                                 </div>
@@ -132,19 +145,15 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                     </div>
                 </header>
             )}
-
-            {/* Main Content */}
             <main
                 className={cn(
                     "container mx-auto relative h-full",
-                    isMobile ? "pb-16" : "mt-16",
+                    // isMobile ? "pb-16" : "mt-16",
                     className,
                 )}
             >
                 {children}
             </main>
-
-            {/* Mobile Bottom Navigation */}
             {isMobile && (
                 <nav className="fixed bottom-0 w-full h-14 bg-background border-t border-primary/10 flex items-center z-10">
                     <div className="container mx-auto h-full flex justify-between items-center px-4 sm:px-6">
@@ -165,7 +174,6 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                 {!item.special && item.text}
                             </NavItem>
                         ))}
-
                         {isAuthenticated && (
                             <div className="flex flex-col items-center gap-0.5">
                                 <UserMenu user={user ?? undefined} onLogout={logout} />

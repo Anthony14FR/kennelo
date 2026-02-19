@@ -6,6 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@workspace/ui/lib/utils";
 import { Label } from "@workspace/ui/components/label";
 import { Separator } from "@workspace/ui/components/separator";
+import { CircleAlert } from "lucide-react";
 
 function FieldSet({ className, ...props }: React.ComponentProps<"fieldset">) {
     return (
@@ -99,6 +100,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
             className={cn(
                 "has-data-checked:bg-primary/5 has-data-checked:border-primary/30 dark:has-data-checked:border-primary/20 dark:has-data-checked:bg-primary/10 gap-2 group-data-[disabled=true]/field:opacity-50 has-[>[data-slot=field]]:rounded-xl has-[>[data-slot=field]]:border *:data-[slot=field]:p-4 group/field-label peer/field-label flex w-fit leading-snug",
                 "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col",
+                "text-unset",
                 className,
             )}
             {...props}
@@ -204,9 +206,13 @@ function FieldError({
         <div
             role="alert"
             data-slot="field-error"
-            className={cn("text-destructive text-sm font-normal", className)}
+            className={cn(
+                "text-destructive text-sm font-normal flex gap-1.5 items-center",
+                className,
+            )}
             {...props}
         >
+            <CircleAlert className="size-4" />
             {content}
         </div>
     );

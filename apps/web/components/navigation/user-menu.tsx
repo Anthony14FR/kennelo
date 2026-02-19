@@ -28,7 +28,7 @@ import {
 import { useTheme } from "next-themes";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/dictionaries";
-import { LanguageSelectorItems } from "@/components/language-selector";
+import { LanguageSelectorItems } from "../i18n/language-selector";
 
 interface UserMenuProps {
     user?: {

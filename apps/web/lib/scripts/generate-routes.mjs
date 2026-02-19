@@ -80,7 +80,8 @@ function getTypeName(type) {
 }
 
 function shouldProcessDirectory(item, stat) {
-    return stat.isDirectory() && !item.startsWith("_") && !item.startsWith("(");
+    // Permet de traverser les route groups (public), (auth), etc.
+    return stat.isDirectory() && !item.startsWith("_");
 }
 
 function shouldProcessPage(item) {
@@ -100,8 +101,9 @@ function extractParams(routePath) {
 
 function buildRoutePath(baseDir, dir) {
     const relativePath = relative(baseDir, dir);
-    const routePath = `/${relativePath.replace(/\\/g, "/")}`;
-    return routePath === "/." ? "/" : routePath;
+    // eslint-disable-next-line sonarjs/slow-regex
+    const routePath = `/${relativePath.replace(/\\/g, "/").replace(/\([^)]+\)\/?/g, "")}`;
+    return routePath === "/." || routePath === "/" ? "/" : routePath.replace(/\/$/, "");
 }
 
 function scanAppDir(dir, baseDir = "app", routes = {}) {

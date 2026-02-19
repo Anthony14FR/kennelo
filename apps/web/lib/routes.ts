@@ -9,11 +9,11 @@ type HostDetailsParams = {
     uuid: string;
 };
 
-type LoginParams = {
+type HomeParams = {
     locale?: string | number;
 };
 
-type HomeParams = {
+type LoginParams = {
     locale?: string | number;
 };
 
@@ -25,22 +25,22 @@ function HostDetails(params: HostDetailsParams): string {
     return buildRoute("/[locale]/host/[uuid]", params);
 }
 
-function Login(params?: LoginParams): string {
-    return buildRoute("/[locale]/login", params);
-}
-
 function Home(params?: HomeParams): string {
     return buildRoute("/[locale]", params);
 }
 
+function Login(params?: LoginParams): string {
+    return buildRoute("/[locale]/s/accounts/login", params);
+}
+
 function Register(params?: RegisterParams): string {
-    return buildRoute("/[locale]/register", params);
+    return buildRoute("/[locale]/s/accounts/register", params);
 }
 
 export const routes = {
     HostDetails,
-    Login,
     Home,
+    Login,
     Register,
 } as const;
 

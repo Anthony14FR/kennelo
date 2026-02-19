@@ -7,5 +7,8 @@
     "passwordConfirmation": "Confirm Password",
     "phone": "Phone",
     "optional": "optional",
-    "locale": "Locale"
+    "locale": "Locale",
+    "passwordDescription": "At least 8 characters with a mix of letters, numbers, and symbols",
+    "passwordHide": "Hide",
+    "passwordShow": "Show"
 }

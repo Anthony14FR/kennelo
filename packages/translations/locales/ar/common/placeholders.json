@@ -6,10 +6,11 @@
     "amountPlaceholder": "مثال: 10000",
     "searchPlaceholder": "بحث...",
     "selectPlaceholder": "اختر...",
-    "password": "••••••••",
-    "email": "your-email@example.com",
+    "password": "كلمة المرور الخاصة بك",
+    "email": "البريد الإلكتروني الخاص بك",
     "firstName": "محمد",
     "lastName": "أحمد",
     "phone": "+966 12 345 6789",
-    "search-for-a-pension": "البحث عن معاش تقاعدي"
+    "search-for-a-pension": "البحث عن معاش تقاعدي",
+    "passwordConfirmation": "قم بتأكيد كلمة المرور الخاصة بك"
 }

@@ -17,3 +17,6 @@ export { KMessage } from "./message";
 export { KHeart } from "./heart";
 export { ArrowLeftCircle } from "./arrow-left-circle";
 export { KCalendar } from "./calendar";
+export { KKey2 } from "./key-2";
+export { KLocked2 } from "./locked-2";
+export { KEnvelope1 } from "./envelope-1";
