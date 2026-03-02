@@ -6,15 +6,27 @@ namespace App\Http\Controllers\User;
 
 use App\Enums\ApiStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\AdminUpdateUserRequest;
+use App\Http\Requests\User\AssignRolesRequest;
+use App\Http\Requests\User\ChangeEmailRequest;
+use App\Http\Requests\User\ChangePasswordRequest;
 use App\Http\Requests\User\ListUsersRequest;
+use App\Http\Requests\User\ReviewIdentityVerificationRequest;
+use App\Http\Requests\User\SubmitIdentityVerificationRequest;
 use App\Http\Requests\User\UpdateLocaleRequest;
 use App\Http\Requests\User\UpdateProfileRequest;
+use App\Http\Requests\User\UpdateUserStatusRequest;
 use App\Http\Requests\User\UploadAvatarRequest;
+use App\Http\Requests\User\UpsertAddressRequest;
+use App\Http\Resources\AddressResource;
+use App\Http\Resources\IdentityVerificationResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\User\Exceptions\AvatarUploadException;
+use App\Services\User\Exceptions\InvalidCurrentPasswordException;
 use App\Services\User\Exceptions\UserHasActiveBookingsException;
 use App\Services\User\UserService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -26,9 +38,26 @@ class UserController extends Controller
         private UserService $userService
     ) {}
 
+    private function checkAuthorization(string $action, mixed $model = null): void
+    {
+        try {
+            $this->authorize($action, $model);
+        } catch (AuthorizationException) {
+            throw new AuthorizationException('Unauthorized');
+        }
+    }
+
     public function index(ListUsersRequest $request): JsonResponse
     {
-        $this->authorize('viewAny', User::class);
+        try {
+            $this->checkAuthorization('viewAny', User::class);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
 
         $users = $this->userService->getAllPaginated($request->validated());
 
@@ -60,7 +89,15 @@ class UserController extends Controller
             ], 404);
         }
 
-        $this->authorize('view', $user);
+        try {
+            $this->checkAuthorization('view', $user);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
 
         return (new UserResource($user))
             ->additional([
@@ -70,10 +107,51 @@ class UserController extends Controller
             ->response();
     }
 
+    public function update(AdminUpdateUserRequest $request, string $id): JsonResponse
+    {
+        if (! Str::isUuid($id)) {
+            return response()->json([
+                'message' => 'Invalid UUID format',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 400);
+        }
+
+        $target = $this->userService->getPublicProfile($id);
+
+        if (! $target) {
+            return response()->json([
+                'message' => 'User not found',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 404);
+        }
+
+        try {
+            $this->checkAuthorization('update', $target);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
+
+        $user = $this->userService->updateProfile($target, $request->validated());
+
+        return (new UserResource($user))
+            ->additional([
+                'message' => 'User updated successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
+    }
+
     public function getCurrentUser(Request $request): JsonResponse
     {
         $user = $request->user();
-        $user->load('roles');
+        $user->load(['roles', 'address']);
 
         return (new UserResource($user))
             ->additional([
@@ -148,5 +226,327 @@ class UserController extends Controller
                 'timestamp' => human_date(Carbon::now()),
             ], 422);
         }
+    }
+
+    public function adminDestroy(Request $request, string $id): JsonResponse
+    {
+        if (! Str::isUuid($id)) {
+            return response()->json([
+                'message' => 'Invalid UUID format',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 400);
+        }
+
+        $target = $this->userService->getPublicProfile($id);
+
+        if (! $target) {
+            return response()->json([
+                'message' => 'User not found',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 404);
+        }
+
+        try {
+            $this->checkAuthorization('destroy', $target);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
+
+        try {
+            $this->userService->deleteAccount($target);
+
+            return response()->json([
+                'message' => 'User deleted successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ]);
+        } catch (UserHasActiveBookingsException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 422);
+        }
+    }
+
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
+    {
+        try {
+            $this->userService->changePassword($request->user(), $request->validated());
+
+            return response()->json([
+                'message' => 'Password changed successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ]);
+        } catch (InvalidCurrentPasswordException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 422);
+        }
+    }
+
+    public function changeEmail(ChangeEmailRequest $request): JsonResponse
+    {
+        try {
+            $user = $this->userService->changeEmail($request->user(), $request->validated());
+
+            return (new UserResource($user))
+                ->additional([
+                    'message' => 'Email updated successfully. Please verify your new email.',
+                    'status' => ApiStatus::SUCCESS,
+                    'timestamp' => human_date(Carbon::now()),
+                ])
+                ->response();
+        } catch (InvalidCurrentPasswordException $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 422);
+        }
+    }
+
+    public function upsertAddress(UpsertAddressRequest $request): JsonResponse
+    {
+        $user = $this->userService->upsertAddress($request->user(), $request->validated());
+
+        return (new AddressResource($user->address))
+            ->additional([
+                'message' => 'Address updated successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
+    }
+
+    public function destroyAddress(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        if (! $user->address_id) {
+            return response()->json([
+                'message' => 'No address to delete',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 404);
+        }
+
+        $this->userService->deleteAddress($user);
+
+        return response()->json([
+            'message' => 'Address deleted successfully',
+            'status' => ApiStatus::SUCCESS,
+            'timestamp' => human_date(Carbon::now()),
+        ]);
+    }
+
+    public function getIdentityVerification(Request $request): JsonResponse
+    {
+        $verification = $this->userService->getLatestIdentityVerification($request->user());
+
+        if (! $verification) {
+            return response()->json([
+                'data' => null,
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ]);
+        }
+
+        return (new IdentityVerificationResource($verification))
+            ->additional([
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
+    }
+
+    public function submitIdentityVerification(SubmitIdentityVerificationRequest $request): JsonResponse
+    {
+        $verification = $this->userService->submitIdentityVerification(
+            $request->user(),
+            $request->file('document')
+        );
+
+        return (new IdentityVerificationResource($verification))
+            ->additional([
+                'message' => 'Identity verification submitted successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response()
+            ->setStatusCode(201);
+    }
+
+    public function updateStatus(UpdateUserStatusRequest $request, string $id): JsonResponse
+    {
+        if (! Str::isUuid($id)) {
+            return response()->json([
+                'message' => 'Invalid UUID format',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 400);
+        }
+
+        $target = User::withInactive()->find($id);
+
+        if (! $target) {
+            return response()->json([
+                'message' => 'User not found',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 404);
+        }
+
+        try {
+            $this->checkAuthorization('updateStatus', $target);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
+
+        $user = $this->userService->updateStatus($target, $request->validated());
+
+        return (new UserResource($user))
+            ->additional([
+                'message' => 'User status updated successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
+    }
+
+    public function assignRoles(AssignRolesRequest $request, string $id): JsonResponse
+    {
+        if (! Str::isUuid($id)) {
+            return response()->json([
+                'message' => 'Invalid UUID format',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 400);
+        }
+
+        $target = $this->userService->getPublicProfile($id);
+
+        if (! $target) {
+            return response()->json([
+                'message' => 'User not found',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 404);
+        }
+
+        try {
+            $this->checkAuthorization('assignRoles', $target);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
+
+        $user = $this->userService->assignRoles($target, $request->validated());
+
+        return (new UserResource($user))
+            ->additional([
+                'message' => 'Roles assigned successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
+    }
+
+    public function removeRole(Request $request, string $id, string $role): JsonResponse
+    {
+        if (! Str::isUuid($id)) {
+            return response()->json([
+                'message' => 'Invalid UUID format',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 400);
+        }
+
+        $target = $this->userService->getPublicProfile($id);
+
+        if (! $target) {
+            return response()->json([
+                'message' => 'User not found',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 404);
+        }
+
+        try {
+            $this->checkAuthorization('assignRoles', $target);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
+
+        $user = $this->userService->removeRole($target, $role);
+
+        return (new UserResource($user))
+            ->additional([
+                'message' => 'Role removed successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
+    }
+
+    public function reviewIdentityVerification(ReviewIdentityVerificationRequest $request, string $id): JsonResponse
+    {
+        if (! Str::isUuid($id)) {
+            return response()->json([
+                'message' => 'Invalid UUID format',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 400);
+        }
+
+        $target = $this->userService->getPublicProfile($id);
+
+        if (! $target) {
+            return response()->json([
+                'message' => 'User not found',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 404);
+        }
+
+        try {
+            $this->checkAuthorization('reviewIdentityVerification', $target);
+        } catch (AuthorizationException) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => human_date(Carbon::now()),
+            ], 403);
+        }
+
+        $user = $this->userService->reviewIdentityVerification($target, $request->user(), $request->validated());
+
+        return (new UserResource($user))
+            ->additional([
+                'message' => 'Identity verification reviewed successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
     }
 }

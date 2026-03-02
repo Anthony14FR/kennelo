@@ -29,7 +29,7 @@ class UpdateProfileRequest extends FormRequest
             'phone' => [
                 'sometimes',
                 'nullable',
-                'phone:AUTO,mobile',
+                'phone:AUTO',
             ],
         ];
     }
