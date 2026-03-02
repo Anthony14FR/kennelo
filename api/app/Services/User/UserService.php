@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\User;
 
 use App\Enums\BookingStatus;
@@ -7,50 +9,48 @@ use App\Enums\PaginationEnum;
 use App\Enums\UserStatus;
 use App\Models\Booking;
 use App\Models\User;
-use App\Services\User\Data\UpdateProfileData;
-use App\Services\User\Data\UserProfileData;
 use App\Services\User\Exceptions\AvatarUploadException;
 use App\Services\User\Exceptions\UserHasActiveBookingsException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class UserService
 {
-    public function getAllPaginated(?int $perPage = null)
+    public function getAllPaginated(array $filters = []): LengthAwarePaginator
     {
-        $perPage = $perPage ?? PaginationEnum::DEFAULT_PAGINATION->value();
+        $perPage = $filters['per_page'] ?? PaginationEnum::DEFAULT_PAGINATION->value();
 
         return User::with(['managedEstablishments', 'collaboratedEstablishments'])
+            ->when(isset($filters['search']), function ($q) use ($filters) {
+                $q->where(function ($q) use ($filters) {
+                    $q->where('first_name', 'like', "%{$filters['search']}%")
+                        ->orWhere('last_name', 'like', "%{$filters['search']}%")
+                        ->orWhere('email', 'like', "%{$filters['search']}%");
+                });
+            })
+            ->when(isset($filters['role']), fn ($q) => $q->role($filters['role']))
+            ->when(isset($filters['sort_by']), fn ($q) => $q->orderBy($filters['sort_by'], $filters['sort_dir'] ?? 'asc'))
             ->paginate($perPage);
     }
 
-    public function getPublicProfile(string $userId): ?UserProfileData
+    public function getPublicProfile(string $userId): ?User
     {
-        $user = User::find($userId);
-
-        if (! $user) {
-            return null;
-        }
-
-        return $this->toUserProfileData($user);
+        return User::with('roles')->find($userId);
     }
 
-    public function updateProfile(User $user, UpdateProfileData $data): UserProfileData
+    public function updateProfile(User $user, array $data): User
     {
-        $updateData = array_filter([
-            'first_name' => $data->first_name,
-            'last_name' => $data->last_name,
-            'phone' => $data->phone,
-        ], fn ($value) => $value !== null);
+        $updateData = array_filter($data, fn ($value) => $value !== null);
 
         $user->update($updateData);
 
-        return $this->toUserProfileData($user->fresh());
+        return $user->fresh(['roles']);
     }
 
-    public function uploadAvatar(User $user, UploadedFile $avatar): UserProfileData
+    public function uploadAvatar(User $user, UploadedFile $avatar): User
     {
         $oldAvatarPath = $user->avatar_url;
         $newPath = null;
@@ -70,7 +70,7 @@ class UserService
                 Storage::disk('public')->delete($oldAvatarPath);
             }
 
-            return $this->toUserProfileData($user->fresh());
+            return $user->fresh(['roles']);
         } catch (Throwable $e) {
             if ($newPath) {
                 Storage::disk('public')->delete($newPath);
@@ -99,25 +99,7 @@ class UserService
         }
 
         DB::transaction(function () use ($user) {
-            $user->tokens()->delete();
             $user->update(['status' => UserStatus::INACTIVE]);
         });
-    }
-
-    private function toUserProfileData(User $user): UserProfileData
-    {
-        return new UserProfileData(
-            id: (string) $user->id,
-            first_name: $user->first_name,
-            last_name: $user->last_name,
-            email: $user->email,
-            phone: $user->phone,
-            avatar_url: $user->avatar_url ? Storage::disk('public')->url($user->avatar_url) : null,
-            is_id_verified: $user->is_id_verified,
-            email_verified_at: $user->email_verified_at ? human_date($user->email_verified_at) : null,
-            roles: $user->getRoleNames()->toArray(),
-            created_at: human_date($user->created_at),
-            updated_at: human_date($user->updated_at),
-        );
     }
 }

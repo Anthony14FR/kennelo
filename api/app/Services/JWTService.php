@@ -1,99 +1,83 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\User;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
+use PHPOpenSourceSaver\JWTAuth\JWTAuth;
 
 class JWTService
 {
-    /**
-     * Generate an access token for the given user.
-     */
+    public function __construct(private readonly JWTAuth $jwt) {}
+
     public function generateAccessToken(User $user): string
     {
-        $payload = $this->buildPayload($user, config('jwt.access_token_ttl'));
+        $this->jwt->factory()->setTTL((int) config('jwt.ttl'));
 
-        return $this->encodeToken($payload);
+        return $this->jwt->claims([
+            'type' => 'access',
+            'email' => $user->email,
+            'roles' => $user->roles->pluck('name')->toArray(),
+            'locale' => $user->locale ?? config('app.locale', 'en'),
+        ])->fromUser($user);
     }
 
-    /**
-     * Generate a refresh token for the given user.
-     */
     public function generateRefreshToken(User $user): string
     {
-        $payload = $this->buildPayload($user, config('jwt.refresh_token_ttl'), true);
+        $this->jwt->factory()->setTTL((int) config('jwt.refresh_token_ttl'));
+        $token = $this->jwt->claims(['type' => 'refresh'])->fromUser($user);
+        $this->jwt->factory()->setTTL((int) config('jwt.ttl'));
 
-        return $this->encodeToken($payload);
+        return $token;
     }
 
-    /**
-     * Validate and decode a JWT token.
-     *
-     * @return object The decoded token payload
-     *
-     * @throws \Exception If token is invalid or expired
-     */
     public function validateToken(string $token): object
     {
         try {
-            JWT::$leeway = config('jwt.leeway', 60);
+            $payload = $this->jwt->setToken($token)->getPayload();
 
-            $decoded = JWT::decode(
-                $token,
-                new Key(config('jwt.secret'), config('jwt.algorithm'))
-            );
-
-            if (config('jwt.blacklist_enabled') && $this->isBlacklisted($token)) {
-                throw new \Exception('Token has been revoked');
-            }
-
-            return $decoded;
-        } catch (\Firebase\JWT\ExpiredException $e) {
+            return (object) $payload->toArray();
+        } catch (TokenExpiredException) {
             throw new \Exception('Token has expired');
-        } catch (\Firebase\JWT\SignatureInvalidException $e) {
+        } catch (TokenInvalidException) {
             throw new \Exception('Token signature is invalid');
-        } catch (\Exception $e) {
+        } catch (JWTException $e) {
             throw new \Exception('Token validation failed: '.$e->getMessage());
         }
     }
 
-    /**
-     * Decode a token without validation (use with caution).
-     * This should only be used for reading public claims.
-     */
     public function decodeToken(string $token): object
     {
         $parts = explode('.', $token);
+
         if (count($parts) !== 3) {
             throw new \Exception('Invalid token format');
         }
 
-        $payload = json_decode(base64_decode(strtr($parts[1], '-_', '+/')));
+        $decoded = json_decode(base64_decode(strtr($parts[1], '-_', '+/')));
 
-        return $payload;
+        if (! is_object($decoded)) {
+            throw new \Exception('Invalid token payload');
+        }
+
+        return $decoded;
     }
 
-    /**
-     * Extract the user ID from a token without full validation.
-     */
-    public function getUserIdFromToken(string $token): ?int
+    public function getUserIdFromToken(string $token): string|int|null
     {
         try {
             $payload = $this->decodeToken($token);
 
             return $payload->sub ?? null;
-        } catch (\Exception $e) {
+        } catch (\Throwable) {
             return null;
         }
     }
 
-    /**
-     * Add a token to the blacklist.
-     */
     public function blacklistToken(string $token): void
     {
         if (! config('jwt.blacklist_enabled')) {
@@ -101,47 +85,29 @@ class JWTService
         }
 
         try {
-            $payload = $this->decodeToken($token);
-            $expiresAt = $payload->exp ?? null;
-
-            if (! $expiresAt) {
-                return;
-            }
-
-            $ttl = max(0, $expiresAt - time()) + config('jwt.blacklist_grace_period', 0);
-
-            $tokenHash = $this->hashToken($token);
-            Cache::put(
-                $this->getBlacklistKey($tokenHash),
-                true,
-                $ttl
-            );
+            $this->jwt->setToken($token)->invalidate();
         } catch (\Exception $e) {
             logger()->error('Failed to blacklist token: '.$e->getMessage());
         }
     }
 
-    /**
-     * Check if a token is blacklisted.
-     */
     public function isBlacklisted(string $token): bool
     {
         if (! config('jwt.blacklist_enabled')) {
             return false;
         }
 
-        $tokenHash = $this->hashToken($token);
+        try {
+            $this->jwt->setToken($token)->getPayload();
 
-        return Cache::has($this->getBlacklistKey($tokenHash));
+            return false;
+        } catch (TokenExpiredException|TokenInvalidException) {
+            return false;
+        } catch (JWTException) {
+            return true;
+        }
     }
 
-    /**
-     * Refresh an access token using a valid refresh token.
-     *
-     * @return array{access_token: string} New access token
-     *
-     * @throws \Exception If refresh token is invalid
-     */
     public function refreshAccessToken(string $refreshToken): array
     {
         $payload = $this->validateToken($refreshToken);
@@ -151,70 +117,11 @@ class JWTService
         }
 
         $user = User::find($payload->sub);
+
         if (! $user) {
             throw new \Exception('User not found');
         }
 
-        $accessToken = $this->generateAccessToken($user);
-
-        return [
-            'access_token' => $accessToken,
-        ];
-    }
-
-    /**
-     * Build the JWT payload.
-     */
-    protected function buildPayload(User $user, int $ttl, bool $isRefreshToken = false): array
-    {
-        $now = time();
-        $exp = $now + $ttl;
-
-        $payload = [
-            'iss' => config('jwt.issuer'),
-            'aud' => config('jwt.audience'),
-            'iat' => $now,
-            'exp' => $exp,
-            'sub' => $user->id,
-            'jti' => Str::uuid()->toString(),
-        ];
-
-        if (! $isRefreshToken) {
-            $payload['email'] = $user->email;
-            $payload['roles'] = $user->roles->pluck('name')->toArray();
-            $payload['locale'] = $user->locale ?? config('app.locale', 'en');
-        }
-
-        $payload['type'] = $isRefreshToken ? 'refresh' : 'access';
-
-        return $payload;
-    }
-
-    /**
-     * Encode a payload into a JWT token.
-     */
-    protected function encodeToken(array $payload): string
-    {
-        return JWT::encode(
-            $payload,
-            config('jwt.secret'),
-            config('jwt.algorithm')
-        );
-    }
-
-    /**
-     * Hash a token for storage in blacklist.
-     */
-    protected function hashToken(string $token): string
-    {
-        return hash('sha256', $token);
-    }
-
-    /**
-     * Get the cache key for a blacklisted token.
-     */
-    protected function getBlacklistKey(string $tokenHash): string
-    {
-        return 'jwt_blacklist:'.$tokenHash;
+        return ['access_token' => $this->generateAccessToken($user)];
     }
 }

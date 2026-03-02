@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Carbon;
 
 if (! function_exists('type_to_class')) {
     function type_to_class(string $type): ?string
     {
-        $type = str($type)->ucfirst()->lower();
+        $type = (string) str($type)->ucfirst()->lower();
 
         $className = 'App\\Models\\'.$type;
         if (class_exists($className)) {

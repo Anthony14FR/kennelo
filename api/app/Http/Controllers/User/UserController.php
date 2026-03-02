@@ -1,11 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+declare(strict_types=1);
+
+namespace App\Http\Controllers\User;
 
 use App\Enums\ApiStatus;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\ListUsersRequest;
+use App\Http\Requests\User\UpdateLocaleRequest;
 use App\Http\Requests\User\UpdateProfileRequest;
 use App\Http\Requests\User\UploadAvatarRequest;
-use App\Services\User\Data\UpdateProfileData;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\User\Exceptions\AvatarUploadException;
 use App\Services\User\Exceptions\UserHasActiveBookingsException;
 use App\Services\User\UserService;
@@ -20,15 +26,18 @@ class UserController extends Controller
         private UserService $userService
     ) {}
 
-    public function index(): JsonResponse
+    public function index(ListUsersRequest $request): JsonResponse
     {
-        $users = $this->userService->getAllPaginated();
+        $this->authorize('viewAny', User::class);
 
-        return response()->json([
-            'data' => $users,
-            'status' => ApiStatus::SUCCESS,
-            'timestamp' => human_date(Carbon::now()),
-        ]);
+        $users = $this->userService->getAllPaginated($request->validated());
+
+        return UserResource::collection($users)
+            ->additional([
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
     }
 
     public function show(string $id): JsonResponse
@@ -51,11 +60,14 @@ class UserController extends Controller
             ], 404);
         }
 
-        return response()->json([
-            'data' => $user,
-            'status' => ApiStatus::SUCCESS,
-            'timestamp' => human_date(Carbon::now()),
-        ]);
+        $this->authorize('view', $user);
+
+        return (new UserResource($user))
+            ->additional([
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
     }
 
     public function getCurrentUser(Request $request): JsonResponse
@@ -63,52 +75,41 @@ class UserController extends Controller
         $user = $request->user();
         $user->load('roles');
 
-        return response()->json([
-            'id' => $user->id,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'phone' => $user->phone,
-            'locale' => $user->locale,
-            'is_id_verified' => $user->is_id_verified,
-            'email_verified_at' => $user->email_verified_at,
-            'roles' => $user->roles->pluck('name'),
-        ]);
+        return (new UserResource($user))
+            ->additional([
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
     }
 
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = $request->user();
+        $updatedUser = $this->userService->updateProfile($user, $request->validated());
 
-        $updateData = UpdateProfileData::from([
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'phone' => $request->input('phone'),
-        ]);
-
-        $updatedUser = $this->userService->updateProfile($user, $updateData);
-
-        return response()->json([
-            'data' => $updatedUser,
-            'message' => 'Profile updated successfully',
-            'status' => ApiStatus::SUCCESS,
-            'timestamp' => human_date(Carbon::now()),
-        ]);
+        return (new UserResource($updatedUser))
+            ->additional([
+                'message' => 'Profile updated successfully',
+                'status' => ApiStatus::SUCCESS,
+                'timestamp' => human_date(Carbon::now()),
+            ])
+            ->response();
     }
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse
     {
         try {
             $user = $request->user();
-
             $updatedUser = $this->userService->uploadAvatar($user, $request->file('avatar'));
 
-            return response()->json([
-                'data' => $updatedUser,
-                'message' => 'Avatar uploaded successfully',
-                'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(Carbon::now()),
-            ]);
+            return (new UserResource($updatedUser))
+                ->additional([
+                    'message' => 'Avatar uploaded successfully',
+                    'status' => ApiStatus::SUCCESS,
+                    'timestamp' => human_date(Carbon::now()),
+                ])
+                ->response();
         } catch (AvatarUploadException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
@@ -118,16 +119,10 @@ class UserController extends Controller
         }
     }
 
-    public function updateLocale(Request $request): JsonResponse
+    public function updateLocale(UpdateLocaleRequest $request): JsonResponse
     {
-        $availableLocales = explode(',', config('app.available_locales', 'en'));
-
-        $request->validate([
-            'locale' => ['required', 'string', 'in:'.implode(',', $availableLocales)],
-        ]);
-
         $user = $request->user();
-        $user->update(['locale' => $request->locale]);
+        $user->update(['locale' => $request->validated('locale')]);
 
         return response()->json([
             'success' => true,
@@ -139,7 +134,6 @@ class UserController extends Controller
     {
         try {
             $user = $request->user();
-
             $this->userService->deleteAccount($user);
 
             return response()->json([

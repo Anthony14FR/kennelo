@@ -1,6 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\User;
+use App\Services\JWTService;
 
 test('users can authenticate using the login screen', function () {
     $user = User::factory()->create();
@@ -10,7 +13,7 @@ test('users can authenticate using the login screen', function () {
         'password' => 'password',
     ]);
 
-    $response->assertStatus(200)
+    $response->assertOk()
         ->assertJsonStructure([
             'access_token',
             'refresh_token',
@@ -23,19 +26,29 @@ test('users can authenticate using the login screen', function () {
 test('users can not authenticate with invalid password', function () {
     $user = User::factory()->create();
 
-    $this->post('/api/login', [
+    $response = $this->post('/api/login', [
         'email' => $user->email,
         'password' => 'wrong-password',
     ]);
 
-    $this->assertGuest();
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['email']);
+});
+
+test('users can not authenticate with non-existent email', function () {
+    $response = $this->post('/api/login', [
+        'email' => 'nobody@example.com',
+        'password' => 'password',
+    ]);
+
+    $response->assertUnprocessable()
+        ->assertJsonValidationErrors(['email']);
 });
 
 test('users can logout', function () {
     $user = User::factory()->create();
 
-    // Generate JWT token using JWTService
-    $jwtService = app(\App\Services\JWTService::class);
+    $jwtService = app(JWTService::class);
     $user->load('roles');
     $accessToken = $jwtService->generateAccessToken($user);
     $refreshToken = $jwtService->generateRefreshToken($user);
@@ -47,4 +60,51 @@ test('users can logout', function () {
     ]);
 
     $response->assertNoContent();
+});
+
+test('users can refresh their access token', function () {
+    $user = User::factory()->create();
+
+    $jwtService = app(JWTService::class);
+    $user->load('roles');
+    $refreshToken = $jwtService->generateRefreshToken($user);
+
+    $response = $this->post('/api/refresh', [
+        'refresh_token' => $refreshToken,
+    ]);
+
+    $response->assertOk()
+        ->assertJsonStructure([
+            'access_token',
+            'token_type',
+            'expires_in',
+        ]);
+});
+
+test('token refresh fails without refresh token', function () {
+    $response = $this->post('/api/refresh', []);
+
+    $response->assertStatus(400);
+});
+
+test('token refresh fails with invalid token', function () {
+    $response = $this->post('/api/refresh', [
+        'refresh_token' => 'invalid.token.string',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+test('token refresh fails when using an access token', function () {
+    $user = User::factory()->create();
+
+    $jwtService = app(JWTService::class);
+    $user->load('roles');
+    $accessToken = $jwtService->generateAccessToken($user);
+
+    $response = $this->post('/api/refresh', [
+        'refresh_token' => $accessToken,
+    ]);
+
+    $response->assertUnauthorized();
 });

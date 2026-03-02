@@ -1,4 +1,4 @@
-.PHONY: help main update start
+.PHONY: help main update start larastan
 
 help: ## Show this message
 	@echo "Available commands:"
@@ -14,3 +14,6 @@ update: ## Update/install dependencies Back/Front
 start: ## Start API and Web
 	cd api && php artisan serve &
 	pnpm dev &
+
+larastan: ## Run larastan
+	cd api && ./vendor/bin/phpstan analyse --memory-limit=2G

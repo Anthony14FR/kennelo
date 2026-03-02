@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -47,7 +49,7 @@ class RegisteredUserController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make($request->string('password')),
+            'password' => Hash::make((string) $request->string('password')),
             'locale' => $request->locale ?? config('app.locale', 'en'),
         ]);
 
@@ -64,7 +66,7 @@ class RegisteredUserController extends Controller
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type' => 'Bearer',
-            'expires_in' => config('jwt.access_token_ttl'),
+            'expires_in' => config('jwt.ttl') * 60,
             'user' => [
                 'id' => $user->id,
                 'first_name' => $user->first_name,

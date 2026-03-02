@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Carbon\Carbon;
@@ -310,7 +312,7 @@ class ConversationSeeder extends Seeder
         }
 
         // Mark some messages as read
-        if (isset($message1Id, $message2Id, $message3Id)) {
+        if (isset($message3Id)) {
             DB::table('message_reads')->insert([
                 [
                     'message_id' => $message1Id,
