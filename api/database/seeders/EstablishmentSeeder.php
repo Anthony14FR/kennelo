@@ -26,6 +26,7 @@ class EstablishmentSeeder extends Seeder
         $collaborators = User::inRandomOrder()->limit(10)->get();
 
         $addresses->each(function ($address) use ($managers, $collaborators) {
+            /** @var Establishment $establishment */
             $establishment = Establishment::factory()->create([
                 'address_id' => $address->id,
                 'manager_id' => $managers->random()->id,
