@@ -18,7 +18,8 @@
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
-        "components/forms/input-controller.tsx"
+        "components/forms/input-controller.tsx",
+        "lib/types/**/*.d.ts"
     ],
     "exclude": ["node_modules"]
 }

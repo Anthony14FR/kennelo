@@ -3,7 +3,7 @@ import { nextJsConfig } from "@workspace/eslint-config/next-js"
 /** @type {import("eslint").Linter.Config} */
 export default [
     {
-        ignores: [".next/**", ".turbo/**", "node_modules/**"],
+        ignores: [".next/**", ".turbo/**", "node_modules/**", "android/**", "ios/**"],
     },
     ...nextJsConfig,
 ]
