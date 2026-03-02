@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Services\JWTService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticateJWT
@@ -53,6 +54,7 @@ class AuthenticateJWT
 
             $user->load('roles');
 
+            Auth::setUser($user);
             $request->setUserResolver(fn () => $user);
 
             $request->attributes->set('jwt_payload', $payload);

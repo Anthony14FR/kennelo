@@ -1,9 +1,17 @@
 <?php
 
+use App\Enums\ApiStatus;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 use Sentry\Laravel\Integration;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,19 +31,56 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth.jwt' => \App\Http\Middleware\AuthenticateJWT::class,
         ]);
 
-        //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         Integration::handles($exceptions);
 
         $exceptions->render(function (Throwable $e, $request) {
-            if ($request->is('api/*')) {
-                if ($e instanceof \Illuminate\Validation\ValidationException) {
-                    return response()->json([
-                        'message' => 'Validation failed',
-                        'errors' => $e->errors(),
-                    ], 422);
-                }
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            $timestamp = human_date(Carbon::now());
+
+            if ($e instanceof ValidationException) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $e->errors(),
+                    'status' => ApiStatus::ERROR,
+                    'timestamp' => $timestamp,
+                ], 422);
+            }
+
+            if ($e instanceof AuthenticationException) {
+                return response()->json([
+                    'message' => 'Unauthenticated.',
+                    'status' => ApiStatus::ERROR,
+                    'timestamp' => $timestamp,
+                ], 401);
+            }
+
+            if ($e instanceof AuthorizationException) {
+                return response()->json([
+                    'message' => 'This action is unauthorized.',
+                    'status' => ApiStatus::ERROR,
+                    'timestamp' => $timestamp,
+                ], 403);
+            }
+
+            if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException) {
+                return response()->json([
+                    'message' => 'Resource not found.',
+                    'status' => ApiStatus::ERROR,
+                    'timestamp' => $timestamp,
+                ], 404);
+            }
+
+            if ($e instanceof MethodNotAllowedHttpException) {
+                return response()->json([
+                    'message' => 'Method not allowed.',
+                    'status' => ApiStatus::ERROR,
+                    'timestamp' => $timestamp,
+                ], 405);
             }
         });
     })->create();
