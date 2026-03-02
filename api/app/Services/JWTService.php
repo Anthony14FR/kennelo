@@ -58,7 +58,13 @@ class JWTService
             throw new \Exception('Invalid token format');
         }
 
-        return json_decode(base64_decode(strtr($parts[1], '-_', '+/')));
+        $decoded = json_decode(base64_decode(strtr($parts[1], '-_', '+/')));
+
+        if (! is_object($decoded)) {
+            throw new \Exception('Invalid token payload');
+        }
+
+        return $decoded;
     }
 
     public function getUserIdFromToken(string $token): string|int|null
@@ -67,13 +73,17 @@ class JWTService
             $payload = $this->decodeToken($token);
 
             return $payload->sub ?? null;
-        } catch (\Exception) {
+        } catch (\Throwable) {
             return null;
         }
     }
 
     public function blacklistToken(string $token): void
     {
+        if (! config('jwt.blacklist_enabled')) {
+            return;
+        }
+
         try {
             $this->jwt->setToken($token)->invalidate();
         } catch (\Exception $e) {
@@ -90,6 +100,8 @@ class JWTService
         try {
             $this->jwt->setToken($token)->getPayload();
 
+            return false;
+        } catch (TokenExpiredException|TokenInvalidException) {
             return false;
         } catch (JWTException) {
             return true;

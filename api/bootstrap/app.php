@@ -84,5 +84,11 @@ return Application::configure(basePath: dirname(__DIR__))
                     'timestamp' => $timestamp,
                 ], 405);
             }
+
+            return response()->json([
+                'message' => 'Server error.',
+                'status' => ApiStatus::ERROR,
+                'timestamp' => $timestamp,
+            ], 500);
         });
     })->create();
