@@ -8,19 +8,13 @@ use App\Models\Establishment;
 use App\Models\User;
 use App\Policies\EstablishmentPolicy;
 use App\Policies\UserPolicy;
-use App\Services\JWTService;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-        $this->app->singleton(JWTService::class, function ($app) {
-            return new JWTService;
-        });
-    }
+    public function register(): void {}
 
     public function boot(): void
     {

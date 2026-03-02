@@ -8,15 +8,17 @@ use App\Models\User;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenInvalidException;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use PHPOpenSourceSaver\JWTAuth\JWTAuth;
 
 class JWTService
 {
+    public function __construct(private readonly JWTAuth $jwt) {}
+
     public function generateAccessToken(User $user): string
     {
-        JWTAuth::factory()->setTTL((int) config('jwt.ttl'));
+        $this->jwt->factory()->setTTL((int) config('jwt.ttl'));
 
-        return JWTAuth::claims([
+        return $this->jwt->claims([
             'type' => 'access',
             'email' => $user->email,
             'roles' => $user->roles->pluck('name')->toArray(),
@@ -26,9 +28,9 @@ class JWTService
 
     public function generateRefreshToken(User $user): string
     {
-        JWTAuth::factory()->setTTL((int) config('jwt.refresh_token_ttl'));
-        $token = JWTAuth::claims(['type' => 'refresh'])->fromUser($user);
-        JWTAuth::factory()->setTTL((int) config('jwt.ttl'));
+        $this->jwt->factory()->setTTL((int) config('jwt.refresh_token_ttl'));
+        $token = $this->jwt->claims(['type' => 'refresh'])->fromUser($user);
+        $this->jwt->factory()->setTTL((int) config('jwt.ttl'));
 
         return $token;
     }
@@ -36,7 +38,7 @@ class JWTService
     public function validateToken(string $token): object
     {
         try {
-            $payload = JWTAuth::setToken($token)->getPayload();
+            $payload = $this->jwt->setToken($token)->getPayload();
 
             return (object) $payload->toArray();
         } catch (TokenExpiredException) {
@@ -73,7 +75,7 @@ class JWTService
     public function blacklistToken(string $token): void
     {
         try {
-            JWTAuth::setToken($token)->invalidate();
+            $this->jwt->setToken($token)->invalidate();
         } catch (\Exception $e) {
             logger()->error('Failed to blacklist token: '.$e->getMessage());
         }
@@ -86,7 +88,7 @@ class JWTService
         }
 
         try {
-            JWTAuth::setToken($token)->getPayload();
+            $this->jwt->setToken($token)->getPayload();
 
             return false;
         } catch (JWTException) {
