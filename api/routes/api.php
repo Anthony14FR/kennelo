@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\Establishment\EstablishmentController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserController;

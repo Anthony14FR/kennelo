@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services\User;
 
 use App\Enums\BookingStatus;
@@ -97,7 +99,6 @@ class UserService
         }
 
         DB::transaction(function () use ($user) {
-            $user->tokens()->delete();
             $user->update(['status' => UserStatus::INACTIVE]);
         });
     }
