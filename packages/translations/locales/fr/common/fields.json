@@ -1,0 +1,14 @@
+{
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "rememberMe": "Se souvenir de moi",
+    "firstName": "Prénom",
+    "lastName": "Nom de famille",
+    "passwordConfirmation": "Confirmez le mot de passe",
+    "phone": "Téléphone",
+    "optional": "facultatif",
+    "locale": "Lieu",
+    "passwordDescription": "Au moins 8 caractères avec un mélange de lettres, de chiffres et de symboles",
+    "passwordHide": "Masquer",
+    "passwordShow": "Afficher"
+}

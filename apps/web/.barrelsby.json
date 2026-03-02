@@ -1,0 +1,7 @@
+{
+    "directory": ["./features"],
+    "location": "below",
+    "mode": "all",
+    "delete": true,
+    "singleQuotes": false
+}

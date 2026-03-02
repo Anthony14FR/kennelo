@@ -1,0 +1,7 @@
+{
+    "offline": "Vous êtes actuellement hors ligne. Veuillez vérifier votre connexion internet.",
+    "timeout": "Délai d'attente de la requête dépassé. Veuillez réessayer.",
+    "noResponse": "Aucune réponse du serveur. Veuillez réessayer plus tard.",
+    "connectionFailed": "Échec de la connexion. Veuillez vérifier votre connexion internet.",
+    "serverUnreachable": "Le serveur est injoignable. Veuillez réessayer plus tard."
+}

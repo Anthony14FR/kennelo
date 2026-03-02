@@ -1,0 +1,14 @@
+{
+    "400": "Bad request",
+    "401": "Unauthorized - Please log in",
+    "403": "Forbidden - You don't have permission to access this resource",
+    "404": "Not found - The requested resource does not exist",
+    "408": "Request timeout",
+    "409": "Conflict - The resource already exists",
+    "422": "Validation error - Please check your input",
+    "429": "Too many requests - Please try again later",
+    "500": "Internal server error - Please try again later",
+    "502": "Bad gateway",
+    "503": "Service unavailable - Please try again later",
+    "504": "Gateway timeout"
+}

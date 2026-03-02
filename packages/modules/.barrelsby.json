@@ -1,0 +1,7 @@
+{
+    "directory": ["./src"],
+    "location": "below",
+    "mode": "all",
+    "delete": true,
+    "singleQuotes": false
+}

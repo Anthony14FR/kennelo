@@ -1,0 +1,22 @@
+{
+    "menu": "Menu",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "bookings": "Bookings",
+    "conversations": "Messages",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "logout": "Logout",
+    "my-profile": "My profile",
+    "preferences": "Preferences",
+    "theme": "Theme",
+    "appearance": "Appearance",
+    "language": "Language",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
+    "explore": "Explore",
+    "messages": "Messages",
+    "pets": "Animals"
+}

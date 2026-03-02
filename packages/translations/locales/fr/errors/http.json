@@ -1,0 +1,14 @@
+{
+    "400": "Requête invalide",
+    "401": "Non autorisé - Veuillez vous connecter",
+    "403": "Interdit - Vous n'avez pas la permission d'accéder à cette ressource",
+    "404": "Non trouvé - La ressource demandée n'existe pas",
+    "408": "Délai d'attente de la requête dépassé",
+    "409": "Conflit - La ressource existe déjà",
+    "422": "Erreur de validation - Veuillez vérifier vos données",
+    "429": "Trop de requêtes - Veuillez réessayer plus tard",
+    "500": "Erreur serveur interne - Veuillez réessayer plus tard",
+    "502": "Mauvaise passerelle",
+    "503": "Service indisponible - Veuillez réessayer plus tard",
+    "504": "Délai d'attente de la passerelle dépassé"
+}

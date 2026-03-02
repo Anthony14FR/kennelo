@@ -1,0 +1,22 @@
+{
+    "menu": "Menu",
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "bookings": "Réservations",
+    "profile": "Profil",
+    "conversations": "Messages",
+    "notifications": "Notifications",
+    "logout": "Déconnexion",
+    "settings": "Paramètres",
+    "my-profile": "Mon profil",
+    "preferences": "Préférences",
+    "theme": "Thème",
+    "appearance": "Apparence",
+    "language": "Langue",
+    "theme_light": "Clair",
+    "theme_dark": "Sombre",
+    "theme_system": "Système",
+    "explore": "Explorer",
+    "messages": "Messages",
+    "pets": "Animaux"
+}

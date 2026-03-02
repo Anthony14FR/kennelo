@@ -1,0 +1,14 @@
+{
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "passwordConfirmation": "Confirm Password",
+    "phone": "Phone",
+    "optional": "optional",
+    "locale": "Locale",
+    "passwordDescription": "At least 8 characters with a mix of letters, numbers, and symbols",
+    "passwordHide": "Hide",
+    "passwordShow": "Show"
+}

@@ -1,0 +1,13 @@
+{
+    "confirmTitle": "Confirm action",
+    "deleteTitle": "Delete confirmation",
+    "warningTitle": "Warning",
+    "errorTitle": "Error",
+    "successTitle": "Success",
+    "confirmAction": "Are you sure you want to proceed?",
+    "cannotUndo": "This action cannot be undone",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "close": "Close"
+}

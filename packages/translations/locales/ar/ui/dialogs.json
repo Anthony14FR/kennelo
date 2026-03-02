@@ -1,0 +1,13 @@
+{
+    "confirmTitle": "تأكيد الإجراء",
+    "deleteTitle": "تأكيد الحذف",
+    "warningTitle": "تحذير",
+    "errorTitle": "خطأ",
+    "successTitle": "نجح",
+    "confirmAction": "هل أنت متأكد أنك تريد المتابعة؟",
+    "cannotUndo": "هذا الإجراء لا رجعة فيه",
+    "yes": "نعم",
+    "no": "لا",
+    "ok": "حسناً",
+    "close": "إغلاق"
+}

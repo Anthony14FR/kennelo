@@ -1,0 +1,14 @@
+{
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "rememberMe": "تذكرني",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "passwordConfirmation": "تأكيد كلمة المرور",
+    "phone": "الهاتف",
+    "optional": "اختياري",
+    "locale": "الموقع",
+    "passwordDescription": "8 أحرف على الأقل مع مزيج من الحروف والأرقام والرموز",
+    "passwordHide": "مقنع",
+    "passwordShow": "أفيتشر"
+}

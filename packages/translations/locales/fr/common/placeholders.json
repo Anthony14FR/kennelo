@@ -1,0 +1,16 @@
+{
+    "emailPlaceholder": "exemple@email.com",
+    "passwordPlaceholder": "••••••••",
+    "firstNamePlaceholder": "Jean",
+    "lastNamePlaceholder": "Dupont",
+    "amountPlaceholder": "Ex: 10000",
+    "searchPlaceholder": "Rechercher...",
+    "selectPlaceholder": "Sélectionner...",
+    "password": "Votre mot de passe",
+    "email": "Votre email",
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "phone": "+33 1 23 45 56 78",
+    "search-for-a-pension": "Rechercher une pension",
+    "passwordConfirmation": "Confirmez votre mot de passe"
+}
