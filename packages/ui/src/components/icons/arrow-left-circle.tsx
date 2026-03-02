@@ -1,6 +1,6 @@
 import { KIconProps } from ".";
 
-export function ArrowLeftCircle({
+export function KArrowLeftCircle({
     filled = false,
     size = 16,
     primary = "",

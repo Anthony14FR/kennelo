@@ -15,7 +15,7 @@ export { KCompass } from "./compass";
 export { KHome } from "./home";
 export { KMessage } from "./message";
 export { KHeart } from "./heart";
-export { ArrowLeftCircle } from "./arrow-left-circle";
+export { KArrowLeftCircle } from "./arrow-left-circle";
 export { KCalendar } from "./calendar";
 export { KKey2 } from "./key-2";
 export { KLocked2 } from "./locked-2";

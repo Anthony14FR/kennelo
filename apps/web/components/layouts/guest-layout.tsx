@@ -63,7 +63,7 @@ export default function GuestLayout({
                             </div>
                         </div>
                     </div>
-                    <div className="m-auto w-full flex items-center justify-center z-0 m-auto mt-42 sm:mt-20 md:mt-16 lg:mt-0 w-full">
+                    <div className="m-auto w-full flex items-center justify-center z-0 mt-42 sm:mt-20 md:mt-16 lg:mt-0">
                         {children}
                     </div>
                 </div>

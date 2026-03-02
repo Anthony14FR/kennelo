@@ -1,7 +1,10 @@
 import { api } from "@workspace/common";
 import { RefreshTokenResponseDto } from "../../models/dtos/auth.dto";
+import { authService } from "../../services/auth.service";
 
 export async function refreshToken(): Promise<string> {
+    if (typeof window === "undefined") throw new Error("Cannot refresh token on server side");
+
     const refreshToken = localStorage.getItem("refresh_token");
 
     if (!refreshToken) {
@@ -22,7 +25,7 @@ export async function refreshToken(): Promise<string> {
 
     const newAccessToken = response.data.access_token;
 
-    localStorage.setItem("access_token", newAccessToken);
+    authService.setTokens(newAccessToken, refreshToken);
 
     return newAccessToken;
 }

@@ -2,6 +2,7 @@ import { api } from "@workspace/common";
 import { AuthModel } from "../../models/auth.model";
 import { AuthResponseDto } from "../../models/dtos/auth.dto";
 import { RegisterUserInput } from "../../validators/register-user.schema";
+import { authService } from "../../services/auth.service";
 
 export async function registerUser(input: RegisterUserInput): Promise<AuthModel> {
     const response = await api.post<AuthResponseDto>("/register", {
@@ -24,8 +25,7 @@ export async function registerUser(input: RegisterUserInput): Promise<AuthModel>
 
     const authModel = AuthModel.from(response.data);
 
-    localStorage.setItem("access_token", authModel.accessToken);
-    localStorage.setItem("refresh_token", authModel.refreshToken);
+    authService.setTokens(authModel.accessToken, authModel.refreshToken);
 
     return authModel;
 }
