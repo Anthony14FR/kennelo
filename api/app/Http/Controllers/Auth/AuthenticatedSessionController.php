@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type' => 'Bearer',
-            'expires_in' => config('jwt.access_token_ttl'),
+            'expires_in' => config('jwt.ttl') * 60,
             'user' => [
                 'id' => $user->id,
                 'first_name' => $user->first_name,
@@ -79,7 +79,7 @@ class AuthenticatedSessionController extends Controller
             return response()->json([
                 'access_token' => $result['access_token'],
                 'token_type' => 'Bearer',
-                'expires_in' => config('jwt.access_token_ttl'),
+                'expires_in' => config('jwt.ttl') * 60,
             ]);
         } catch (\Exception $e) {
             Log::error('Token refresh failed: '.$e->getMessage());

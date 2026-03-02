@@ -66,7 +66,7 @@ class RegisteredUserController extends Controller
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type' => 'Bearer',
-            'expires_in' => config('jwt.access_token_ttl'),
+            'expires_in' => config('jwt.ttl') * 60,
             'user' => [
                 'id' => $user->id,
                 'first_name' => $user->first_name,
