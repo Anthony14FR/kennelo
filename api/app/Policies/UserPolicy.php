@@ -15,7 +15,7 @@ class UserPolicy
 
     public function view(User $user, User $model): bool
     {
-        return true;
+        return $user->id === $model->id || $user->hasRole('admin');
     }
 
     public function update(User $user, User $model): bool
@@ -26,5 +26,20 @@ class UserPolicy
     public function destroy(User $user, User $model): bool
     {
         return $user->id === $model->id || $user->hasRole('admin');
+    }
+
+    public function updateStatus(User $user, User $model): bool
+    {
+        return $user->hasRole('admin') && $user->id !== $model->id;
+    }
+
+    public function assignRoles(User $user, User $model): bool
+    {
+        return $user->hasRole('admin');
+    }
+
+    public function reviewIdentityVerification(User $user, User $model): bool
+    {
+        return $user->hasRole('admin');
     }
 }

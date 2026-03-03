@@ -9,16 +9,21 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @property UserStatus $status
+ */
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
-    use HasFactory, HasRoles, HasUuids, Notifiable;
+    use HasFactory, HasRoles, HasUuids, Notifiable, SoftDeletes;
 
     private const PASSWORD_CAST = 'hashed';
 
@@ -37,6 +42,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'status',
         'password',
         'locale',
+        'address_id',
     ];
 
     /**
@@ -52,7 +58,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     /**
      * Get the attributes that should be cast.
      *
-     * @return array<string, string>
+     * @return array<string, mixed>
      */
     protected function casts(): array
     {
@@ -74,6 +80,16 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function scopeWithInactive(Builder $query): Builder
     {
         return $query->withoutGlobalScope('active');
+    }
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function identityVerifications(): HasMany
+    {
+        return $this->hasMany(IdentityVerification::class);
     }
 
     public function managedEstablishments(): HasMany

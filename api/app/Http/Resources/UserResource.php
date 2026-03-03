@@ -27,7 +27,12 @@ class UserResource extends JsonResource
             'email_verified_at' => $this->email_verified_at
                 ? human_date($this->email_verified_at)
                 : null,
+            'status' => $this->when(
+                auth()->user()?->hasRole('admin'),
+                fn () => $this->status->value
+            ),
             'roles' => $this->whenLoaded('roles', fn () => $this->getRoleNames()),
+            'address' => $this->whenLoaded('address', fn () => new AddressResource($this->address)),
             'created_at' => human_date($this->created_at),
             'updated_at' => human_date($this->updated_at),
         ];
