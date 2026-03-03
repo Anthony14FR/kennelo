@@ -9,6 +9,7 @@ export type UserDto = {
     status: string;
     locale: string;
     email_verified_at: string | null;
+    roles: string[];
     created_at: string;
     updated_at: string;
 };

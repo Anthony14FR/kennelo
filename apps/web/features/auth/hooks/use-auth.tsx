@@ -5,6 +5,7 @@ import { UserModel } from "@workspace/modules/users";
 import { getCurrentUser, logoutUser, authService } from "@workspace/modules/users";
 import { useRouter } from "next/navigation";
 import { logger } from "@/lib/logger";
+import { routes } from "@/lib/routes";
 
 interface AuthContextValue {
     user: UserModel | null;
@@ -51,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             logger.error("Logout error:", error);
         } finally {
             setUser(null);
-            router.push("/login");
+            router.push(routes.Login());
         }
     };
 
