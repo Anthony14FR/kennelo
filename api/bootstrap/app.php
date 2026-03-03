@@ -12,6 +12,7 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Sentry\Laravel\Integration;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -61,7 +62,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 401);
             }
 
-            if ($e instanceof AuthorizationException) {
+            if ($e instanceof AuthorizationException || ($e instanceof HttpException && $e->getStatusCode() === 403)) {
                 return response()->json([
                     'message' => 'This action is unauthorized.',
                     'status' => ApiStatus::ERROR,
