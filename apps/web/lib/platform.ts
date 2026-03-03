@@ -1,16 +1,17 @@
+import { Capacitor } from "@capacitor/core";
+
 export const getPlatform = () => {
     if (typeof window === "undefined") return "server";
-    const cap = window.Capacitor;
-    return cap?.getPlatform?.() ?? "web";
+    return Capacitor.getPlatform();
 };
 
 export const isNative = () => {
     if (typeof window === "undefined") return false;
-    return window.Capacitor?.isNativePlatform?.() ?? false;
+    return Capacitor.isNativePlatform();
 };
+
+export const isCapacitorApp = () => isNative();
+export const isBrowser = () => !isNative();
 
 export const isAndroid = () => getPlatform() === "android";
 export const isIos = () => getPlatform() === "ios";
-
-export const isMobile = () => isAndroid() || isIos();
-export const isWeb = () => getPlatform() === "web";

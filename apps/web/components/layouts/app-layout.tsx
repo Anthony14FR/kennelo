@@ -137,7 +137,9 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                 </div>
                             ) : (
                                 <div className="flex gap-1">
-                                    <NavButton variant="ghost">Devenir pro</NavButton>
+                                    <NavButton variant="ghost">
+                                        {t("common.actions.becomePro")}
+                                    </NavButton>
                                     <NavButton>Réserver en ligne</NavButton>
                                 </div>
                             )}

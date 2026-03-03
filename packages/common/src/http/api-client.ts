@@ -33,7 +33,12 @@ class ApiClient {
         let data: T | null = null;
         const text = await resp.text();
 
-        data = text ? (JSON.parse(text) as T) : null;
+        if (text) {
+            const parsed = JSON.parse(text);
+            data = (
+                parsed && typeof parsed === "object" && "data" in parsed ? parsed.data : parsed
+            ) as T;
+        }
 
         if (status >= 400) {
             const error = new Error(`HTTP Error ${status}`) as ApiError;
