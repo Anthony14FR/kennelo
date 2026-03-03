@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Enums\EstablishmentPermission;
 use App\Models\Establishment;
 use App\Models\User;
 
@@ -26,7 +27,9 @@ class EstablishmentPolicy
 
     public function update(User $user, Establishment $establishment): bool
     {
-        return $user->hasRole('admin') || $user->id === $establishment->manager_id;
+        return $user->hasRole('admin')
+            || $user->id === $establishment->manager_id
+            || $establishment->collaboratorHasPermission($user, EstablishmentPermission::UPDATE_ESTABLISHMENT);
     }
 
     public function delete(User $user, Establishment $establishment): bool

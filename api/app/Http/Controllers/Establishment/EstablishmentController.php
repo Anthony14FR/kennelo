@@ -8,9 +8,11 @@ use App\Enums\ApiStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Establishment\ListEstablishmentsRequest;
 use App\Http\Requests\Establishment\StoreEstablishmentRequest;
+use App\Http\Requests\Establishment\SyncCollaboratorPermissionsRequest;
 use App\Http\Requests\Establishment\UpdateEstablishmentRequest;
 use App\Http\Resources\EstablishmentResource;
 use App\Models\Establishment;
+use App\Models\User;
 use App\Services\Establishment\EstablishmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
@@ -85,5 +87,17 @@ class EstablishmentController extends Controller
         $this->establishmentService->delete($establishment);
 
         return response()->json(null, 204);
+    }
+
+    public function syncCollaboratorPermissions(SyncCollaboratorPermissionsRequest $request, Establishment $establishment, User $collaborator): JsonResponse
+    {
+        $this->authorize('update', $establishment);
+
+        $this->establishmentService->syncCollaboratorPermissions($establishment, $collaborator, $request->validated('permissions'));
+
+        return response()->json([
+            'status' => ApiStatus::SUCCESS,
+            'timestamp' => human_date(Carbon::now()),
+        ]);
     }
 }

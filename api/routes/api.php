@@ -12,6 +12,7 @@ Route::get('/test', [TestController::class, 'index']);
 Route::middleware(['auth.jwt'])->group(function () {
     // Establishments
     Route::apiResource('establishments', EstablishmentController::class);
+    Route::put('/establishments/{establishment}/collaborators/{user}/permissions', [EstablishmentController::class, 'syncCollaboratorPermissions']);
 
     // Users (admin)
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);

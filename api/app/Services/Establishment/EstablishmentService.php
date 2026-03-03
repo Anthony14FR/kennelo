@@ -7,6 +7,7 @@ namespace App\Services\Establishment;
 use App\Enums\PaginationEnum;
 use App\Models\Address;
 use App\Models\Establishment;
+use App\Models\EstablishmentCollaboratorPermission;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -90,5 +91,22 @@ class EstablishmentService
     public function delete(Establishment $establishment): void
     {
         DB::transaction(fn () => $establishment->delete());
+    }
+
+    public function syncCollaboratorPermissions(Establishment $establishment, User $collaborator, array $permissions): void
+    {
+        DB::transaction(function () use ($establishment, $collaborator, $permissions): void {
+            EstablishmentCollaboratorPermission::where('establishment_id', $establishment->id)
+                ->where('user_id', $collaborator->id)
+                ->delete();
+
+            foreach ($permissions as $permission) {
+                EstablishmentCollaboratorPermission::create([
+                    'establishment_id' => $establishment->id,
+                    'user_id' => $collaborator->id,
+                    'permission' => $permission,
+                ]);
+            }
+        });
     }
 }
