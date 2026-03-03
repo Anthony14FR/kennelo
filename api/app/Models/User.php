@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -22,7 +23,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 {
-    use HasFactory, HasRoles, HasUuids, Notifiable;
+    use HasFactory, HasRoles, HasUuids, Notifiable, SoftDeletes;
 
     private const PASSWORD_CAST = 'hashed';
 

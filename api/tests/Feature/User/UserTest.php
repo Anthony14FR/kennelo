@@ -2,22 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Enums\IdentityVerificationStatus;
 use App\Enums\UserStatus;
 use App\Models\User;
-use App\Services\JWTService;
 use Illuminate\Support\Facades\Storage;
-
-function jwtToken(User $user): string
-{
-    $user->load('roles');
-
-    return app(JWTService::class)->generateAccessToken($user);
-}
-
-function asUser(User $user): array
-{
-    return ['Authorization' => 'Bearer '.jwtToken($user)];
-}
 
 // ─── Profile ─────────────────────────────────────────────────────────────────
 
@@ -293,6 +281,8 @@ it('admin can delete a user', function () {
     $this->withHeaders(asUser($admin))
         ->deleteJson("/api/users/{$target->id}")
         ->assertOk();
+
+    expect(User::withTrashed()->find($target->id)->deleted_at)->not->toBeNull();
 });
 
 it('non-admin cannot delete another user', function () {
@@ -302,6 +292,16 @@ it('non-admin cannot delete another user', function () {
     $this->withHeaders(asUser($user))
         ->deleteJson("/api/users/{$other->id}")
         ->assertForbidden();
+});
+
+it('user can delete their own account', function () {
+    $user = User::factory()->create();
+
+    $this->withHeaders(asUser($user))
+        ->deleteJson('/api/user')
+        ->assertOk();
+
+    expect(User::withTrashed()->find($user->id)->deleted_at)->not->toBeNull();
 });
 
 // ─── Admin: status ────────────────────────────────────────────────────────────
@@ -358,4 +358,62 @@ it('non-admin cannot manage roles', function () {
     $this->withHeaders(asUser($user))
         ->putJson("/api/users/{$other->id}/roles", ['roles' => ['admin']])
         ->assertForbidden();
+});
+
+// ─── Admin: review identity verification ─────────────────────────────────────
+
+it('admin can approve identity verification', function () {
+    Storage::fake('private');
+
+    $user = User::factory()->create();
+    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+
+    $this->withHeaders(asUser($user))
+        ->postJson('/api/user/identity-verification', ['document' => $file]);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $this->withHeaders(asUser($admin))
+        ->putJson("/api/users/{$user->id}/identity-verification", ['status' => IdentityVerificationStatus::Approved->value])
+        ->assertOk();
+
+    expect($user->fresh()->is_id_verified)->toBeTrue();
+});
+
+it('admin can reject identity verification', function () {
+    Storage::fake('private');
+
+    $user = User::factory()->create();
+    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+
+    $this->withHeaders(asUser($user))
+        ->postJson('/api/user/identity-verification', ['document' => $file]);
+
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $this->withHeaders(asUser($admin))
+        ->putJson("/api/users/{$user->id}/identity-verification", ['status' => IdentityVerificationStatus::Rejected->value])
+        ->assertOk();
+
+    expect($user->fresh()->is_id_verified)->toBeFalse();
+});
+
+it('non-admin cannot review identity verification', function () {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+
+    $this->withHeaders(asUser($user))
+        ->putJson("/api/users/{$other->id}/identity-verification", ['status' => IdentityVerificationStatus::Approved->value])
+        ->assertForbidden();
+});
+
+it('returns 404 when reviewing identity verification of unknown user', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $this->withHeaders(asUser($admin))
+        ->putJson('/api/users/00000000-0000-0000-0000-000000000000/identity-verification', ['status' => IdentityVerificationStatus::Approved->value])
+        ->assertNotFound();
 });

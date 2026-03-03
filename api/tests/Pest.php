@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Models\User;
+use App\Services\JWTService;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -43,7 +46,14 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function jwtToken(User $user): string
 {
-    // ..
+    $user->load('roles');
+
+    return app(JWTService::class)->generateAccessToken($user);
+}
+
+function asUser(User $user): array
+{
+    return ['Authorization' => 'Bearer '.jwtToken($user)];
 }

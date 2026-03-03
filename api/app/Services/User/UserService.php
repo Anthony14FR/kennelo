@@ -7,7 +7,6 @@ namespace App\Services\User;
 use App\Enums\BookingStatus;
 use App\Enums\IdentityVerificationStatus;
 use App\Enums\PaginationEnum;
-use App\Enums\UserStatus;
 use App\Models\Address;
 use App\Models\Booking;
 use App\Models\IdentityVerification;
@@ -104,9 +103,7 @@ class UserService
             throw UserHasActiveBookingsException::cannotDeleteAccount();
         }
 
-        DB::transaction(function () use ($user) {
-            $user->update(['status' => UserStatus::INACTIVE]);
-        });
+        $user->delete();
     }
 
     public function changePassword(User $user, array $data): void

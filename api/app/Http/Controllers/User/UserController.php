@@ -26,7 +26,6 @@ use App\Services\User\Exceptions\AvatarUploadException;
 use App\Services\User\Exceptions\InvalidCurrentPasswordException;
 use App\Services\User\Exceptions\UserHasActiveBookingsException;
 use App\Services\User\UserService;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -38,26 +37,9 @@ class UserController extends Controller
         private UserService $userService
     ) {}
 
-    private function checkAuthorization(string $action, mixed $model = null): void
-    {
-        try {
-            $this->authorize($action, $model);
-        } catch (AuthorizationException) {
-            throw new AuthorizationException('Unauthorized');
-        }
-    }
-
     public function index(ListUsersRequest $request): JsonResponse
     {
-        try {
-            $this->checkAuthorization('viewAny', User::class);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('viewAny', User::class);
 
         $users = $this->userService->getAllPaginated($request->validated());
 
@@ -89,15 +71,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        try {
-            $this->checkAuthorization('view', $user);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('view', $user);
 
         return (new UserResource($user))
             ->additional([
@@ -127,15 +101,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        try {
-            $this->checkAuthorization('update', $target);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('update', $target);
 
         $user = $this->userService->updateProfile($target, $request->validated());
 
@@ -248,15 +214,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        try {
-            $this->checkAuthorization('destroy', $target);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('destroy', $target);
 
         try {
             $this->userService->deleteAccount($target);
@@ -406,15 +364,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        try {
-            $this->checkAuthorization('updateStatus', $target);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('updateStatus', $target);
 
         $user = $this->userService->updateStatus($target, $request->validated());
 
@@ -447,15 +397,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        try {
-            $this->checkAuthorization('assignRoles', $target);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('assignRoles', $target);
 
         $user = $this->userService->assignRoles($target, $request->validated());
 
@@ -488,15 +430,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        try {
-            $this->checkAuthorization('assignRoles', $target);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('assignRoles', $target);
 
         $user = $this->userService->removeRole($target, $role);
 
@@ -529,15 +463,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        try {
-            $this->checkAuthorization('reviewIdentityVerification', $target);
-        } catch (AuthorizationException) {
-            return response()->json([
-                'message' => 'Unauthorized',
-                'status' => ApiStatus::ERROR,
-                'timestamp' => human_date(Carbon::now()),
-            ], 403);
-        }
+        $this->authorize('reviewIdentityVerification', $target);
 
         $user = $this->userService->reviewIdentityVerification($target, $request->user(), $request->validated());
 
