@@ -22,7 +22,7 @@ class EstablishmentPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasRole('admin') || $user->hasRole('manager');
     }
 
     public function update(User $user, Establishment $establishment): bool

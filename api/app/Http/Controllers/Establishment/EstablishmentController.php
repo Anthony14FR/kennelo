@@ -93,6 +93,10 @@ class EstablishmentController extends Controller
     {
         $this->authorize('update', $establishment);
 
+        if (! $establishment->collaborators()->where('users.id', $collaborator->id)->exists()) {
+            abort(422, 'User is not a collaborator of this establishment.');
+        }
+
         $this->establishmentService->syncCollaboratorPermissions($establishment, $collaborator, $request->validated('permissions'));
 
         return response()->json([
