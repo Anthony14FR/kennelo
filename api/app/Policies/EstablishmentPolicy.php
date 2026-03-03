@@ -21,7 +21,7 @@ class EstablishmentPolicy
 
     public function create(User $user): bool
     {
-        return $user->hasRole('admin');
+        return true;
     }
 
     public function update(User $user, Establishment $establishment): bool
@@ -31,6 +31,6 @@ class EstablishmentPolicy
 
     public function delete(User $user, Establishment $establishment): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole('admin') || $user->id === $establishment->manager_id;
     }
 }
