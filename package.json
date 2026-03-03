@@ -27,5 +27,10 @@
     "packageManager": "pnpm@10.4.1",
     "engines": {
         "node": ">=20"
+    },
+    "pnpm": {
+        "overrides": {
+            "sharp": "^0.33.0"
+        }
     }
 }

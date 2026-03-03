@@ -21,6 +21,10 @@ type RegisterParams = {
     locale?: string | number;
 };
 
+function RootPage(): string {
+    return "/";
+}
+
 function HostDetails(params: HostDetailsParams): string {
     return buildRoute("/[locale]/host/[uuid]", params);
 }
@@ -38,6 +42,7 @@ function Register(params?: RegisterParams): string {
 }
 
 export const routes = {
+    RootPage,
     HostDetails,
     Home,
     Login,
