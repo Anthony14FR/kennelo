@@ -7,6 +7,7 @@ namespace App\Enums;
 enum EstablishmentPermission: string
 {
     case UPDATE_ESTABLISHMENT = 'update_establishment';
+    case MANAGE_CAPACITIES = 'manage_capacities';
 
     public static function values(): array
     {

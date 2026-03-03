@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Establishment\EstablishmentCapacityController;
 use App\Http\Controllers\Establishment\EstablishmentController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserController;
@@ -13,6 +14,10 @@ Route::middleware(['auth.jwt'])->group(function () {
     // Establishments
     Route::apiResource('establishments', EstablishmentController::class);
     Route::put('/establishments/{establishment}/collaborators/{user}/permissions', [EstablishmentController::class, 'syncCollaboratorPermissions']);
+    Route::get('/establishments/{establishment}/capacities', [EstablishmentCapacityController::class, 'index']);
+    Route::post('/establishments/{establishment}/capacities', [EstablishmentCapacityController::class, 'store']);
+    Route::put('/establishments/{establishment}/capacities/{capacity}', [EstablishmentCapacityController::class, 'update']);
+    Route::delete('/establishments/{establishment}/capacities/{capacity}', [EstablishmentCapacityController::class, 'destroy']);
 
     // Users (admin)
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);
