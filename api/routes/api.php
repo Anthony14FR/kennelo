@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Controllers\Establishment\EstablishmentAvailabilityController;
 use App\Http\Controllers\Establishment\EstablishmentCapacityController;
 use App\Http\Controllers\Establishment\EstablishmentController;
+use App\Http\Controllers\Establishment\EstablishmentDashboardController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,7 @@ Route::middleware(['auth.jwt'])->group(function () {
     // Establishments
     Route::apiResource('establishments', EstablishmentController::class);
     Route::put('/establishments/{establishment}/collaborators/{user}/permissions', [EstablishmentController::class, 'syncCollaboratorPermissions']);
+    Route::get('/establishments/{establishment}/dashboard', [EstablishmentDashboardController::class, 'show']);
     Route::get('/establishments/{establishment}/availabilities', [EstablishmentAvailabilityController::class, 'index']);
     Route::get('/establishments/{establishment}/availabilities/range', [EstablishmentAvailabilityController::class, 'range']);
     Route::post('/establishments/{establishment}/availabilities', [EstablishmentAvailabilityController::class, 'store']);
