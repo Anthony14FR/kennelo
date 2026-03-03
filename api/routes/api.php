@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Establishment\EstablishmentAvailabilityController;
 use App\Http\Controllers\Establishment\EstablishmentCapacityController;
 use App\Http\Controllers\Establishment\EstablishmentController;
 use App\Http\Controllers\TestController;
@@ -14,6 +15,12 @@ Route::middleware(['auth.jwt'])->group(function () {
     // Establishments
     Route::apiResource('establishments', EstablishmentController::class);
     Route::put('/establishments/{establishment}/collaborators/{user}/permissions', [EstablishmentController::class, 'syncCollaboratorPermissions']);
+    Route::get('/establishments/{establishment}/availabilities', [EstablishmentAvailabilityController::class, 'index']);
+    Route::get('/establishments/{establishment}/availabilities/range', [EstablishmentAvailabilityController::class, 'range']);
+    Route::post('/establishments/{establishment}/availabilities', [EstablishmentAvailabilityController::class, 'store']);
+    Route::post('/establishments/{establishment}/availabilities/bulk', [EstablishmentAvailabilityController::class, 'bulk']);
+    Route::put('/establishments/{establishment}/availabilities/{availability}', [EstablishmentAvailabilityController::class, 'update']);
+    Route::delete('/establishments/{establishment}/availabilities/{availability}', [EstablishmentAvailabilityController::class, 'destroy']);
     Route::get('/establishments/{establishment}/capacities', [EstablishmentCapacityController::class, 'index']);
     Route::post('/establishments/{establishment}/capacities', [EstablishmentCapacityController::class, 'store']);
     Route::put('/establishments/{establishment}/capacities/{capacity}', [EstablishmentCapacityController::class, 'update']);
