@@ -9,6 +9,7 @@ main: ## Checkout main branch && git pull
 
 update: ## Update/install dependencies Back/Front
 	if [ -f api/composer.lock ]; then cd api && composer update; else cd api && composer install; fi
+	cd api && php artisan storage:link
 	pnpm install
 
 start: ## Start API and Web
