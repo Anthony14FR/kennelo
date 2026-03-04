@@ -10,5 +10,6 @@
     "locale": "الموقع",
     "passwordDescription": "8 أحرف على الأقل مع مزيج من الحروف والأرقام والرموز",
     "passwordHide": "مقنع",
-    "passwordShow": "أفيتشر"
+    "passwordShow": "أفيتشر",
+    "newPassword": "كلمة المرور الجديدة"
 }

@@ -10,5 +10,6 @@
     "locale": "Locale",
     "passwordDescription": "At least 8 characters with a mix of letters, numbers, and symbols",
     "passwordHide": "Hide",
-    "passwordShow": "Show"
+    "passwordShow": "Show",
+    "newPassword": "New Password"
 }

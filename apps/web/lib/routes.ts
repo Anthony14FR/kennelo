@@ -21,6 +21,22 @@ type RegisterParams = {
     locale?: string | number;
 };
 
+type MyProfileAboutParams = {
+    locale?: string | number;
+};
+
+type MyProfileChangePasswordParams = {
+    locale?: string | number;
+};
+
+type MyProfileEmailPreferencesParams = {
+    locale?: string | number;
+};
+
+type MyProfilePreferencesNotificationParams = {
+    locale?: string | number;
+};
+
 function RootPage(): string {
     return "/";
 }
@@ -41,12 +57,32 @@ function Register(params?: RegisterParams): string {
     return buildRoute("/[locale]/s/accounts/register", params);
 }
 
+function MyProfileAbout(params?: MyProfileAboutParams): string {
+    return buildRoute("/[locale]/s/my/profile/about", params);
+}
+
+function MyProfileChangePassword(params?: MyProfileChangePasswordParams): string {
+    return buildRoute("/[locale]/s/my/profile/change-password", params);
+}
+
+function MyProfileEmailPreferences(params?: MyProfileEmailPreferencesParams): string {
+    return buildRoute("/[locale]/s/my/profile/preferences-email", params);
+}
+
+function MyProfilePreferencesNotification(params?: MyProfilePreferencesNotificationParams): string {
+    return buildRoute("/[locale]/s/my/profile/preferences-notification", params);
+}
+
 export const routes = {
     RootPage,
     HostDetails,
     Home,
     Login,
     Register,
+    MyProfileAbout,
+    MyProfileChangePassword,
+    MyProfileEmailPreferences,
+    MyProfilePreferencesNotification,
 } as const;
 
 export type RouteName = keyof typeof routes;

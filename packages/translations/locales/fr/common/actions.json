@@ -17,5 +17,20 @@
     "close": "Fermer",
     "refresh": "Actualiser",
     "loading": "Chargement...",
-    "becomePro": "Devenez un pro"
+    "becomePro": "Devenez un pro",
+    "update": "Mettre à jour",
+    "features": {
+        "auth": {
+            "deleteAccount": "Supprimer mon compte",
+            "memberSince": "Membre depuis",
+            "dangerZone": "Zone de danger",
+            "personalInfos": "Informations personnelles",
+            "personalInformation": "Personal Information",
+            "personalInfoDescription": "Modifiez vos informations personnelles et les détails de votre compte.",
+            "accountEmail": "Email du compte",
+            "accountEmailDescription": "Modifiez votre adresse email associée à votre compte.",
+            "dangerZoneDescription": "Ces actions sont irréversibles. Procédez avec précaution.",
+            "dangerZoneConfirmation": "La suppression de votre compte est définitive et entraîne la perte de toutes vos données."
+        }
+    }
 }

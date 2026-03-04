@@ -29,6 +29,7 @@ import { useTheme } from "next-themes";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/dictionaries";
 import { LanguageSelectorItems } from "../i18n/language-selector";
+import { routes } from "@/lib/routes";
 
 interface UserMenuProps {
     user?: {
@@ -80,7 +81,7 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                        <Link href={`/${locale}/settings`} className="cursor-pointer">
+                        <Link href={routes.MyProfileAbout()} className="cursor-pointer">
                             <Settings className="mr-2 h-4 w-4" />
                             <span>{t("ui.navigation.settings")}</span>
                         </Link>
