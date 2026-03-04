@@ -10,5 +10,6 @@
     "locale": "Lieu",
     "passwordDescription": "Au moins 8 caractères avec un mélange de lettres, de chiffres et de symboles",
     "passwordHide": "Masquer",
-    "passwordShow": "Afficher"
+    "passwordShow": "Afficher",
+    "newPassword": "Nouveau mot de passe"
 }

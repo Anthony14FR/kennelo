@@ -17,6 +17,8 @@ import UserMenu from "@/components/navigation/user-menu";
 import Image from "next/image";
 import { useAuth } from "@/features/auth";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useNavigation } from "@/hooks/use-navigation";
 
 interface NavigationItem {
     icon: KIcon;
@@ -33,6 +35,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children, className }: AppLayoutProps) {
     const isMobile = useIsMobile();
+    const { routes } = useNavigation();
     const { user, isAuthenticated, logout } = useAuth();
     const t = useTranslations();
 
@@ -65,19 +68,19 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
 
     return (
         <div className="bg-background h-full relative">
-            <Image
+            {/* <Image
                 className="absolute top-0 left-0 w-168"
                 src="/left-shape.svg"
                 width={120}
                 height={100}
                 alt="Kennelo logo"
-            />
+            /> */}
 
             <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-20">
                 <div className="hidden">{/* Chat box */}</div>
                 <div className="h-fit w-fit">
                     <Image
-                        className="w-14"
+                        className="w-14 shadow-md rounded-full"
                         src="/face.svg"
                         width={120}
                         height={100}
@@ -87,7 +90,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             </div>
 
             {!isMobile && (
-                <header className="fixed top-0 left-0 w-full h-16 flex items-center z-20">
+                <header className="sticky top-0 left-0 w-full h-18 flex items-center z-20 border-b bg-background/20 backdrop-blur-sm">
                     <div className="container mx-auto h-full flex justify-between items-center px-4">
                         <div className="flex justify-start items-center w-full max-w-xs">
                             <InputGroup className="rounded-full px-1.5 !py-5 w-full border border-primary/20 bg-white/30 backdrop-blur-sm">
@@ -106,7 +109,10 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                 </InputGroupAddon>
                             </InputGroup>
                         </div>
-                        <div className="relative w-full h-full flex justify-center items-center font-semibold text-lg">
+                        <Link
+                            href={routes.Home()}
+                            className="relative w-full h-full flex justify-center items-center font-semibold text-lg"
+                        >
                             <Image
                                 className="object-cover max-h-full h-1/2 w-auto"
                                 src="/logo_type.svg"
@@ -114,7 +120,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                 width={30}
                                 alt="Kennelo logo"
                             />
-                        </div>
+                        </Link>
                         <div className="flex justify-end items-center">
                             {isAuthenticated ? (
                                 <div className="flex items-center gap-3">
@@ -149,7 +155,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             )}
             <main
                 className={cn(
-                    "container mx-auto relative h-full",
+                    "relative h-full",
                     // isMobile ? "pb-16" : "mt-16",
                     className,
                 )}

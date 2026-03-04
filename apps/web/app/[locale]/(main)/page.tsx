@@ -4,12 +4,11 @@ import { Button } from "@workspace/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { useAuth } from "@/features/auth/hooks/use-auth";
 import Link from "next/link";
-import { useNavigation } from "@/hooks/use-navigation";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/i18n/language-switcher";
+import { routes } from "@/lib/routes";
 
 export default function Home() {
-    const { routes } = useNavigation();
     const { user, isAuthenticated, logout } = useAuth();
     const t = useTranslations();
 

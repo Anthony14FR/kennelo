@@ -8,5 +8,6 @@
     "select": "Select...",
     "phone": "+1 234 567 8900",
     "search-for-a-pension": "Search for a pension",
-    "passwordConfirmation": "Confirm your password"
+    "passwordConfirmation": "Confirm your password",
+    "newPassword": "Your new password"
 }

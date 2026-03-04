@@ -60,8 +60,9 @@ class ApiClient {
 
         const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
 
+        const isFormData = config.options.body instanceof FormData;
         const headers: Record<string, string> = {
-            "Content-Type": "application/json",
+            ...(!isFormData && { "Content-Type": "application/json" }),
             ...(config.options.headers as Record<string, string>),
         };
 
@@ -91,20 +92,30 @@ class ApiClient {
     async get<T = unknown>(
         path: string,
         params?: Record<string, string | number | boolean>,
+        options?: RequestInit,
     ): Promise<ApiResponse<T>> {
-        return this._request<T>(path, "GET", {}, params);
+        return this._request<T>(path, "GET", { ...options }, params);
     }
 
-    async post<T = unknown>(path: string, body?: unknown): Promise<ApiResponse<T>> {
-        return this._request<T>(path, "POST", { body: JSON.stringify(body) });
+    async post<T = unknown>(
+        path: string,
+        body?: unknown,
+        options?: RequestInit,
+    ): Promise<ApiResponse<T>> {
+        const serialized = body instanceof FormData ? body : JSON.stringify(body);
+        return this._request<T>(path, "POST", { body: serialized, ...options });
     }
 
-    async put<T = unknown>(path: string, body?: unknown): Promise<ApiResponse<T>> {
-        return this._request<T>(path, "PUT", { body: JSON.stringify(body) });
+    async put<T = unknown>(
+        path: string,
+        body?: unknown,
+        options?: RequestInit,
+    ): Promise<ApiResponse<T>> {
+        return this._request<T>(path, "PUT", { body: JSON.stringify(body), ...options });
     }
 
-    async delete<T = unknown>(path: string): Promise<ApiResponse<T>> {
-        return this._request<T>(path, "DELETE");
+    async delete<T = unknown>(path: string, options?: RequestInit): Promise<ApiResponse<T>> {
+        return this._request<T>(path, "DELETE", { ...options });
     }
 }
 
