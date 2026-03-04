@@ -18,5 +18,7 @@
     "refresh": "Refresh",
     "loading": "Loading...",
     "becomePro": "Become a pro",
-    "update": "Update"
+    "update": "Update",
+    "yes": "Yes",
+    "no": "No"
 }

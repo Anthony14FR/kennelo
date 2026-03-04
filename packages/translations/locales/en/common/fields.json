@@ -11,5 +11,9 @@
     "passwordDescription": "At least 8 characters with a mix of letters, numbers, and symbols",
     "passwordHide": "Hide",
     "passwordShow": "Show",
-    "newPassword": "New Password"
+    "newPassword": "New Password",
+    "notProvided": "Not provided",
+    "emailVerified": "Email Verified",
+    "idVerified": "ID Verified",
+    "status": "Status"
 }
