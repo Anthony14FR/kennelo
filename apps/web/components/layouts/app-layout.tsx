@@ -127,7 +127,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                     <NavButton variant="ghost">
                                         {t("common.actions.becomePro")}
                                     </NavButton>
-                                    <NavButton>Réserver en ligne</NavButton>
+                                    <NavButton>{t("ui.navigation.bookOnline")}</NavButton>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-3">
@@ -147,13 +147,6 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                         ))}
                                         <UserMenu user={user ?? undefined} onLogout={logout} />
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="flex gap-1">
-                                    <NavButton variant="ghost">
-                                        {t("common.actions.becomePro")}
-                                    </NavButton>
-                                    <NavButton>{t("ui.navigation.bookOnline")}</NavButton>
                                 </div>
                             )}
                         </div>

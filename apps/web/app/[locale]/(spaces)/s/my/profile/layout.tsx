@@ -8,6 +8,7 @@ import { Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { routes } from "@/lib/routes";
 
 export default function ProfileSettingsLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
@@ -17,17 +18,17 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
         { label: t("ui.navigation.editProfile"), href: "/s/my/profile/about", commingSoon: false },
         {
             label: t("ui.navigation.emailPreferences"),
-            href: "/s/my/profile/preferences-email",
+            href: routes.MyProfileEmailPreferences(),
             commingSoon: true,
         },
         {
             label: t("ui.navigation.notificationPreferences"),
-            href: "/s/my/profile/preferences-notification",
+            href: routes.MyProfilePreferencesNotification(),
             commingSoon: true,
         },
         {
             label: t("ui.navigation.changePassword"),
-            href: "/s/my/profile/change-password",
+            href: routes.MyProfileChangePassword(),
             commingSoon: false,
         },
     ];
@@ -37,7 +38,9 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
             {/* Header */}
             <div className="h-18 flex items-center bg-background">
                 <div className="container mx-auto flex items-center justify-between px-5">
-                    <h1 className="text-3xl font-semibold tracking-tight">{t("ui.navigation.profileSettings")}</h1>
+                    <h1 className="text-3xl font-semibold tracking-tight">
+                        {t("ui.navigation.profileSettings")}
+                    </h1>
                     <div className="relative w-64">
                         <Search className="absolute start-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
                         <Input className="ps-9" placeholder={t("common.placeholders.search")} />
