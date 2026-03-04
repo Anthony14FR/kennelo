@@ -86,6 +86,7 @@ class EstablishmentAvailabilityController extends Controller
     public function update(UpdateAvailabilityRequest $request, Establishment $establishment, EstablishmentAvailability $availability): JsonResponse
     {
         $this->authorize('manageAvailabilities', $establishment);
+        abort_if($availability->establishment_id !== $establishment->id, 404);
 
         $availability = $this->service->update($availability, $request->validated());
 
@@ -100,6 +101,7 @@ class EstablishmentAvailabilityController extends Controller
     public function destroy(Establishment $establishment, EstablishmentAvailability $availability): JsonResponse
     {
         $this->authorize('manageAvailabilities', $establishment);
+        abort_if($availability->establishment_id !== $establishment->id, 404);
 
         $this->service->delete($availability);
 

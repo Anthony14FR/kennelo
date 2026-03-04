@@ -18,7 +18,7 @@ class BulkAvailabilityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'dates' => ['required', 'array', 'min:1'],
+            'dates' => ['required', 'array', 'min:1', 'max:365'],
             'dates.*' => ['required', 'date', 'date_format:Y-m-d'],
             'status' => ['required', Rule::enum(AvailabilityStatus::class)],
             'note' => ['nullable', 'string', 'max:255'],

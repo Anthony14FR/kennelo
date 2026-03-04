@@ -52,6 +52,7 @@ class EstablishmentCapacityController extends Controller
     public function update(UpdateCapacityRequest $request, Establishment $establishment, EstablishmentCapacity $capacity): JsonResponse
     {
         $this->authorize('manageCapacities', $establishment);
+        abort_if($capacity->establishment_id !== $establishment->id, 404);
 
         $capacity = $this->service->update($capacity, $request->validated());
 
@@ -66,6 +67,7 @@ class EstablishmentCapacityController extends Controller
     public function destroy(Establishment $establishment, EstablishmentCapacity $capacity): JsonResponse
     {
         $this->authorize('manageCapacities', $establishment);
+        abort_if($capacity->establishment_id !== $establishment->id, 404);
 
         $this->service->delete($capacity);
 
