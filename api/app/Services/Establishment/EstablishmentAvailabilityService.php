@@ -16,13 +16,23 @@ class EstablishmentAvailabilityService
     public function storePeriod(Establishment $establishment, array $data): Collection
     {
         $period = CarbonPeriod::create($data['start_date'], $data['end_date']);
+        $now = now()->toDateTimeString();
 
-        return collect($period)->map(function (Carbon $date) use ($establishment, $data): EstablishmentAvailability {
-            return EstablishmentAvailability::updateOrCreate(
-                ['establishment_id' => $establishment->id, 'date' => $date->toDateString()],
-                ['status' => $data['status'], 'note' => $data['note'] ?? null],
-            );
-        });
+        $rows = collect($period)->map(fn (Carbon $date): array => [
+            'establishment_id' => $establishment->id,
+            'date' => $date->toDateString(),
+            'status' => $data['status'],
+            'note' => $data['note'] ?? null,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ])->all();
+
+        EstablishmentAvailability::upsert($rows, ['establishment_id', 'date'], ['status', 'note', 'updated_at']);
+
+        return EstablishmentAvailability::where('establishment_id', $establishment->id)
+            ->whereBetween('date', [$data['start_date'], $data['end_date']])
+            ->orderBy('date')
+            ->get();
     }
 
     public function update(EstablishmentAvailability $availability, array $data): EstablishmentAvailability

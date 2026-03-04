@@ -13,12 +13,12 @@ return new class extends Migration
         Schema::create('establishments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name', 255);
-            $table->string('siret', 14)->unique();
+            $table->string('siret', 14)->nullable()->unique();
             $table->text('description')->nullable();
             $table->string('phone', 20)->nullable();
             $table->string('email', 255)->nullable();
             $table->string('website')->nullable();
-            $table->uuid('address_id');
+            $table->uuid('address_id')->nullable();
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
             $table->string('timezone', 50)->default('UTC');
             $table->boolean('is_active')->default(true);

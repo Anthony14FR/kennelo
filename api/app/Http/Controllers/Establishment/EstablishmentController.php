@@ -89,15 +89,15 @@ class EstablishmentController extends Controller
         return response()->json(null, 204);
     }
 
-    public function syncCollaboratorPermissions(SyncCollaboratorPermissionsRequest $request, Establishment $establishment, User $collaborator): JsonResponse
+    public function syncCollaboratorPermissions(SyncCollaboratorPermissionsRequest $request, Establishment $establishment, User $user): JsonResponse
     {
         $this->authorize('update', $establishment);
 
-        if (! $establishment->collaborators()->where('users.id', $collaborator->id)->exists()) {
+        if (! $establishment->collaborators()->where('users.id', $user->id)->exists()) {
             abort(422, 'User is not a collaborator of this establishment.');
         }
 
-        $this->establishmentService->syncCollaboratorPermissions($establishment, $collaborator, $request->validated('permissions'));
+        $this->establishmentService->syncCollaboratorPermissions($establishment, $user, $request->validated('permissions'));
 
         return response()->json([
             'status' => ApiStatus::SUCCESS,

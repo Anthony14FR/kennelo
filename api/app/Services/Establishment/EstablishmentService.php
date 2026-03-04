@@ -60,7 +60,7 @@ class EstablishmentService
                 'email' => $data['email'] ?? null,
                 'website' => $data['website'] ?? null,
                 'siret' => $data['siret'] ?? null,
-                'timezone' => $data['timezone'] ?? null,
+                'timezone' => $data['timezone'] ?? 'UTC',
                 'address_id' => $addressId,
                 'manager_id' => $user->id,
                 'is_active' => true,

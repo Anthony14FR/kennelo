@@ -27,7 +27,7 @@ class StoreAvailabilityRequest extends FormRequest
                 'after_or_equal:start_date',
                 function (string $attribute, mixed $value, \Closure $fail): void {
                     $start = $this->input('start_date');
-                    if ($start && Carbon::parse($value)->diffInDays(Carbon::parse($start)) > 365) {
+                    if ($start && abs(Carbon::parse($value)->diffInDays(Carbon::parse($start))) > 365) {
                         $fail('The date range cannot exceed 365 days.');
                     }
                 },
