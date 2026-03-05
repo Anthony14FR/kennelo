@@ -9,12 +9,15 @@ import { useTranslations } from "next-intl";
 import { KEnvelope1, KLocked2 } from "@workspace/ui/components/icons";
 import { useAsyncState } from "@/hooks/use-async-state";
 import { InputController } from "@/components/forms/input-controller";
+import { useAuth } from "@/features/auth/hooks/use-auth";
+import { localeOrDefault, type Locale } from "@/dictionaries";
 
-export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
+export function LoginForm({ onSuccess }: { onSuccess?: (locale: Locale) => void }) {
     const { error, isLoading, execute } = useAsyncState();
+    const { refreshUser } = useAuth();
     const t = useTranslations();
 
-    const { handleSubmit, control } = useForm<LoginUserInput>({
+    const { handleSubmit, control, setError } = useForm<LoginUserInput>({
         resolver: zodResolver(loginUserSchema),
         defaultValues: {
             email: "",
@@ -23,7 +26,13 @@ export function LoginForm({ onSuccess }: { onSuccess?: () => void }) {
     });
 
     const onSubmit = async (data: LoginUserInput) => {
-        await execute(() => loginUser(data), { onSuccess });
+        await execute(() => loginUser(data), {
+            setFieldError: setError,
+            onSuccess: async () => {
+                const freshUser = await refreshUser();
+                onSuccess?.(localeOrDefault(freshUser?.locale));
+            },
+        });
     };
 
     return (

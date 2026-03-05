@@ -267,6 +267,9 @@ class UserController extends Controller
         } catch (InvalidCurrentPasswordException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
+                'errors' => [
+                    'password' => [$e->getMessage()],
+                ],
                 'status' => ApiStatus::ERROR,
                 'timestamp' => human_date(Carbon::now()),
             ], 422);

@@ -4,6 +4,8 @@ import { cn } from "@workspace/ui/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Image from "next/image";
 import { LanguageSwitcher } from "../i18n/language-switcher";
+import Link from "next/link";
+import { useNavigation } from "@/hooks/use-navigation";
 
 export default function GuestLayout({
     children,
@@ -13,13 +15,17 @@ export default function GuestLayout({
     className?: string;
 }) {
     const isMobile = useIsMobile();
+    const { routes } = useNavigation();
 
     return (
         <div className="bg-background h-full overflow-hidden">
             {!isMobile && (
                 <header className="fixed top-0 left-0 w-full h-16 flex items-center z-10">
                     <div className="container mx-auto max-w-7xl h-full flex justify-between items-center px-6">
-                        <div className="relative w-full h-full flex justify-start items-center font-semibold text-lg">
+                        <Link
+                            href={routes.Home()}
+                            className="relative w-full h-full flex justify-start items-center font-semibold text-lg"
+                        >
                             <Image
                                 className="object-cover max-h-full"
                                 src="/logo_font.svg"
@@ -27,7 +33,7 @@ export default function GuestLayout({
                                 height={100}
                                 alt="Kennelo logo"
                             />
-                        </div>
+                        </Link>
                         <LanguageSwitcher showDetails />
                     </div>
                 </header>

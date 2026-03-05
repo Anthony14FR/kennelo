@@ -5,7 +5,7 @@ import { authService } from "../../services/auth.service";
 export async function refreshToken(): Promise<string> {
     if (typeof window === "undefined") throw new Error("Cannot refresh token on server side");
 
-    const refreshToken = localStorage.getItem("refresh_token");
+    const refreshToken = await authService.getRefreshToken();
 
     if (!refreshToken) {
         throw new Error("No refresh token found");
@@ -25,7 +25,7 @@ export async function refreshToken(): Promise<string> {
 
     const newAccessToken = response.data.access_token;
 
-    authService.setTokens(newAccessToken, refreshToken);
+    await authService.setTokens(newAccessToken, refreshToken);
 
     return newAccessToken;
 }

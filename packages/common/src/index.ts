@@ -4,3 +4,5 @@
 
 export * from "./helpers/jwt.helper";
 export * from "./http/api-client";
+export * from "./storage/local-storage.service";
+export * from "./storage/storage.interface";

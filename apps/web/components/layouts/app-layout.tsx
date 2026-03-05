@@ -90,7 +90,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             </div>
 
             {!isMobile && (
-                <header className="sticky top-0 left-0 w-full h-18 flex items-center z-20 border-b bg-background/20 backdrop-blur-sm">
+                <header className="sticky top-0 left-0 w-full h-16 flex items-center z-20 bg-background/60 backdrop-blur-sm">
                     <div className="container mx-auto h-full flex justify-between items-center px-4">
                         <div className="flex justify-start items-center w-full max-w-xs">
                             <InputGroup className="rounded-full px-1.5 !py-5 w-full border border-primary/20 bg-white/30 backdrop-blur-sm">
@@ -122,7 +122,14 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                             />
                         </Link>
                         <div className="flex justify-end items-center">
-                            {isAuthenticated ? (
+                            {!isAuthenticated ? (
+                                <div className="flex gap-1">
+                                    <NavButton variant="ghost">
+                                        {t("common.actions.becomePro")}
+                                    </NavButton>
+                                    <NavButton>Réserver en ligne</NavButton>
+                                </div>
+                            ) : (
                                 <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-2">
                                         {navigationItems.map((item) => (
@@ -140,13 +147,6 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                         ))}
                                         <UserMenu user={user ?? undefined} onLogout={logout} />
                                     </div>
-                                </div>
-                            ) : (
-                                <div className="flex gap-1">
-                                    <NavButton variant="ghost">
-                                        {t("common.actions.becomePro")}
-                                    </NavButton>
-                                    <NavButton>Réserver en ligne</NavButton>
                                 </div>
                             )}
                         </div>

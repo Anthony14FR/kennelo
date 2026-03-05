@@ -17,7 +17,7 @@ export function ChangePasswordForm() {
     const { isLoading, execute } = useAsyncState();
     const t = useTranslations();
 
-    const { handleSubmit, control, reset } = useForm<ChangePasswordInput>({
+    const { handleSubmit, control, setError, reset } = useForm<ChangePasswordInput>({
         resolver: zodResolver(changePasswordSchema),
         defaultValues: {
             currentPassword: "",
@@ -28,6 +28,7 @@ export function ChangePasswordForm() {
 
     const onSubmit = async (data: ChangePasswordInput) => {
         await execute(() => changePassword(data), {
+            setFieldError: setError,
             onSuccess: () => reset(),
         });
     };

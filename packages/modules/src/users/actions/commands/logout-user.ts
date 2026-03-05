@@ -1,14 +1,14 @@
 import { api } from "@workspace/common";
+import { authService } from "../../services/auth.service";
 
 export async function logoutUser(): Promise<void> {
-    const refreshToken = localStorage.getItem("refresh_token");
+    const refreshToken = await authService.getRefreshToken();
 
     try {
         await api.post("/logout", {
             refresh_token: refreshToken,
         });
     } finally {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
+        await authService.clearTokens();
     }
 }

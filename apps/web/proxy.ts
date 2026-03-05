@@ -1,22 +1,22 @@
-import createMiddleware from "next-intl/middleware";
 import { NextRequest } from "next/server";
-import { routing } from "./lib/i18n/routing";
-import { hasLocale } from "next-intl";
+
+import { AuthGuardMiddleware } from "./lib/middlewares/auth-guard.middleware";
+import { I18nMiddleware } from "./lib/middlewares/i18n.middleware";
+import { SubdomainMiddleware } from "./lib/middlewares/subdomain.middleware";
+import { Middleware, runMiddlewares } from "./lib/middlewares";
+
+const middlewares: Middleware[] = [
+    new SubdomainMiddleware(),
+    new AuthGuardMiddleware({
+        guestOnly: ["/s/accounts/login", "/s/accounts/register"],
+        authRequired: ["/s/my/*"],
+        roleRequired: [{ roles: ["admin"], patterns: ["/s/admin/*"] }],
+    }),
+    new I18nMiddleware(),
+];
 
 export default async function proxy(request: NextRequest) {
-    const acceptLanguage = request.headers.get("accept-language");
-    const browserLocale = acceptLanguage?.split(",")[0]?.split("-")[0]?.trim() ?? "en";
-
-    const defaultLocale = hasLocale(routing.locales, browserLocale)
-        ? browserLocale
-        : routing.defaultLocale;
-
-    const handleI18nRouting = createMiddleware({
-        ...routing,
-        defaultLocale,
-    });
-
-    return handleI18nRouting(request);
+    return runMiddlewares(request, middlewares);
 }
 
 export const config = {

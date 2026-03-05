@@ -10,8 +10,8 @@ export default function LoginPage() {
     const { routes, router } = useNavigation();
     const t = useTranslations();
 
-    const handleSuccess = () => {
-        router.push(routes.Home());
+    const handleSuccess = (locale: string) => {
+        router.push(routes.Home({ locale }));
     };
 
     return (

@@ -19,7 +19,7 @@ export function UpdateProfileForm() {
     const { isLoading, execute } = useAsyncState();
     const t = useTranslations();
 
-    const { handleSubmit, control, reset } = useForm<UpdateProfileInput>({
+    const { handleSubmit, control, setError, reset } = useForm<UpdateProfileInput>({
         resolver: zodResolver(updateProfileSchema),
         defaultValues: {
             firstName: "",
@@ -40,6 +40,7 @@ export function UpdateProfileForm() {
 
     const onSubmit = async (data: UpdateProfileInput) => {
         await execute(() => updateProfile(data), {
+            setFieldError: setError,
             onSuccess: () => refreshUser(),
         });
     };
