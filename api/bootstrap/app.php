@@ -86,6 +86,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ], 405);
             }
 
+            if ($e instanceof HttpException && $e->getStatusCode() < 500) {
+                return response()->json([
+                    'message' => $e->getMessage() ?: 'Request failed.',
+                    'status' => ApiStatus::ERROR,
+                    'timestamp' => $timestamp,
+                ], $e->getStatusCode());
+            }
+
             return response()->json([
                 'message' => 'Server error.',
                 'status' => ApiStatus::ERROR,
