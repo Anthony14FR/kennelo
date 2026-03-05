@@ -25,7 +25,7 @@ export async function registerUser(input: RegisterUserInput): Promise<AuthModel>
 
     const authModel = AuthModel.from(response.data);
 
-    authService.setTokens(authModel.accessToken, authModel.refreshToken);
+    await authService.setTokens(authModel.accessToken, authModel.refreshToken);
 
     return authModel;
 }

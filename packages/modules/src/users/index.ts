@@ -3,6 +3,7 @@
  */
 
 export * from "./actions/commands/change-email";
+export * from "./actions/commands/change-locale";
 export * from "./actions/commands/change-password";
 export * from "./actions/commands/destroy-user";
 export * from "./actions/commands/login-user";

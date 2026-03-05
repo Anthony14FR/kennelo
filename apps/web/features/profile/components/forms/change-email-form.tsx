@@ -16,7 +16,7 @@ export function ChangeEmailForm() {
     const { isLoading, execute } = useAsyncState();
     const t = useTranslations();
 
-    const { handleSubmit, control, reset } = useForm<ChangeEmailInput>({
+    const { handleSubmit, control, setError, reset } = useForm<ChangeEmailInput>({
         resolver: zodResolver(changeEmailSchema),
         defaultValues: {
             email: "",
@@ -32,10 +32,12 @@ export function ChangeEmailForm() {
 
     const onSubmit = async (data: ChangeEmailInput) => {
         await execute(() => changeEmail(data), {
+            setFieldError: setError,
             onSuccess: () => {
                 refreshUser();
                 reset({ email: data.email, password: "" });
             },
+            displayError: true,
         });
     };
 

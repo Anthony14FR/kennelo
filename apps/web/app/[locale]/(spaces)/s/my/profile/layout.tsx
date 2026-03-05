@@ -25,8 +25,8 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
     return (
         <div className="min-h-screen bg-card">
             {/* Header */}
-            <div className="h-18 flex items-center">
-                <div className="container mx-auto flex items-center justify-between px-4">
+            <div className="h-18 flex items-center bg-background">
+                <div className="container mx-auto flex items-center justify-between px-5">
                     <h1 className="text-3xl font-semibold tracking-tight">Paramètres</h1>
                     <div className="relative w-64">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
@@ -41,7 +41,7 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
                 <div className="flex">
                     {/* Sidebar */}
                     <aside className="relative min-w-64 shrink-0 px-4 py-6">
-                        <nav className="sticky top-24 flex flex-col gap-1">
+                        <nav className="sticky top-22 flex flex-col gap-1">
                             {settingsNav.map((item) => {
                                 const isActive = pathname.includes(item.href);
                                 return (

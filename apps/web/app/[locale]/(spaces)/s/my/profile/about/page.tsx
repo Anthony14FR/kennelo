@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/features/auth";
-import { Skeleton } from "@workspace/ui/components/skeleton";
 import { Separator } from "@workspace/ui/components/separator";
 import { CalendarDays } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -11,9 +10,10 @@ import {
     ChangeEmailForm,
     DeleteAccountDialog,
 } from "@/features/profile";
+import { Loaded } from "@workspace/ui/components/loaded";
 
 export default function MyProfileAbout() {
-    const { user, isLoading } = useAuth();
+    const { user, isLoaded } = useAuth();
     const t = useTranslations();
 
     return (
@@ -23,12 +23,15 @@ export default function MyProfileAbout() {
 
                 <div className="flex flex-col gap-1 min-w-0">
                     <div className="text-xl font-semibold">
-                        {isLoading ? <Skeleton className="h-6 w-[250px]" /> : user?.getFullName()}
+                        <Loaded isLoaded={isLoaded} className="w-48">
+                            {user?.getFullName()}
+                        </Loaded>
                     </div>
                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                         <CalendarDays className="size-3.5 shrink-0" />
-                        {t("features.auth.memberSince")}{" "}
-                        {isLoading ? <Skeleton className="h-4 w-[150px]" /> : user?.createdAt}
+                        <Loaded isLoaded={isLoaded} className="w-48">
+                            {t("features.auth.memberSince", { date: user?.createdAt || "" })}
+                        </Loaded>
                     </span>
                 </div>
             </section>

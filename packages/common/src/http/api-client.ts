@@ -13,10 +13,17 @@ interface ApiError extends Error {
     status: number;
     data: unknown;
     response: Response;
+    fieldErrors?: Record<string, string[]>;
 }
 
 class ApiClient {
     public readonly baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
+    private _tokenGetter: (() => Promise<string | null>) | undefined;
+
+    setTokenGetter(fn: () => Promise<string | null>): void {
+        this._tokenGetter = fn;
+    }
 
     private _buildUrl(path: string, params?: Record<string, string | number | boolean>): string {
         const url = new URL(this.baseUrl + path);
@@ -41,10 +48,21 @@ class ApiClient {
         }
 
         if (status >= 400) {
-            const error = new Error(`HTTP Error ${status}`) as ApiError;
+            const apiData = data as { message?: string; errors?: Record<string, string[]> } | null;
+            let errorMessage = `HTTP Error ${status}`;
+
+            if (apiData?.message) {
+                errorMessage = apiData.message;
+            } else if (apiData?.errors) {
+                const firstField = Object.values(apiData.errors)[0];
+                if (firstField?.[0]) errorMessage = firstField[0];
+            }
+
+            const error = new Error(errorMessage) as ApiError;
             error.status = status;
             error.data = data;
             error.response = resp;
+            error.fieldErrors = apiData?.errors;
             throw error;
         }
 
@@ -58,7 +76,11 @@ class ApiClient {
     ): Promise<Response> {
         const config: RequestConfig = { url, method, options };
 
-        const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
+        const token = this._tokenGetter
+            ? await this._tokenGetter()
+            : typeof window !== "undefined"
+              ? localStorage.getItem("access_token")
+              : null;
 
         const isFormData = config.options.body instanceof FormData;
         const headers: Record<string, string> = {

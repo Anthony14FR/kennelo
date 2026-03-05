@@ -6,6 +6,8 @@ import { useTransition } from "react";
 import { CheckIcon } from "lucide-react";
 import { DropdownMenuItem, DropdownMenuLabel } from "@workspace/ui/components/dropdown-menu";
 import { LOCALES, LOCALE_INFO, type Locale } from "@/dictionaries";
+import { changeLocale } from "@workspace/modules/users";
+import { useAuth } from "@/features/auth";
 
 interface LanguageSelectorProps {
     onLocaleChange?: (locale: Locale) => void;
@@ -13,12 +15,16 @@ interface LanguageSelectorProps {
 
 export function useLanguageSelector() {
     const [isPending, startTransition] = useTransition();
+    const { isAuthenticated } = useAuth();
     const locale = useLocale() as Locale;
     const router = useRouter();
     const pathname = usePathname();
 
-    const handleLocaleChange = (newLocale: Locale) => {
+    const handleLocaleChange = async (newLocale: Locale) => {
         if (newLocale === locale) return;
+        if (isAuthenticated) {
+            await changeLocale(newLocale);
+        }
 
         startTransition(() => {
             const pathWithoutLocale = pathname.replace(`/${locale}`, "");
@@ -34,8 +40,8 @@ export function LanguageSelectorItems({ onLocaleChange }: LanguageSelectorProps)
     const t = useTranslations();
     const { locale, isPending, handleLocaleChange } = useLanguageSelector();
 
-    const handleClick = (loc: Locale) => {
-        handleLocaleChange(loc);
+    const handleClick = async (loc: Locale) => {
+        await handleLocaleChange(loc);
         onLocaleChange?.(loc);
     };
 

@@ -1,40 +1,47 @@
-import { jwtHelper } from "@workspace/common";
+import { jwtHelper, LocalStorageService } from "@workspace/common";
+import type { IStorageService } from "@workspace/common";
+
+const ACCESS_TOKEN_KEY = "access_token";
+const REFRESH_TOKEN_KEY = "refresh_token";
+
+let _storage: IStorageService = new LocalStorageService();
 
 export const authService = {
-    getAccessToken(): string | null {
-        if (typeof window === "undefined") return null;
-        return localStorage.getItem("access_token");
+    configure(storage: IStorageService): void {
+        _storage = storage;
     },
 
-    getRefreshToken(): string | null {
-        if (typeof window === "undefined") return null;
-        return localStorage.getItem("refresh_token");
+    async getAccessToken(): Promise<string | null> {
+        return _storage.get(ACCESS_TOKEN_KEY);
     },
 
-    isAuthenticated(): boolean {
-        return this.getAccessToken() !== null;
+    async getRefreshToken(): Promise<string | null> {
+        return _storage.get(REFRESH_TOKEN_KEY);
     },
 
-    clearTokens(): void {
-        if (typeof window === "undefined") return;
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
+    async isAuthenticated(): Promise<boolean> {
+        return (await _storage.get(ACCESS_TOKEN_KEY)) !== null;
     },
 
-    setTokens(accessToken: string, refreshToken: string): void {
-        if (typeof window === "undefined") return;
-        localStorage.setItem("access_token", accessToken);
-        localStorage.setItem("refresh_token", refreshToken);
+    async clearTokens(): Promise<void> {
+        await Promise.all([_storage.remove(ACCESS_TOKEN_KEY), _storage.remove(REFRESH_TOKEN_KEY)]);
     },
 
-    isAccessTokenExpired(): boolean {
-        const token = this.getAccessToken();
+    async setTokens(accessToken: string, refreshToken: string): Promise<void> {
+        await Promise.all([
+            _storage.set(ACCESS_TOKEN_KEY, accessToken),
+            _storage.set(REFRESH_TOKEN_KEY, refreshToken),
+        ]);
+    },
+
+    async isAccessTokenExpired(): Promise<boolean> {
+        const token = await this.getAccessToken();
         if (!token) return true;
         return jwtHelper.isExpired(token);
     },
 
-    getUserRoles(): string[] {
-        const token = this.getAccessToken();
+    async getUserRoles(): Promise<string[]> {
+        const token = await this.getAccessToken();
         if (!token) return [];
         return jwtHelper.getProperty<string[]>(token, "roles") || [];
     },

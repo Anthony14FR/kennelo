@@ -4,6 +4,7 @@ import { Providers } from "@/components/providers";
 import { Suspense } from "react";
 import { DEFAULT_LOCALE, DEFAULT_LOCALE_DIR } from "@/dictionaries";
 import { cn } from "@workspace/ui/lib/utils";
+import { cookies } from "next/headers";
 
 const fontSans = Bricolage_Grotesque({
     subsets: ["latin"],
@@ -15,7 +16,10 @@ const fontMono = Geist_Mono({
     variable: "--font-mono",
 });
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+    const cookieStore = await cookies();
+    const initialIsAuthenticated = cookieStore.has("access_token");
+
     return (
         <html lang={DEFAULT_LOCALE} dir={DEFAULT_LOCALE_DIR} suppressHydrationWarning>
             <body
@@ -25,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                     "font-sans antialiased bg-background text-foreground",
                 )}
             >
-                <Providers>
+                <Providers initialIsAuthenticated={initialIsAuthenticated}>
                     <Suspense>{children}</Suspense>
                 </Providers>
             </body>

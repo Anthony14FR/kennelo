@@ -3,39 +3,60 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { UserModel } from "@workspace/modules/users";
 import { getCurrentUser, logoutUser, authService } from "@workspace/modules/users";
+import { api } from "@workspace/common";
 import { useRouter } from "next/navigation";
 import { logger } from "@/lib/logger";
 import { routes } from "@/lib/routes";
+import { getAppStorage } from "@/lib/storage";
 
 interface AuthContextValue {
     user: UserModel | null;
     isLoading: boolean;
+    isLoaded: boolean;
     isAuthenticated: boolean;
     logout: () => Promise<void>;
-    refreshUser: () => Promise<void>;
+    refreshUser: () => Promise<UserModel | null>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({
+    children,
+    initialIsAuthenticated = false,
+}: {
+    children: ReactNode;
+    initialIsAuthenticated?: boolean;
+}) {
     const [user, setUser] = useState<UserModel | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(initialIsAuthenticated);
+    const [isAuthenticated, setIsAuthenticated] = useState(initialIsAuthenticated);
     const router = useRouter();
 
-    const loadUser = async () => {
-        if (!authService.isAuthenticated()) {
+    useState(() => {
+        authService.configure(getAppStorage());
+        api.setTokenGetter(() => authService.getAccessToken());
+    });
+
+    const loadUser = async (): Promise<UserModel | null> => {
+        if (!(await authService.isAuthenticated())) {
+            setIsAuthenticated(false);
             setUser(null);
             setIsLoading(false);
-            return;
+            return null;
         }
+
+        setIsAuthenticated(true);
 
         try {
             const currentUser = await getCurrentUser();
             setUser(currentUser);
+            return currentUser;
         } catch (error) {
             logger.error("Failed to load user:", error);
+            setIsAuthenticated(false);
             setUser(null);
-            authService.clearTokens();
+            await authService.clearTokens();
+            return null;
         } finally {
             setIsLoading(false);
         }
@@ -51,19 +72,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (error) {
             logger.error("Logout error:", error);
         } finally {
+            setIsAuthenticated(false);
             setUser(null);
             router.push(routes.Login());
         }
     };
 
-    const refreshUser = async () => {
-        await loadUser();
-    };
+    const refreshUser = async (): Promise<UserModel | null> => loadUser();
 
     const value: AuthContextValue = {
         user,
         isLoading,
-        isAuthenticated: user !== null,
+        isLoaded: !isLoading && !!user,
+        isAuthenticated,
         logout,
         refreshUser,
     };

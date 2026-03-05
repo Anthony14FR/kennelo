@@ -14,7 +14,7 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
     const { isLoading, execute } = useAsyncState();
     const t = useTranslations();
 
-    const { handleSubmit, control } = useForm<RegisterUserInput>({
+    const { handleSubmit, control, setError } = useForm<RegisterUserInput>({
         resolver: zodResolver(registerUserSchema),
         defaultValues: {
             firstName: "",
@@ -28,7 +28,10 @@ export function RegisterForm({ onSuccess }: { onSuccess?: () => void }) {
     });
 
     const onSubmit = async (data: RegisterUserInput) => {
-        await execute(() => registerUser(data), { onSuccess });
+        await execute(() => registerUser(data), {
+            setFieldError: setError,
+            onSuccess,
+        });
     };
 
     return (
