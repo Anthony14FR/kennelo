@@ -23,12 +23,18 @@ class AttributeSeeder extends Seeder
 
         $dogId = $this->animalTypes['dog'];
         $catId = $this->animalTypes['cat'];
-        $smallMammalId = $this->animalTypes['small_mammal'];
+        $smallMammalIds = [
+            $this->animalTypes['rabbit'],
+            $this->animalTypes['hamster'],
+            $this->animalTypes['guinea_pig'],
+            $this->animalTypes['chinchilla'],
+            $this->animalTypes['ferret'],
+        ];
         $birdId = $this->animalTypes['bird'];
         $fishId = $this->animalTypes['fish'];
         $reptileId = $this->animalTypes['reptile'];
         $amphibianId = $this->animalTypes['amphibian'];
-        $invertebrateId = $this->animalTypes['invertebrate'];
+        $spiderId = $this->animalTypes['spider'];
 
         // ========== COMMON ATTRIBUTES (Dogs & Cats) ==========
         $this->createAttribute('energy_level', 'Niveau d\'énergie', 'text', true, [$dogId, $catId], [
@@ -49,7 +55,7 @@ class AttributeSeeder extends Seeder
             ['value' => 'to_determine', 'label' => 'À déterminer'],
         ]);
 
-        $this->createAttribute('friendly_with_kids', 'Amical avec enfants', 'text', true, [$dogId, $catId, $smallMammalId, $birdId], [
+        $this->createAttribute('friendly_with_kids', 'Amical avec enfants', 'text', true, array_merge([$dogId, $catId, $birdId], $smallMammalIds), [
             ['value' => 'yes', 'label' => 'Oui'],
             ['value' => 'no', 'label' => 'Non'],
             ['value' => 'unknown', 'label' => 'Inconnu'],
@@ -73,7 +79,7 @@ class AttributeSeeder extends Seeder
             ['value' => '6h_plus', 'label' => '6h+'],
         ]);
 
-        $this->createAttribute('meal_schedule', 'Horaires repas', 'text', true, [$dogId, $catId, $smallMammalId, $birdId], [
+        $this->createAttribute('meal_schedule', 'Horaires repas', 'text', true, array_merge([$dogId, $catId, $birdId], $smallMammalIds), [
             ['value' => 'morning', 'label' => 'Matin'],
             ['value' => 'evening', 'label' => 'Soir'],
             ['value' => 'morning_evening', 'label' => 'Matin + Soir'],
@@ -87,7 +93,7 @@ class AttributeSeeder extends Seeder
             ['value' => 'never', 'label' => 'Jamais'],
         ]);
 
-        $this->createAttribute('medications', 'Médicaments', 'text', false, [$dogId, $catId]);
+        $this->createAttribute('medications', 'Médicaments', 'text', false, array_merge([$dogId, $catId], $smallMammalIds));
 
         // ========== CAT-SPECIFIC ATTRIBUTES ==========
         $this->createAttribute('indoor_outdoor', 'Intérieur/Extérieur', 'text', true, [$catId], [
@@ -99,7 +105,7 @@ class AttributeSeeder extends Seeder
         $this->createAttribute('declawed', 'Griffes retirées', 'boolean', false, [$catId]);
 
         // ========== SMALL MAMMALS ATTRIBUTES ==========
-        $this->createAttribute('cage_type', 'Type de cage', 'text', true, [$smallMammalId, $birdId], [
+        $this->createAttribute('cage_type', 'Type de cage', 'text', true, array_merge([$birdId], $smallMammalIds), [
             ['value' => 'small', 'label' => 'Petite'],
             ['value' => 'medium', 'label' => 'Moyenne'],
             ['value' => 'large', 'label' => 'Grande'],
@@ -107,27 +113,27 @@ class AttributeSeeder extends Seeder
             ['value' => 'aviary', 'label' => 'Volière'],
         ]);
 
-        $this->createAttribute('is_nocturnal', 'Nocturne', 'boolean', false, [$smallMammalId]);
+        $this->createAttribute('is_nocturnal', 'Nocturne', 'boolean', false, $smallMammalIds);
 
-        $this->createAttribute('can_be_handled', 'Peut être manipulé', 'text', true, [$smallMammalId], [
+        $this->createAttribute('can_be_handled', 'Peut être manipulé', 'text', true, array_merge($smallMammalIds, [$spiderId]), [
             ['value' => 'yes_easily', 'label' => 'Oui facilement'],
             ['value' => 'yes_with_care', 'label' => 'Oui avec précaution'],
             ['value' => 'no_fearful', 'label' => 'Non/craintif'],
         ]);
 
-        $this->createAttribute('bites_scratches', 'Mord/griffe', 'text', true, [$smallMammalId], [
+        $this->createAttribute('bites_scratches', 'Mord/griffe', 'text', true, $smallMammalIds, [
             ['value' => 'never', 'label' => 'Jamais'],
             ['value' => 'rarely', 'label' => 'Rarement'],
             ['value' => 'often', 'label' => 'Souvent'],
         ]);
 
-        $this->createAttribute('friendly_with_same_species', 'Amical avec congénères', 'text', true, [$smallMammalId], [
+        $this->createAttribute('friendly_with_same_species', 'Amical avec congénères', 'text', true, $smallMammalIds, [
             ['value' => 'yes', 'label' => 'Oui'],
             ['value' => 'no', 'label' => 'Non'],
             ['value' => 'unknown', 'label' => 'Inconnu'],
         ]);
 
-        $this->createAttribute('diet_specifics', 'Régime alimentaire spécifique', 'text', false, [$smallMammalId, $birdId, $fishId]);
+        $this->createAttribute('diet_specifics', 'Régime alimentaire spécifique', 'text', false, array_merge($smallMammalIds, [$birdId, $fishId]));
 
         // ========== BIRD ATTRIBUTES ==========
         $this->createAttribute('bird_species', 'Espèce', 'text', false, [$birdId]);
@@ -174,7 +180,7 @@ class AttributeSeeder extends Seeder
 
         $this->createAttribute('equipment_needed', 'Équipement nécessaire', 'text', false, [$fishId]);
 
-        $this->createAttribute('feeding_frequency', 'Fréquence repas', 'text', true, [$fishId, $reptileId, $amphibianId, $invertebrateId], [
+        $this->createAttribute('feeding_frequency', 'Fréquence repas', 'text', true, [$fishId, $reptileId, $amphibianId, $spiderId], [
             ['value' => 'once_daily', 'label' => '1x/jour'],
             ['value' => 'twice_daily', 'label' => '2x/jour'],
             ['value' => 'every_2_days', 'label' => 'Tous les 2 jours'],
@@ -192,17 +198,17 @@ class AttributeSeeder extends Seeder
             ['value' => 'aqua_terrarium', 'label' => 'Aqua-terrarium'],
         ]);
 
-        $this->createAttribute('temperature_range', 'Plage de température', 'text', false, [$reptileId, $amphibianId, $invertebrateId]);
+        $this->createAttribute('temperature_range', 'Plage de température', 'text', false, [$reptileId, $amphibianId, $spiderId]);
 
-        $this->createAttribute('humidity_level', 'Niveau d\'humidité', 'text', true, [$reptileId, $amphibianId, $invertebrateId], [
+        $this->createAttribute('humidity_level', 'Niveau d\'humidité', 'text', true, [$reptileId, $amphibianId, $spiderId], [
             ['value' => 'low', 'label' => 'Faible (30-40%)'],
             ['value' => 'medium', 'label' => 'Moyen (50-60%)'],
             ['value' => 'high', 'label' => 'Élevé (70-80%)'],
         ]);
 
-        $this->createAttribute('is_venomous', 'Venimeux', 'boolean', false, [$reptileId, $invertebrateId]);
+        $this->createAttribute('is_venomous', 'Venimeux', 'boolean', false, [$reptileId, $spiderId]);
 
-        $this->createAttribute('diet_type', 'Type d\'alimentation', 'text', true, [$reptileId, $amphibianId, $invertebrateId], [
+        $this->createAttribute('diet_type', 'Type d\'alimentation', 'text', true, [$reptileId, $amphibianId, $spiderId], [
             ['value' => 'insects', 'label' => 'Insectes'],
             ['value' => 'rodents', 'label' => 'Rongeurs'],
             ['value' => 'vegetarian', 'label' => 'Végétarien'],
@@ -212,14 +218,14 @@ class AttributeSeeder extends Seeder
             ['value' => 'detritivore', 'label' => 'Détritivore'],
         ]);
 
-        $this->createAttribute('requires_live_food', 'Nécessite nourriture vivante', 'boolean', false, [$reptileId, $amphibianId, $invertebrateId]);
+        $this->createAttribute('requires_live_food', 'Nécessite nourriture vivante', 'boolean', false, [$reptileId, $amphibianId, $spiderId]);
 
         $this->createAttribute('uv_light_needed', 'Lampe UV nécessaire', 'boolean', false, [$reptileId]);
 
         // ========== AMPHIBIAN ATTRIBUTES ==========
         $this->createAttribute('amphibian_species', 'Espèce', 'text', false, [$amphibianId]);
 
-        $this->createAttribute('habitat_type', 'Type d\'habitat', 'text', true, [$amphibianId, $invertebrateId], [
+        $this->createAttribute('habitat_type', 'Type d\'habitat', 'text', true, [$amphibianId, $spiderId], [
             ['value' => 'aquatic', 'label' => 'Aquatique'],
             ['value' => 'semi_aquatic', 'label' => 'Semi-aquatique'],
             ['value' => 'terrestrial', 'label' => 'Terrestre'],
@@ -232,10 +238,10 @@ class AttributeSeeder extends Seeder
 
         $this->createAttribute('water_quality_requirements', 'Exigences qualité eau', 'text', false, [$amphibianId]);
 
-        // ========== INVERTEBRATE ATTRIBUTES ==========
-        $this->createAttribute('invertebrate_species', 'Espèce', 'text', false, [$invertebrateId]);
+        // ========== SPIDER ATTRIBUTES ==========
+        $this->createAttribute('spider_species', 'Espèce', 'text', false, [$spiderId]);
 
-        $this->createAttribute('molting_frequency', 'Fréquence de mue', 'text', true, [$invertebrateId], [
+        $this->createAttribute('molting_frequency', 'Fréquence de mue', 'text', true, [$spiderId], [
             ['value' => 'never', 'label' => 'Jamais'],
             ['value' => 'annual', 'label' => 'Annuelle'],
             ['value' => 'monthly', 'label' => 'Mensuelle'],
@@ -245,18 +251,15 @@ class AttributeSeeder extends Seeder
 
     private function loadAnimalTypes(): void
     {
-        $types = AnimalType::whereIn('code', [
-            'dog',
-            'cat',
-            'small_mammal',
-            'bird',
-            'fish',
-            'reptile',
-            'amphibian',
-            'invertebrate',
-        ])->pluck('id', 'code')->toArray();
+        $expectedCodes = [
+            'dog', 'cat', 'rabbit', 'hamster', 'guinea_pig',
+            'chinchilla', 'ferret', 'bird', 'fish',
+            'reptile', 'amphibian', 'spider',
+        ];
 
-        if (count($types) !== 8) {
+        $types = AnimalType::whereIn('code', $expectedCodes)->pluck('id', 'code')->toArray();
+
+        if (count($types) !== count($expectedCodes)) {
             throw new \RuntimeException('Missing animal types. Run AnimalTypeSeeder first.');
         }
 

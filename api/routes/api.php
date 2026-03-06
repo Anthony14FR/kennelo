@@ -6,11 +6,15 @@ use App\Http\Controllers\Establishment\EstablishmentAvailabilityController;
 use App\Http\Controllers\Establishment\EstablishmentCapacityController;
 use App\Http\Controllers\Establishment\EstablishmentController;
 use App\Http\Controllers\Establishment\EstablishmentDashboardController;
+use App\Http\Controllers\Pet\AnimalTypeController;
+use App\Http\Controllers\Pet\PetAttributeController;
+use App\Http\Controllers\Pet\PetController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test', [TestController::class, 'index']);
+Route::get('/animal-types', [AnimalTypeController::class, 'index']);
 
 Route::middleware(['auth.jwt'])->group(function () {
     // Establishments
@@ -27,6 +31,10 @@ Route::middleware(['auth.jwt'])->group(function () {
     Route::post('/establishments/{establishment}/capacities', [EstablishmentCapacityController::class, 'store']);
     Route::put('/establishments/{establishment}/capacities/{capacity}', [EstablishmentCapacityController::class, 'update']);
     Route::delete('/establishments/{establishment}/capacities/{capacity}', [EstablishmentCapacityController::class, 'destroy']);
+
+    // Pets
+    Route::apiResource('pets', PetController::class);
+    Route::put('/pets/{pet}/attributes', [PetAttributeController::class, 'upsert']);
 
     // Users (admin)
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);

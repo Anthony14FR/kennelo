@@ -17,12 +17,16 @@ class AnimalTypeSeeder extends Seeder
         $animalTypes = [
             ['code' => 'dog', 'name' => 'Chien', 'category' => 'mammals'],
             ['code' => 'cat', 'name' => 'Chat', 'category' => 'mammals'],
-            ['code' => 'small_mammal', 'name' => 'Petit mammifère', 'category' => 'mammals'],
+            ['code' => 'rabbit', 'name' => 'Lapin', 'category' => 'small_mammals'],
+            ['code' => 'hamster', 'name' => 'Hamster', 'category' => 'small_mammals'],
+            ['code' => 'guinea_pig', 'name' => 'Cochon d\'Inde', 'category' => 'small_mammals'],
+            ['code' => 'chinchilla', 'name' => 'Chinchilla', 'category' => 'small_mammals'],
+            ['code' => 'ferret', 'name' => 'Furet', 'category' => 'small_mammals'],
             ['code' => 'bird', 'name' => 'Oiseau', 'category' => 'birds'],
             ['code' => 'fish', 'name' => 'Poisson', 'category' => 'fish'],
             ['code' => 'reptile', 'name' => 'Reptile', 'category' => 'reptiles'],
             ['code' => 'amphibian', 'name' => 'Amphibien', 'category' => 'amphibians'],
-            ['code' => 'invertebrate', 'name' => 'Invertébré', 'category' => 'invertebrates'],
+            ['code' => 'spider', 'name' => 'Araignée', 'category' => 'invertebrates'],
         ];
 
         foreach ($animalTypes as $animalType) {
