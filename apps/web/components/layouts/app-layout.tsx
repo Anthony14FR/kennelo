@@ -36,7 +36,7 @@ interface AppLayoutProps {
 export default function AppLayout({ children, className }: AppLayoutProps) {
     const isMobile = useIsMobile();
     const { routes } = useNavigation();
-    const { user, isAuthenticated, logout } = useAuth();
+    const { user, isAuthenticated, isLoaded, hasEstablishment, logout } = useAuth();
     const t = useTranslations();
 
     const navigationItems: NavigationItem[] = [
@@ -124,29 +124,35 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                         <div className="flex justify-end items-center">
                             {!isAuthenticated ? (
                                 <div className="flex gap-1">
-                                    <NavButton variant="ghost">
-                                        {t("common.actions.becomePro")}
-                                    </NavButton>
                                     <NavButton>Réserver en ligne</NavButton>
                                 </div>
                             ) : (
-                                <div className="flex items-center gap-3">
-                                    <div className="flex items-center gap-2">
-                                        {navigationItems.map((item) => (
-                                            <NavItem
-                                                key={item.href}
-                                                Icon={item.icon}
-                                                iconSize={24}
-                                                active={item.active}
-                                                iconSecondaryOpacity={1}
-                                                href={item.href}
-                                                className="mt-1"
-                                            >
-                                                {item.text}
-                                            </NavItem>
-                                        ))}
-                                        <UserMenu user={user ?? undefined} onLogout={logout} />
-                                    </div>
+                                <div className="flex items-center gap-2">
+                                    {isLoaded && !hasEstablishment && (
+                                        <Link href={routes.BecomeHost()}>
+                                            <NavButton variant="ghost">
+                                                {t("common.actions.becomeHost")}
+                                            </NavButton>
+                                        </Link>
+                                    )}
+                                    {navigationItems.map((item) => (
+                                        <NavItem
+                                            key={item.href}
+                                            Icon={item.icon}
+                                            iconSize={24}
+                                            active={item.active}
+                                            iconSecondaryOpacity={1}
+                                            href={item.href}
+                                            className="mt-1"
+                                        >
+                                            {item.text}
+                                        </NavItem>
+                                    ))}
+                                    <UserMenu
+                                        user={user ?? undefined}
+                                        hasEstablishment={hasEstablishment}
+                                        onLogout={logout}
+                                    />
                                 </div>
                             )}
                         </div>

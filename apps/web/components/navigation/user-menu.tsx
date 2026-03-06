@@ -24,6 +24,7 @@ import {
     Languages,
     UserCircle,
     CheckIcon,
+    Building2,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useLocale, useTranslations } from "next-intl";
@@ -38,10 +39,11 @@ interface UserMenuProps {
         getInitials: () => string;
         email?: string | null;
     };
+    hasEstablishment?: boolean;
     onLogout?: () => void;
 }
 
-export default function UserMenu({ user, onLogout }: UserMenuProps) {
+export default function UserMenu({ user, hasEstablishment, onLogout }: UserMenuProps) {
     const { theme, setTheme } = useTheme();
     const locale = useLocale() as Locale;
     const t = useTranslations();
@@ -86,6 +88,14 @@ export default function UserMenu({ user, onLogout }: UserMenuProps) {
                             <span>{t("ui.navigation.settings")}</span>
                         </Link>
                     </DropdownMenuItem>
+                    {hasEstablishment && (
+                        <DropdownMenuItem asChild>
+                            <Link href={routes.MyEstablishments()} className="cursor-pointer">
+                                <Building2 className="me-2 h-4 w-4" />
+                                <span>{t("common.actions.myEstablishments")}</span>
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator />

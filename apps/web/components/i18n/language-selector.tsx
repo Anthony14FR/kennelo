@@ -23,7 +23,9 @@ export function useLanguageSelector() {
     const handleLocaleChange = async (newLocale: Locale) => {
         if (newLocale === locale) return;
         if (isAuthenticated) {
-            await changeLocale(newLocale);
+            try {
+                await changeLocale(newLocale);
+            } catch {}
         }
 
         startTransition(() => {
