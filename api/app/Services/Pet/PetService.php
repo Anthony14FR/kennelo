@@ -10,6 +10,7 @@ use App\Models\Pet;
 use App\Models\PetAttribute;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -33,19 +34,12 @@ class PetService
 
     public function create(User $user, array $data): Pet
     {
-        $pet = Pet::create([
-            'user_id' => $user->id,
-            ...$data,
-        ]);
-
-        return $pet->load(['animalType']);
+        return tap(Pet::create(['user_id' => $user->id, ...$data]))->load(['animalType']);
     }
 
     public function update(Pet $pet, array $data): Pet
     {
-        $pet->update($data);
-
-        return $pet->fresh(['animalType']);
+        return tap($pet, fn (Pet $p) => $p->update($data))->fresh(['animalType']);
     }
 
     public function delete(Pet $pet): void
@@ -87,9 +81,7 @@ class PetService
             }
         }
 
-        if (! empty($errors)) {
-            throw ValidationException::withMessages($errors);
-        }
+        throw_if(! empty($errors), ValidationException::withMessages($errors));
     }
 
     public function syncAttributes(Pet $pet, array $attributes): void
@@ -103,7 +95,7 @@ class PetService
                 $valueColumn = $this->resolveValueColumn($definition->value_type);
 
                 $values = array_fill_keys($allValueColumns, null);
-                $values[$valueColumn] = $item[$valueColumn] ?? null;
+                $values[$valueColumn] = Arr::get($item, $valueColumn);
 
                 PetAttribute::updateOrCreate(
                     [

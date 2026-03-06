@@ -12,7 +12,6 @@ use App\Http\Resources\PetResource;
 use App\Models\Pet;
 use App\Services\Pet\PetService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Carbon;
 
 class PetController extends Controller
 {
@@ -27,7 +26,7 @@ class PetController extends Controller
         return PetResource::collection($pets)
             ->additional([
                 'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(Carbon::now()),
+                'timestamp' => human_date(now()),
             ])
             ->response();
     }
@@ -41,7 +40,7 @@ class PetController extends Controller
         return (new PetResource($pet))
             ->additional([
                 'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(Carbon::now()),
+                'timestamp' => human_date(now()),
             ])
             ->response();
     }
@@ -53,7 +52,7 @@ class PetController extends Controller
         return (new PetResource($pet))
             ->additional([
                 'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(Carbon::now()),
+                'timestamp' => human_date(now()),
             ])
             ->response()
             ->setStatusCode(201);
@@ -68,7 +67,7 @@ class PetController extends Controller
         return (new PetResource($pet))
             ->additional([
                 'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(Carbon::now()),
+                'timestamp' => human_date(now()),
             ])
             ->response();
     }

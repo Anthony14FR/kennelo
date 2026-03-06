@@ -46,7 +46,7 @@ class UpsertPetAttributesRequest extends FormRequest
                     );
                 }
 
-                if (! empty($item['attribute_option_id']) && ! empty($item['attribute_definition_id'])) {
+                if (filled($item['attribute_option_id'] ?? null) && filled($item['attribute_definition_id'] ?? null)) {
                     $optionBelongs = AttributeOption::where('id', $item['attribute_option_id'])
                         ->where('attribute_definition_id', $item['attribute_definition_id'])
                         ->exists();

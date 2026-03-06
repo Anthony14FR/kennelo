@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AnimalTypeResource;
 use App\Models\AnimalType;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Carbon;
 
 class AnimalTypeController extends Controller
 {
@@ -20,7 +19,7 @@ class AnimalTypeController extends Controller
         return AnimalTypeResource::collection($animalTypes)
             ->additional([
                 'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(Carbon::now()),
+                'timestamp' => human_date(now()),
             ])
             ->response();
     }

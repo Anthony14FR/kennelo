@@ -12,7 +12,6 @@ use App\Models\AnimalType;
 use App\Models\Pet;
 use App\Services\Pet\PetService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Carbon;
 
 class PetAttributeController extends Controller
 {
@@ -39,7 +38,7 @@ class PetAttributeController extends Controller
         return PetAttributeResource::collection($pet->petAttributes)
             ->additional([
                 'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(Carbon::now()),
+                'timestamp' => human_date(now()),
             ])
             ->response();
     }
