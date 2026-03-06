@@ -35,13 +35,10 @@ class PetController extends Controller
     {
         $this->authorize('view', $pet);
 
-        $pet = $this->petService->findById($pet->id);
+        $pet->load(['animalType', 'petAttributes.attributeDefinition', 'petAttributes.attributeOption']);
 
         return (new PetResource($pet))
-            ->additional([
-                'status' => ApiStatus::SUCCESS,
-                'timestamp' => human_date(now()),
-            ])
+            ->additional(['status' => ApiStatus::SUCCESS, 'timestamp' => human_date(now())])
             ->response();
     }
 

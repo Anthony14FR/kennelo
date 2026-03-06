@@ -34,7 +34,7 @@ class PetService
 
     public function create(User $user, array $data): Pet
     {
-        return tap(Pet::create(['user_id' => $user->id, ...$data]))->load(['animalType']);
+        return tap(Pet::create([...$data, 'user_id' => $user->id]))->load(['animalType']);
     }
 
     public function update(Pet $pet, array $data): Pet
@@ -67,16 +67,30 @@ class PetService
 
     public function validateAttributesForAnimalType(array $attributes, AnimalType $animalType): void
     {
-        $allowedIds = AttributeDefinition::whereHas('animalTypes', fn ($q) => $q->where('animal_types.id', $animalType->id))
-            ->pluck('id')
-            ->all();
+        $definitions = AttributeDefinition::whereHas('animalTypes', fn ($q) => $q->where('animal_types.id', $animalType->id))
+            ->get()
+            ->keyBy('id');
 
         $errors = [];
 
         foreach ($attributes as $index => $item) {
-            if (! in_array($item['attribute_definition_id'], $allowedIds, true)) {
+            $definitionId = $item['attribute_definition_id'];
+
+            if (! $definitions->has($definitionId)) {
                 $errors["attributes.$index.attribute_definition_id"] = [
                     'The attribute definition does not belong to this animal type.',
+                ];
+
+                continue;
+            }
+
+            $expectedColumn = $this->resolveValueColumn($definitions->get($definitionId)->value_type);
+            $valueFields = ['value_text', 'value_integer', 'value_decimal', 'value_boolean', 'value_date'];
+            $providedColumns = array_values(array_filter($valueFields, fn (string $f) => array_key_exists($f, $item) && $item[$f] !== null));
+
+            if (count($providedColumns) === 1 && $providedColumns[0] !== $expectedColumn) {
+                $errors["attributes.$index.{$providedColumns[0]}"] = [
+                    'The provided value field does not match the attribute definition type.',
                 ];
             }
         }
@@ -89,10 +103,12 @@ class PetService
         DB::transaction(function () use ($pet, $attributes): void {
             $allValueColumns = ['value_text', 'value_integer', 'value_decimal', 'value_boolean', 'value_date'];
 
+            $definitionIds = array_column($attributes, 'attribute_definition_id');
+            $definitions = AttributeDefinition::whereIn('id', $definitionIds)->get()->keyBy('id');
+
             foreach ($attributes as $item) {
                 $definitionId = $item['attribute_definition_id'];
-                $definition = AttributeDefinition::find($definitionId);
-                $valueColumn = $this->resolveValueColumn($definition->value_type);
+                $valueColumn = $this->resolveValueColumn($definitions->get($definitionId)->value_type);
 
                 $values = array_fill_keys($allValueColumns, null);
                 $values[$valueColumn] = Arr::get($item, $valueColumn);

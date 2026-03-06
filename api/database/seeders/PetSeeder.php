@@ -32,7 +32,7 @@ class PetSeeder extends Seeder
         $catId = $this->animalTypes['cat'];
         $birdId = $this->animalTypes['bird'];
         $fishId = $this->animalTypes['fish'];
-        $smallMammalId = $this->animalTypes['small_mammal'];
+        $rabbitId = $this->animalTypes['rabbit'];
 
         // === PET 1: Rex - Chien énergique ===
         $rexId = DB::table('pets')->insertGetId([
@@ -149,7 +149,7 @@ class PetSeeder extends Seeder
         // === PET 5: Caramel - Lapin nain ===
         $caramelId = DB::table('pets')->insertGetId([
             'user_id' => $this->userId,
-            'animal_type_id' => $smallMammalId,
+            'animal_type_id' => $rabbitId,
             'name' => 'Caramel',
             'breed' => 'Lapin nain bélier',
             'birth_date' => '2021-09-15',
@@ -265,7 +265,7 @@ class PetSeeder extends Seeder
             throw new \RuntimeException('User with email user@orus.com not found. Run UsersSeeder first.');
         }
 
-        $types = AnimalType::whereIn('code', ['dog', 'cat', 'bird', 'fish', 'small_mammal'])
+        $types = AnimalType::whereIn('code', ['dog', 'cat', 'bird', 'fish', 'rabbit'])
             ->pluck('id', 'code')->toArray();
 
         if (count($types) !== 5) {

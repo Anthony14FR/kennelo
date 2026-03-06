@@ -215,6 +215,16 @@ it('decimal value_type writes to value_decimal column', function () {
         ->and($attr->value_integer)->toBeNull();
 });
 
+it('value field not matching definition type is rejected with 422', function () {
+    ['user' => $user, 'pet' => $pet, 'definition' => $definition] = makeDogWithDefinition('integer');
+
+    $this->withHeaders(asUser($user))
+        ->putJson("/api/pets/{$pet->id}/attributes", [
+            'attributes' => [['attribute_definition_id' => $definition->id, 'value_text' => 'wrong type']],
+        ])
+        ->assertUnprocessable();
+});
+
 it('date value_type writes to value_date column', function () {
     ['user' => $user, 'pet' => $pet, 'definition' => $definition] = makeDogWithDefinition('date');
 
