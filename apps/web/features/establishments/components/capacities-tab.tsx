@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -47,17 +47,17 @@ export function CapacitiesTab({ establishmentId }: { establishmentId: string }) 
     const [showForm, setShowForm] = useState(false);
     const { execute } = useAsyncState();
 
-    const loadCapacities = () => {
+    const loadCapacities = useCallback(() => {
         setIsLoading(true);
         getCapacities(establishmentId)
             .then(setCapacities)
             .catch(() => setCapacities([]))
             .finally(() => setIsLoading(false));
-    };
+    }, [establishmentId]);
 
     useEffect(() => {
         loadCapacities();
-    }, [establishmentId]);
+    }, [loadCapacities]);
 
     const handleDelete = async (capacityId: number) => {
         await execute(() => deleteCapacity(establishmentId, capacityId));

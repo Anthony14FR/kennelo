@@ -40,6 +40,8 @@ import { useAsyncState } from "@/hooks/use-async-state";
 import { InputController } from "@/components/forms/input-controller";
 import { TextareaController } from "@/components/forms/textarea-controller";
 
+const SECTION_HEADER_CLASS = "text-sm font-medium text-muted-foreground uppercase tracking-wider";
+
 function InfoItem({
     icon: Icon,
     label,
@@ -79,7 +81,7 @@ function EstablishmentViewMode({
         <div className="grid gap-6 lg:grid-cols-2">
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                    <CardTitle className={SECTION_HEADER_CLASS}>
                         {t("features.my-establishments.detail.sections.details")}
                     </CardTitle>
                 </CardHeader>
@@ -107,7 +109,7 @@ function EstablishmentViewMode({
 
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                    <CardTitle className={SECTION_HEADER_CLASS}>
                         {t("features.my-establishments.detail.sections.contact")}
                     </CardTitle>
                 </CardHeader>
@@ -138,7 +140,7 @@ function EstablishmentViewMode({
             {establishment.address && (
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        <CardTitle className={SECTION_HEADER_CLASS}>
                             {t("features.my-establishments.detail.sections.address")}
                         </CardTitle>
                     </CardHeader>
@@ -156,7 +158,7 @@ function EstablishmentViewMode({
             {establishment.siret && (
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                        <CardTitle className={SECTION_HEADER_CLASS}>
                             {t("features.my-establishments.detail.sections.business")}
                         </CardTitle>
                     </CardHeader>
@@ -171,6 +173,141 @@ function EstablishmentViewMode({
                 </Card>
             )}
         </div>
+    );
+}
+
+type EditFieldProps = {
+    control: ReturnType<typeof useForm<UpdateEstablishmentInput>>["control"];
+    isLoading: boolean;
+};
+
+function EditDetailsSection({ control, isLoading }: EditFieldProps) {
+    const t = useTranslations();
+    return (
+        <Card>
+            <CardHeader className="pb-2">
+                <CardTitle className={SECTION_HEADER_CLASS}>
+                    {t("features.my-establishments.detail.sections.details")}
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <InputController
+                    name="name"
+                    control={control}
+                    label={t("common.fields.establishmentName")}
+                    placeholder={t("common.placeholders.establishmentName")}
+                    isLoading={isLoading}
+                />
+                <TextareaController
+                    name="description"
+                    control={control}
+                    label={t("common.fields.description")}
+                    placeholder={t("common.placeholders.description")}
+                    isLoading={isLoading}
+                    rows={4}
+                />
+            </CardContent>
+        </Card>
+    );
+}
+
+function EditContactSection({ control, isLoading }: EditFieldProps) {
+    const t = useTranslations();
+    return (
+        <Card>
+            <CardHeader className="pb-2">
+                <CardTitle className={SECTION_HEADER_CLASS}>
+                    {t("features.my-establishments.detail.sections.contact")}
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <InputController
+                    name="phone"
+                    control={control}
+                    label={t("common.fields.phone")}
+                    placeholder={t("common.placeholders.phone")}
+                    isLoading={isLoading}
+                    type="phone"
+                />
+                <InputController
+                    name="email"
+                    control={control}
+                    label={t("common.fields.email")}
+                    placeholder={t("common.placeholders.email")}
+                    isLoading={isLoading}
+                    type="email"
+                />
+                <InputController
+                    name="website"
+                    control={control}
+                    label={t("common.fields.website")}
+                    placeholder={t("common.placeholders.website")}
+                    isLoading={isLoading}
+                    type="url"
+                />
+            </CardContent>
+        </Card>
+    );
+}
+
+function EditAddressSection({ control, isLoading }: EditFieldProps) {
+    const t = useTranslations();
+    return (
+        <Card>
+            <CardHeader className="pb-2">
+                <CardTitle className={SECTION_HEADER_CLASS}>
+                    {t("features.my-establishments.detail.sections.address")}
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <InputController
+                    name="address.line1"
+                    control={control}
+                    label={t("common.fields.addressLine1")}
+                    placeholder={t("common.placeholders.addressLine1")}
+                    isLoading={isLoading}
+                />
+                <InputController
+                    name="address.line2"
+                    control={control}
+                    label={t("common.fields.addressLine2")}
+                    placeholder={t("common.placeholders.addressLine2")}
+                    isLoading={isLoading}
+                />
+                <div className="grid grid-cols-2 gap-4">
+                    <InputController
+                        name="address.city"
+                        control={control}
+                        label={t("common.fields.city")}
+                        placeholder={t("common.placeholders.city")}
+                        isLoading={isLoading}
+                    />
+                    <InputController
+                        name="address.postalCode"
+                        control={control}
+                        label={t("common.fields.postalCode")}
+                        placeholder={t("common.placeholders.postalCode")}
+                        isLoading={isLoading}
+                    />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <InputController
+                        name="address.region"
+                        control={control}
+                        label={t("common.fields.region")}
+                        placeholder={t("common.placeholders.region")}
+                        isLoading={isLoading}
+                    />
+                    <InputController
+                        name="address.country"
+                        control={control}
+                        label={t("common.fields.country")}
+                        placeholder={t("common.placeholders.country")}
+                        isLoading={isLoading}
+                    />
+                </div>
+            </CardContent>
+        </Card>
     );
 }
 
@@ -217,124 +354,13 @@ function EstablishmentEditForm({
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <Card>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                        {t("features.my-establishments.detail.sections.details")}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <InputController
-                        name="name"
-                        control={control}
-                        label={t("common.fields.establishmentName")}
-                        placeholder={t("common.placeholders.establishmentName")}
-                        isLoading={isLoading}
-                    />
-                    <TextareaController
-                        name="description"
-                        control={control}
-                        label={t("common.fields.description")}
-                        placeholder={t("common.placeholders.description")}
-                        isLoading={isLoading}
-                        rows={4}
-                    />
-                </CardContent>
-            </Card>
+            <EditDetailsSection control={control} isLoading={isLoading} />
+            <EditContactSection control={control} isLoading={isLoading} />
+            <EditAddressSection control={control} isLoading={isLoading} />
 
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                        {t("features.my-establishments.detail.sections.contact")}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <InputController
-                        name="phone"
-                        control={control}
-                        label={t("common.fields.phone")}
-                        placeholder={t("common.placeholders.phone")}
-                        isLoading={isLoading}
-                        type="phone"
-                    />
-                    <InputController
-                        name="email"
-                        control={control}
-                        label={t("common.fields.email")}
-                        placeholder={t("common.placeholders.email")}
-                        isLoading={isLoading}
-                        type="email"
-                    />
-                    <InputController
-                        name="website"
-                        control={control}
-                        label={t("common.fields.website")}
-                        placeholder={t("common.placeholders.website")}
-                        isLoading={isLoading}
-                        type="url"
-                    />
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                        {t("features.my-establishments.detail.sections.address")}
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <InputController
-                        name="address.line1"
-                        control={control}
-                        label={t("common.fields.addressLine1")}
-                        placeholder={t("common.placeholders.addressLine1")}
-                        isLoading={isLoading}
-                    />
-                    <InputController
-                        name="address.line2"
-                        control={control}
-                        label={t("common.fields.addressLine2")}
-                        placeholder={t("common.placeholders.addressLine2")}
-                        isLoading={isLoading}
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                        <InputController
-                            name="address.city"
-                            control={control}
-                            label={t("common.fields.city")}
-                            placeholder={t("common.placeholders.city")}
-                            isLoading={isLoading}
-                        />
-                        <InputController
-                            name="address.postalCode"
-                            control={control}
-                            label={t("common.fields.postalCode")}
-                            placeholder={t("common.placeholders.postalCode")}
-                            isLoading={isLoading}
-                        />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <InputController
-                            name="address.region"
-                            control={control}
-                            label={t("common.fields.region")}
-                            placeholder={t("common.placeholders.region")}
-                            isLoading={isLoading}
-                        />
-                        <InputController
-                            name="address.country"
-                            control={control}
-                            label={t("common.fields.country")}
-                            placeholder={t("common.placeholders.country")}
-                            isLoading={isLoading}
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                    <CardTitle className={SECTION_HEADER_CLASS}>
                         {t("features.my-establishments.detail.sections.business")}
                     </CardTitle>
                 </CardHeader>

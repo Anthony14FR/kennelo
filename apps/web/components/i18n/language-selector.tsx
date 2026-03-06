@@ -25,7 +25,7 @@ export function useLanguageSelector() {
         if (isAuthenticated) {
             try {
                 await changeLocale(newLocale);
-            } catch {}
+            } catch (_e) {}
         }
 
         startTransition(() => {

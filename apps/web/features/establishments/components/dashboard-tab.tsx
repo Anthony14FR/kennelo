@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { PawPrint, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Badge } from "@workspace/ui/components/badge";
 import { Progress } from "@workspace/ui/components/progress";
-import { Separator } from "@workspace/ui/components/separator";
 import {
     Table,
     TableBody,
@@ -23,13 +22,17 @@ export function DashboardTab({ establishmentId }: { establishmentId: string }) {
     const [dashboard, setDashboard] = useState<DashboardModel | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
+    const loadDashboard = useCallback(() => {
         setIsLoading(true);
         getEstablishmentDashboard(establishmentId)
             .then(setDashboard)
             .catch(() => setDashboard(null))
             .finally(() => setIsLoading(false));
     }, [establishmentId]);
+
+    useEffect(() => {
+        loadDashboard();
+    }, [loadDashboard]);
 
     if (isLoading) {
         return null;

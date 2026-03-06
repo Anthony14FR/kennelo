@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
@@ -67,6 +67,77 @@ function getFirstDayOfWeek(year: number, month: number): number {
     return day === 0 ? 6 : day - 1;
 }
 
+const T_OPEN = "features.my-establishments.availabilities.open" as const;
+const T_CLOSED = "features.my-establishments.availabilities.closed" as const;
+
+function CalendarDayCell({
+    day,
+    dateStr,
+    availability,
+    isToday,
+    onDelete,
+}: {
+    day: number;
+    dateStr: string;
+    availability: AvailabilityModel | undefined;
+    isToday: boolean;
+    onDelete: (id: number) => void;
+}) {
+    const t = useTranslations();
+    const isClosed = availability?.status === "closed";
+
+    return (
+        <div
+            className={`
+                relative flex flex-col items-center justify-center rounded-xl p-2.5 text-sm transition-colors
+                ${isClosed ? "bg-destructive/10 text-destructive" : ""}
+                ${availability && !isClosed ? "bg-primary/10 text-primary font-medium" : ""}
+                ${!availability ? "text-muted-foreground hover:bg-muted/50" : ""}
+                ${isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}
+            `}
+        >
+            <span className="tabular-nums">{day}</span>
+            {availability && (
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <button className="absolute inset-0 rounded-xl hover:bg-foreground/5 transition-colors" />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>{dateStr}</AlertDialogTitle>
+                            <AlertDialogDescription asChild>
+                                <div className="flex flex-col gap-3">
+                                    <Badge
+                                        variant={isClosed ? "destructive" : "default"}
+                                        className="w-fit"
+                                    >
+                                        {isClosed ? t(T_CLOSED) : t(T_OPEN)}
+                                    </Badge>
+                                    {availability.note && (
+                                        <p className="text-muted-foreground text-sm">
+                                            {availability.note}
+                                        </p>
+                                    )}
+                                </div>
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>{t("common.actions.close")}</AlertDialogCancel>
+                            <AlertDialogAction
+                                variant="destructive"
+                                onClick={() => onDelete(availability.id)}
+                            >
+                                <Trash2 className="size-4 me-1.5" />
+                                {t("common.actions.delete")}
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
+        </div>
+    );
+}
+
 export function AvailabilitiesTab({ establishmentId }: { establishmentId: string }) {
     const t = useTranslations();
     const locale = useLocale();
@@ -78,17 +149,17 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
     const [showForm, setShowForm] = useState(false);
     const { execute } = useAsyncState();
 
-    const loadAvailabilities = () => {
+    const loadAvailabilities = useCallback(() => {
         setIsLoading(true);
         getAvailabilities(establishmentId, formatMonth(year, month))
             .then(setAvailabilities)
             .catch(() => setAvailabilities([]))
             .finally(() => setIsLoading(false));
-    };
+    }, [establishmentId, year, month]);
 
     useEffect(() => {
         loadAvailabilities();
-    }, [establishmentId, year, month]);
+    }, [loadAvailabilities]);
 
     const handlePrevMonth = () => {
         if (month === 1) {
@@ -151,7 +222,7 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
                         </div>
                         <div>
                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                {t("features.my-establishments.availabilities.open")}
+                                {t(T_OPEN)}
                             </p>
                             <p className="text-2xl font-bold tabular-nums mt-0.5">{openCount}</p>
                         </div>
@@ -168,7 +239,7 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
                         </div>
                         <div>
                             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                                {t("features.my-establishments.availabilities.closed")}
+                                {t(T_CLOSED)}
                             </p>
                             <p className="text-2xl font-bold tabular-nums mt-0.5">{closedCount}</p>
                         </div>
@@ -218,79 +289,20 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
                                 {Array.from({ length: daysInMonth }).map((_, i) => {
                                     const day = i + 1;
                                     const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-                                    const availability = availabilityMap.get(dateStr);
-                                    const isClosed = availability?.status === "closed";
                                     const isToday =
                                         day === now.getDate() &&
                                         month === now.getMonth() + 1 &&
                                         year === now.getFullYear();
 
                                     return (
-                                        <div
+                                        <CalendarDayCell
                                             key={day}
-                                            className={`
-                                                relative flex flex-col items-center justify-center rounded-xl p-2.5 text-sm transition-colors
-                                                ${isClosed ? "bg-destructive/10 text-destructive" : ""}
-                                                ${availability && !isClosed ? "bg-primary/10 text-primary font-medium" : ""}
-                                                ${!availability ? "text-muted-foreground hover:bg-muted/50" : ""}
-                                                ${isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}
-                                            `}
-                                        >
-                                            <span className="tabular-nums">{day}</span>
-                                            {availability && (
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <button className="absolute inset-0 rounded-xl hover:bg-foreground/5 transition-colors" />
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>
-                                                                {dateStr}
-                                                            </AlertDialogTitle>
-                                                            <AlertDialogDescription asChild>
-                                                                <div className="flex flex-col gap-3">
-                                                                    <Badge
-                                                                        variant={
-                                                                            isClosed
-                                                                                ? "destructive"
-                                                                                : "default"
-                                                                        }
-                                                                        className="w-fit"
-                                                                    >
-                                                                        {isClosed
-                                                                            ? t(
-                                                                                  "features.my-establishments.availabilities.closed",
-                                                                              )
-                                                                            : t(
-                                                                                  "features.my-establishments.availabilities.open",
-                                                                              )}
-                                                                    </Badge>
-                                                                    {availability.note && (
-                                                                        <p className="text-muted-foreground text-sm">
-                                                                            {availability.note}
-                                                                        </p>
-                                                                    )}
-                                                                </div>
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>
-                                                                {t("common.actions.close")}
-                                                            </AlertDialogCancel>
-                                                            <AlertDialogAction
-                                                                variant="destructive"
-                                                                onClick={() =>
-                                                                    handleDelete(availability.id)
-                                                                }
-                                                            >
-                                                                <Trash2 className="size-4 me-1.5" />
-                                                                {t("common.actions.delete")}
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            )}
-                                        </div>
+                                            day={day}
+                                            dateStr={dateStr}
+                                            availability={availabilityMap.get(dateStr)}
+                                            isToday={isToday}
+                                            onDelete={handleDelete}
+                                        />
                                     );
                                 })}
                             </div>
@@ -299,11 +311,11 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
                         <div className="flex items-center gap-6 text-xs text-muted-foreground">
                             <div className="flex items-center gap-2">
                                 <div className="size-3 rounded-full bg-primary/30" />
-                                <span>{t("features.my-establishments.availabilities.open")}</span>
+                                <span>{t(T_OPEN)}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="size-3 rounded-full bg-destructive/30" />
-                                <span>{t("features.my-establishments.availabilities.closed")}</span>
+                                <span>{t(T_CLOSED)}</span>
                             </div>
                             <div className="flex items-center gap-2">
                                 <div className="size-3 rounded-full ring-2 ring-primary" />
@@ -426,12 +438,8 @@ function CreateAvailabilityForm({
                                 <SelectValue placeholder={t("common.placeholders.selectStatus")} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="open">
-                                    {t("features.my-establishments.availabilities.open")}
-                                </SelectItem>
-                                <SelectItem value="closed">
-                                    {t("features.my-establishments.availabilities.closed")}
-                                </SelectItem>
+                                <SelectItem value="open">{t(T_OPEN)}</SelectItem>
+                                <SelectItem value="closed">{t(T_CLOSED)}</SelectItem>
                             </SelectContent>
                         </Select>
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
