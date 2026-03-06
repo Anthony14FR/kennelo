@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pet extends Model
 {
@@ -41,5 +43,15 @@ class Pet extends Model
     public function animalType(): BelongsTo
     {
         return $this->belongsTo(AnimalType::class);
+    }
+
+    public function petAttributes(): HasMany
+    {
+        return $this->hasMany(PetAttribute::class);
+    }
+
+    public function scopeForUser(Builder $query, int $userId): Builder
+    {
+        return $query->where('user_id', $userId);
     }
 }

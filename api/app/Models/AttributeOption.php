@@ -9,17 +9,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AttributeOption extends Model
 {
-    public $timestamps = false;
-
     protected $fillable = [
         'attribute_definition_id',
         'value',
         'label',
-        'display_order',
+        'sort_order',
     ];
 
     protected $casts = [
-        'display_order' => 'integer',
+        'sort_order' => 'integer',
     ];
 
     public function attributeDefinition(): BelongsTo
