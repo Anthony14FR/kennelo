@@ -1,0 +1,23 @@
+{
+    "destination": "Destination",
+    "dates": "Dates",
+    "when": "Quand ?",
+    "cta": "Rechercher",
+    "recent-searches": "Recherches récentes",
+    "suggestions": "Suggestions de destinations",
+    "nearby": "À proximité",
+    "nearby-description": "Découvrez les pensions à proximité",
+    "pets": {
+        "label": "Animaux",
+        "add": "Ajouter des animaux...",
+        "count": "{count, plural, =1 {1 animal} other {# animaux}}",
+        "dog": "Chien",
+        "dog-description": "Toute race et taille",
+        "cat": "Chat",
+        "cat-description": "Toutes races acceptées",
+        "bird": "Oiseau",
+        "bird-description": "Toutes espèces acceptées",
+        "reptile": "Reptile",
+        "reptile-description": "Lézards, serpents et plus"
+    }
+}

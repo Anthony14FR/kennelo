@@ -1,0 +1,23 @@
+{
+    "destination": "Destination",
+    "dates": "Dates",
+    "when": "When?",
+    "cta": "Search",
+    "recent-searches": "Recent searches",
+    "suggestions": "Destination suggestions",
+    "nearby": "Nearby",
+    "nearby-description": "Discover kennels near you",
+    "pets": {
+        "label": "Pets",
+        "add": "Add pets...",
+        "count": "{count, plural, =1 {1 animal} other {# animals}}",
+        "dog": "Dog",
+        "dog-description": "Any breed and size",
+        "cat": "Cat",
+        "cat-description": "All breeds welcome",
+        "bird": "Bird",
+        "bird-description": "All species welcome",
+        "reptile": "Reptile",
+        "reptile-description": "Lizards, snakes and more"
+    }
+}
