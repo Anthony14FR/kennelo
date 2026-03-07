@@ -41,6 +41,10 @@ import { InputController } from "@/components/forms/input-controller";
 import { TextareaController } from "@/components/forms/textarea-controller";
 
 const SECTION_HEADER_CLASS = "text-sm font-medium text-muted-foreground uppercase tracking-wider";
+const T_SECTIONS_DETAILS = "features.my-establishments.detail.sections.details" as const;
+const T_SECTIONS_CONTACT = "features.my-establishments.detail.sections.contact" as const;
+const T_SECTIONS_ADDRESS = "features.my-establishments.detail.sections.address" as const;
+const T_SECTIONS_BUSINESS = "features.my-establishments.detail.sections.business" as const;
 
 function InfoItem({
     icon: Icon,
@@ -81,9 +85,7 @@ function EstablishmentViewMode({
         <div className="grid gap-6 lg:grid-cols-2">
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle className={SECTION_HEADER_CLASS}>
-                        {t("features.my-establishments.detail.sections.details")}
-                    </CardTitle>
+                    <CardTitle className={SECTION_HEADER_CLASS}>{t(T_SECTIONS_DETAILS)}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-1">
                     <InfoItem
@@ -109,9 +111,7 @@ function EstablishmentViewMode({
 
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle className={SECTION_HEADER_CLASS}>
-                        {t("features.my-establishments.detail.sections.contact")}
-                    </CardTitle>
+                    <CardTitle className={SECTION_HEADER_CLASS}>{t(T_SECTIONS_CONTACT)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <InfoItem
@@ -141,13 +141,13 @@ function EstablishmentViewMode({
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className={SECTION_HEADER_CLASS}>
-                            {t("features.my-establishments.detail.sections.address")}
+                            {t(T_SECTIONS_ADDRESS)}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <InfoItem
                             icon={MapPin}
-                            label={t("features.my-establishments.detail.sections.address")}
+                            label={t(T_SECTIONS_ADDRESS)}
                             value={establishment.address.getFullAddress()}
                             empty=""
                         />
@@ -159,7 +159,7 @@ function EstablishmentViewMode({
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className={SECTION_HEADER_CLASS}>
-                            {t("features.my-establishments.detail.sections.business")}
+                            {t(T_SECTIONS_BUSINESS)}
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -186,9 +186,7 @@ function EditDetailsSection({ control, isLoading }: EditFieldProps) {
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className={SECTION_HEADER_CLASS}>
-                    {t("features.my-establishments.detail.sections.details")}
-                </CardTitle>
+                <CardTitle className={SECTION_HEADER_CLASS}>{t(T_SECTIONS_DETAILS)}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <InputController
@@ -216,9 +214,7 @@ function EditContactSection({ control, isLoading }: EditFieldProps) {
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className={SECTION_HEADER_CLASS}>
-                    {t("features.my-establishments.detail.sections.contact")}
-                </CardTitle>
+                <CardTitle className={SECTION_HEADER_CLASS}>{t(T_SECTIONS_CONTACT)}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <InputController
@@ -255,9 +251,7 @@ function EditAddressSection({ control, isLoading }: EditFieldProps) {
     return (
         <Card>
             <CardHeader className="pb-2">
-                <CardTitle className={SECTION_HEADER_CLASS}>
-                    {t("features.my-establishments.detail.sections.address")}
-                </CardTitle>
+                <CardTitle className={SECTION_HEADER_CLASS}>{t(T_SECTIONS_ADDRESS)}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <InputController
@@ -311,6 +305,29 @@ function EditAddressSection({ control, isLoading }: EditFieldProps) {
     );
 }
 
+function s(val: string | null | undefined): string {
+    return val || "";
+}
+
+function buildEditDefaults(e: EstablishmentModel): UpdateEstablishmentInput {
+    return {
+        name: e.name,
+        description: s(e.description),
+        phone: s(e.phone),
+        email: s(e.email),
+        website: s(e.website),
+        siret: s(e.siret),
+        address: {
+            line1: s(e.address?.line1),
+            line2: s(e.address?.line2),
+            city: s(e.address?.city),
+            postalCode: s(e.address?.postalCode),
+            region: s(e.address?.region),
+            country: s(e.address?.country),
+        },
+    };
+}
+
 function EstablishmentEditForm({
     establishment,
     onCancel,
@@ -325,22 +342,7 @@ function EstablishmentEditForm({
 
     const { control, handleSubmit, setError } = useForm<UpdateEstablishmentInput>({
         resolver: zodResolver(updateEstablishmentSchema),
-        defaultValues: {
-            name: establishment.name,
-            description: establishment.description || "",
-            phone: establishment.phone || "",
-            email: establishment.email || "",
-            website: establishment.website || "",
-            siret: establishment.siret || "",
-            address: {
-                line1: establishment.address?.line1 || "",
-                line2: establishment.address?.line2 || "",
-                city: establishment.address?.city || "",
-                postalCode: establishment.address?.postalCode || "",
-                region: establishment.address?.region || "",
-                country: establishment.address?.country || "",
-            },
-        },
+        defaultValues: buildEditDefaults(establishment),
     });
 
     const onSubmit = async (data: UpdateEstablishmentInput) => {
@@ -360,9 +362,7 @@ function EstablishmentEditForm({
 
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle className={SECTION_HEADER_CLASS}>
-                        {t("features.my-establishments.detail.sections.business")}
-                    </CardTitle>
+                    <CardTitle className={SECTION_HEADER_CLASS}>{t(T_SECTIONS_BUSINESS)}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <InputController
@@ -390,6 +390,131 @@ function EstablishmentEditForm({
                 </Button>
             </div>
         </form>
+    );
+}
+
+function EstablishmentNotFound({ backHref }: { backHref: string }) {
+    const t = useTranslations();
+    return (
+        <div className="container mx-auto px-4 py-16 max-w-5xl text-center">
+            <Building2 className="size-12 text-muted-foreground mx-auto mb-4" />
+            <h2 className="text-xl font-semibold mb-2">
+                {t("features.my-establishments.detail.notFound")}
+            </h2>
+            <p className="text-muted-foreground mb-6">
+                {t("features.my-establishments.detail.notFoundDescription")}
+            </p>
+            <Button asChild variant="outline" className="rounded-4xl">
+                <Link href={backHref}>{t("common.actions.back")}</Link>
+            </Button>
+        </div>
+    );
+}
+
+function DeleteEstablishmentDialog({
+    onDelete,
+    isDeleting,
+}: {
+    onDelete: () => void;
+    isDeleting: boolean;
+}) {
+    const t = useTranslations();
+    return (
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    className="rounded-4xl gap-1.5 text-destructive hover:text-destructive"
+                >
+                    <Trash2 className="size-3.5" />
+                    {t("common.actions.delete")}
+                </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>
+                        {t("features.my-establishments.detail.deleteTitle")}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                        {t("features.my-establishments.detail.deleteDescription")}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel>{t("common.actions.cancel")}</AlertDialogCancel>
+                    <AlertDialogAction
+                        variant="destructive"
+                        onClick={onDelete}
+                        disabled={isDeleting}
+                    >
+                        {isDeleting ? t("common.actions.loading") : t("common.actions.delete")}
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
+    );
+}
+
+function DetailPageHeader({
+    establishment,
+    isEditing,
+    isDeleting,
+    backHref,
+    onEdit,
+    onDelete,
+}: {
+    establishment: EstablishmentModel;
+    isEditing: boolean;
+    isDeleting: boolean;
+    backHref: string;
+    onEdit: () => void;
+    onDelete: () => void;
+}) {
+    const t = useTranslations();
+    return (
+        <div className="flex items-center justify-between mb-8">
+            <div>
+                <Button
+                    asChild
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1.5 -ms-2 mb-2 text-muted-foreground"
+                >
+                    <Link href={backHref}>{t("common.actions.back")}</Link>
+                </Button>
+                <div className="flex items-center gap-3">
+                    <h1 className="text-2xl font-bold tracking-tight">
+                        {isEditing
+                            ? t("features.my-establishments.detail.editTitle")
+                            : establishment.name}
+                    </h1>
+                    <Badge variant={establishment.isActive ? "default" : "secondary"}>
+                        {establishment.isActive
+                            ? t("features.my-establishments.status.active")
+                            : t("features.my-establishments.status.inactive")}
+                    </Badge>
+                </div>
+                {isEditing && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                        {t("features.my-establishments.detail.editDescription")}
+                    </p>
+                )}
+            </div>
+            {!isEditing && (
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="rounded-4xl gap-1.5"
+                        onClick={onEdit}
+                    >
+                        <Pencil className="size-3.5" />
+                        {t("common.actions.edit")}
+                    </Button>
+                    <DeleteEstablishmentDialog onDelete={onDelete} isDeleting={isDeleting} />
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -438,102 +563,19 @@ export default function EstablishmentDetailPage() {
     }
 
     if (notFound || !establishment) {
-        return (
-            <div className="container mx-auto px-4 py-16 max-w-5xl text-center">
-                <Building2 className="size-12 text-muted-foreground mx-auto mb-4" />
-                <h2 className="text-xl font-semibold mb-2">
-                    {t("features.my-establishments.detail.notFound")}
-                </h2>
-                <p className="text-muted-foreground mb-6">
-                    {t("features.my-establishments.detail.notFoundDescription")}
-                </p>
-                <Button asChild variant="outline" className="rounded-4xl">
-                    <Link href={routes.MyEstablishments()}>{t("common.actions.back")}</Link>
-                </Button>
-            </div>
-        );
+        return <EstablishmentNotFound backHref={routes.MyEstablishments()} />;
     }
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <Button
-                        asChild
-                        variant="ghost"
-                        size="sm"
-                        className="gap-1.5 -ms-2 mb-2 text-muted-foreground"
-                    >
-                        <Link href={routes.MyEstablishments()}>{t("common.actions.back")}</Link>
-                    </Button>
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-2xl font-bold tracking-tight">
-                            {isEditing
-                                ? t("features.my-establishments.detail.editTitle")
-                                : establishment.name}
-                        </h1>
-                        <Badge variant={establishment.isActive ? "default" : "secondary"}>
-                            {establishment.isActive
-                                ? t("features.my-establishments.status.active")
-                                : t("features.my-establishments.status.inactive")}
-                        </Badge>
-                    </div>
-                    {isEditing && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                            {t("features.my-establishments.detail.editDescription")}
-                        </p>
-                    )}
-                </div>
-                {!isEditing && (
-                    <div className="flex items-center gap-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="rounded-4xl gap-1.5"
-                            onClick={() => setIsEditing(true)}
-                        >
-                            <Pencil className="size-3.5" />
-                            {t("common.actions.edit")}
-                        </Button>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="rounded-4xl gap-1.5 text-destructive hover:text-destructive"
-                                >
-                                    <Trash2 className="size-3.5" />
-                                    {t("common.actions.delete")}
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                        {t("features.my-establishments.detail.deleteTitle")}
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        {t("features.my-establishments.detail.deleteDescription")}
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                        {t("common.actions.cancel")}
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                        variant="destructive"
-                                        onClick={handleDelete}
-                                        disabled={isDeleting}
-                                    >
-                                        {isDeleting
-                                            ? t("common.actions.loading")
-                                            : t("common.actions.delete")}
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </div>
-                )}
-            </div>
+            <DetailPageHeader
+                establishment={establishment}
+                isEditing={isEditing}
+                isDeleting={isDeleting}
+                backHref={routes.MyEstablishments()}
+                onEdit={() => setIsEditing(true)}
+                onDelete={handleDelete}
+            />
 
             {isEditing ? (
                 <EstablishmentEditForm
@@ -546,7 +588,7 @@ export default function EstablishmentDetailPage() {
                     <TabsList variant="line" className="border-b w-full justify-start gap-0">
                         <TabsTrigger value="overview" className="gap-2 px-4 py-2.5">
                             <KHome size={18} secondary="text-muted-foreground" />
-                            {t("features.my-establishments.detail.sections.details")}
+                            {t(T_SECTIONS_DETAILS)}
                         </TabsTrigger>
                         <TabsTrigger value="dashboard" className="gap-2 px-4 py-2.5">
                             <KCompass size={18} secondary="text-muted-foreground" />

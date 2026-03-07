@@ -54,6 +54,41 @@ function handleAsyncSuccess<T>(result: T, options?: AsyncStateOptions<T>): void 
     options?.onSuccess?.(result);
 }
 
+function getApiErrorInfo(err: unknown): {
+    status: number | undefined;
+    apiMessage: string | undefined;
+} {
+    const apiError = err as ApiErrorLike;
+    const status = apiError?.status;
+    const hasMessage =
+        err instanceof Error && err.message && !err.message.startsWith("HTTP Error ");
+    return { status, apiMessage: hasMessage ? err.message : undefined };
+}
+
+function isTranslatableStatus(status: number): boolean {
+    return HTTP_TRANSLATED_CODES.includes(String(status) as (typeof HTTP_TRANSLATED_CODES)[number]);
+}
+
+function applyFieldErrors<T>(
+    fieldErrors: Record<string, string[]>,
+    options: AsyncStateOptions<T>,
+): void {
+    Object.entries(fieldErrors).forEach(([field, messages]) => {
+        options.setFieldError!(field, { message: messages[0] ?? "" });
+    });
+}
+
+function showErrorToast(message: string): void {
+    toast.error(message, {
+        position: "bottom-right",
+        classNames: {
+            icon: "text-destructive",
+            content: "text-destructive",
+            toast: "border !border-destructive/30 !bg-destructive/10 backdrop-blur-sm",
+        },
+    });
+}
+
 export function useAsyncState() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | undefined>();
@@ -61,29 +96,17 @@ export function useAsyncState() {
 
     const resolveErrorMessage = useCallback(
         (err: unknown, defaultError?: string): string => {
-            const apiError = err as ApiErrorLike;
-            const status = apiError?.status;
-            const hasApiMessage =
-                err instanceof Error && err.message && !err.message.startsWith("HTTP Error ");
+            const { status, apiMessage } = getApiErrorInfo(err);
 
-            if (status && status >= 400 && status < 500 && hasApiMessage) {
-                return err.message;
+            if (status && status >= 400 && status < 500 && apiMessage) {
+                return apiMessage;
             }
 
-            if (
-                status &&
-                HTTP_TRANSLATED_CODES.includes(
-                    String(status) as (typeof HTTP_TRANSLATED_CODES)[number],
-                )
-            ) {
+            if (status && isTranslatableStatus(status)) {
                 return t(`errors.http.${status}`);
             }
 
-            if (hasApiMessage) {
-                return err.message;
-            }
-
-            return defaultError ?? t("errors.http.500");
+            return apiMessage ?? defaultError ?? t("errors.http.500");
         },
         [t],
     );
@@ -100,9 +123,7 @@ export function useAsyncState() {
                 fieldErrors && options?.setFieldError && Object.keys(fieldErrors).length > 0;
 
             if (hasFieldErrors) {
-                Object.entries(fieldErrors).forEach(([field, messages]) => {
-                    options.setFieldError!(field, { message: messages[0] ?? "" });
-                });
+                applyFieldErrors(fieldErrors, options!);
             } else {
                 setStateError(message);
             }
@@ -110,14 +131,7 @@ export function useAsyncState() {
             options?.onFailure?.(message);
 
             if (options?.displayError !== false) {
-                toast.error(message, {
-                    position: "bottom-right",
-                    classNames: {
-                        icon: "text-destructive",
-                        content: "text-destructive",
-                        toast: "border !border-destructive/30 !bg-destructive/10 backdrop-blur-sm",
-                    },
-                });
+                showErrorToast(message);
             }
         },
         [resolveErrorMessage],

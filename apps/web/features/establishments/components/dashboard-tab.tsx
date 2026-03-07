@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { PawPrint, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
@@ -22,17 +22,26 @@ export function DashboardTab({ establishmentId }: { establishmentId: string }) {
     const [dashboard, setDashboard] = useState<DashboardModel | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const loadDashboard = useCallback(() => {
-        setIsLoading(true);
-        getEstablishmentDashboard(establishmentId)
-            .then(setDashboard)
-            .catch(() => setDashboard(null))
-            .finally(() => setIsLoading(false));
-    }, [establishmentId]);
-
     useEffect(() => {
-        loadDashboard();
-    }, [loadDashboard]);
+        let active = true;
+        getEstablishmentDashboard(establishmentId).then(
+            (data) => {
+                if (active) {
+                    setDashboard(data);
+                    setIsLoading(false);
+                }
+            },
+            () => {
+                if (active) {
+                    setDashboard(null);
+                    setIsLoading(false);
+                }
+            },
+        );
+        return () => {
+            active = false;
+        };
+    }, [establishmentId]);
 
     if (isLoading) {
         return null;

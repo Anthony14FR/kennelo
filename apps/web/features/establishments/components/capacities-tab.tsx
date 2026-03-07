@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -45,23 +45,33 @@ export function CapacitiesTab({ establishmentId }: { establishmentId: string }) 
     const [capacities, setCapacities] = useState<CapacityModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const [refreshKey, refresh] = useReducer((x: number) => x + 1, 0);
     const { execute } = useAsyncState();
 
-    const loadCapacities = useCallback(() => {
-        setIsLoading(true);
-        getCapacities(establishmentId)
-            .then(setCapacities)
-            .catch(() => setCapacities([]))
-            .finally(() => setIsLoading(false));
-    }, [establishmentId]);
-
     useEffect(() => {
-        loadCapacities();
-    }, [loadCapacities]);
+        let active = true;
+        getCapacities(establishmentId).then(
+            (data) => {
+                if (active) {
+                    setCapacities(data);
+                    setIsLoading(false);
+                }
+            },
+            () => {
+                if (active) {
+                    setCapacities([]);
+                    setIsLoading(false);
+                }
+            },
+        );
+        return () => {
+            active = false;
+        };
+    }, [establishmentId, refreshKey]);
 
     const handleDelete = async (capacityId: number) => {
         await execute(() => deleteCapacity(establishmentId, capacityId));
-        loadCapacities();
+        refresh();
     };
 
     if (isLoading) {
@@ -146,7 +156,7 @@ export function CapacitiesTab({ establishmentId }: { establishmentId: string }) 
                                 establishmentId={establishmentId}
                                 onCreated={() => {
                                     setShowForm(false);
-                                    loadCapacities();
+                                    refresh();
                                 }}
                                 onCancel={() => setShowForm(false)}
                             />

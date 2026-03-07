@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocale, useTranslations } from "next-intl";
@@ -86,15 +86,14 @@ function CalendarDayCell({
     const t = useTranslations();
     const isClosed = availability?.status === "closed";
 
+    let statusClass = "text-muted-foreground hover:bg-muted/50";
+    if (isClosed) statusClass = "bg-destructive/10 text-destructive";
+    else if (availability) statusClass = "bg-primary/10 text-primary font-medium";
+    const todayClass = isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : "";
+
     return (
         <div
-            className={`
-                relative flex flex-col items-center justify-center rounded-xl p-2.5 text-sm transition-colors
-                ${isClosed ? "bg-destructive/10 text-destructive" : ""}
-                ${availability && !isClosed ? "bg-primary/10 text-primary font-medium" : ""}
-                ${!availability ? "text-muted-foreground hover:bg-muted/50" : ""}
-                ${isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}
-            `}
+            className={`relative flex flex-col items-center justify-center rounded-xl p-2.5 text-sm transition-colors ${statusClass} ${todayClass}`}
         >
             <span className="tabular-nums">{day}</span>
             {availability && (
@@ -147,19 +146,29 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
     const [availabilities, setAvailabilities] = useState<AvailabilityModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const [refreshKey, refresh] = useReducer((x: number) => x + 1, 0);
     const { execute } = useAsyncState();
 
-    const loadAvailabilities = useCallback(() => {
-        setIsLoading(true);
-        getAvailabilities(establishmentId, formatMonth(year, month))
-            .then(setAvailabilities)
-            .catch(() => setAvailabilities([]))
-            .finally(() => setIsLoading(false));
-    }, [establishmentId, year, month]);
-
     useEffect(() => {
-        loadAvailabilities();
-    }, [loadAvailabilities]);
+        let active = true;
+        getAvailabilities(establishmentId, formatMonth(year, month)).then(
+            (data) => {
+                if (active) {
+                    setAvailabilities(data);
+                    setIsLoading(false);
+                }
+            },
+            () => {
+                if (active) {
+                    setAvailabilities([]);
+                    setIsLoading(false);
+                }
+            },
+        );
+        return () => {
+            active = false;
+        };
+    }, [establishmentId, year, month, refreshKey]);
 
     const handlePrevMonth = () => {
         if (month === 1) {
@@ -181,7 +190,7 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
 
     const handleDelete = async (availabilityId: number) => {
         await execute(() => deleteAvailability(establishmentId, availabilityId));
-        loadAvailabilities();
+        refresh();
     };
 
     const availabilityMap = new Map(availabilities.map((a) => [a.date, a]));
@@ -348,7 +357,7 @@ export function AvailabilitiesTab({ establishmentId }: { establishmentId: string
                                 establishmentId={establishmentId}
                                 onCreated={() => {
                                     setShowForm(false);
-                                    loadAvailabilities();
+                                    refresh();
                                 }}
                                 onCancel={() => setShowForm(false)}
                             />
