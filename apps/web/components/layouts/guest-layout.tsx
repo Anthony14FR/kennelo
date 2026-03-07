@@ -6,6 +6,7 @@ import Image from "next/image";
 import { LanguageSwitcher } from "../i18n/language-switcher";
 import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
+import { useTranslations } from "next-intl";
 
 export default function GuestLayout({
     children,
@@ -16,6 +17,9 @@ export default function GuestLayout({
 }) {
     const isMobile = useIsMobile();
     const { routes } = useNavigation();
+    const t = useTranslations();
+
+    const isRtl = t("settings.dir") === "rtl";
 
     return (
         <div className="bg-background h-full overflow-hidden">
@@ -40,28 +44,40 @@ export default function GuestLayout({
             )}
             <main className={cn("container mx-auto relative h-full", className)}>
                 <div className="grid relative lg:grid-cols-2">
-                    <Image
-                        className="absolute z-0 w-full rotate-90 -top-8/12 md:max-w-unset md:-end-1/12 md:-top-11/12 opacity-40"
+                    {/* <Image
+                        className="absolute z-0 w-full rotate-90 -top-8/12 md:max-w-unset md:-right-1/12 md:-top-11/12 opacity-40"
                         src="/simple_shape_1.svg"
                         width={600}
                         height={600}
                         alt="Kennelo logo"
-                    />
-                    <div className="fixed inset-0 max-w-screen max-h-screen relative lg:overflow-hidden">
+                    /> */}
+                    <div className="fixed inset-0 max-w-screen max-h-screen relative">
                         <div className="absolute flex flex-col justify-between items-center w-full h-full">
-                            <div className="w-full flex justify-center lg:h-[65%] -mt-16">
+                            <div
+                                className={cn(
+                                    "relative w-full flex justify-center lg:h-[65%] translate-y-1/6 scale-[180%]",
+                                    isRtl
+                                        ? "lg:rotate-y-180 lg:-translate-x-1/4"
+                                        : " lg:translate-x-1/4",
+                                )}
+                            >
                                 <Image
                                     className="w-full max-w-md -translate-y-16 lg:max-w-full lg:h-full object-contain"
-                                    src="/shape_1.svg"
+                                    src="/shape_2.svg"
                                     width={600}
                                     height={600}
                                     alt="Kennelo logo"
                                 />
                             </div>
-                            <div className="relative hidden max-w-sm lg:flex w-full justify-center lg:max-w-md xl:max-w-lg lg:h-[50%] lg:-top-[5%]">
+                            <div
+                                className={cn(
+                                    "relative hidden max-w-sm lg:flex w-full justify-center scale-[190%] lg:max-w-md xl:max-w-lg lg:h-[50%]",
+                                    isRtl ? "lg:rotate-y-180" : "",
+                                )}
+                            >
                                 <Image
-                                    className="w-auto h-full object-contain lg:-translate-x-6"
-                                    src="/keny_illustration.png"
+                                    className="w-auto h-full object-contain lg:-translate-x-6 lg:-translate-y-2"
+                                    src="/keny_illustration.svg"
                                     width={600}
                                     height={600}
                                     alt="Kennelo logo"

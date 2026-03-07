@@ -35,8 +35,9 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
 
     return (
         <div className="min-h-screen bg-card">
-            {/* Header */}
-            <div className="h-18 flex items-center bg-background">
+            <Separator />
+
+            <div className="h-18 flex items-center">
                 <div className="container mx-auto flex items-center justify-between px-5">
                     <h1 className="text-3xl font-semibold tracking-tight">
                         {t("ui.navigation.profileSettings")}
@@ -48,11 +49,9 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
                 </div>
             </div>
 
-            <Separator />
-
             <div className="container mx-auto flex items-center justify-between">
                 <div className="flex">
-                    <aside className="relative min-w-64 shrink-0 px-4 py-6">
+                    <aside className="relative min-w-64 shrink-0 px-4 py-6 pt-0">
                         <nav className="sticky top-22 flex flex-col gap-1">
                             {settingsNav.map((item) => {
                                 const isActive = pathname.includes(item.href);
@@ -81,7 +80,7 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
 
                     <Separator orientation="vertical" className="self-stretch" />
 
-                    <main className="flex-1 p-6">{children}</main>
+                    <main className="flex-1 p-6 pt-0">{children}</main>
                 </div>
             </div>
         </div>

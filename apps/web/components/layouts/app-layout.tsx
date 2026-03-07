@@ -1,16 +1,9 @@
 "use client";
 
 import { cn } from "@workspace/ui/lib/utils";
-import {
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButton,
-    InputGroupInput,
-} from "@workspace/ui/components/input-group";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { KHome, KCompass, KMessage, KHeart } from "@workspace/ui/components/icons";
 import type { KIcon } from "@workspace/ui/components/icons";
-import { Search } from "lucide-react";
 import NavButton from "@/components/navigation/nav-button";
 import NavItem from "@/components/navigation/nav-item";
 import UserMenu from "@/components/navigation/user-menu";
@@ -19,6 +12,8 @@ import { useAuth } from "@/features/auth";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
+import { useScrolled } from "@/hooks/use-scrolled";
+import { LanguageSwitcher } from "../i18n/language-switcher";
 
 interface NavigationItem {
     icon: KIcon;
@@ -37,6 +32,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
     const isMobile = useIsMobile();
     const { routes } = useNavigation();
     const { user, isAuthenticated, logout } = useAuth();
+    const scrolled = useScrolled(0);
     const t = useTranslations();
 
     const navigationItems: NavigationItem[] = [
@@ -67,16 +63,8 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
     ];
 
     return (
-        <div className="bg-background h-full relative">
-            {/* <Image
-                className="absolute top-0 start-0 w-168"
-                src="/left-shape.svg"
-                width={120}
-                height={100}
-                alt="Kennelo logo"
-            /> */}
-
-            <div className="fixed bottom-8 end-8 flex flex-col items-end gap-4 z-20">
+        <div className="bg-background h-full">
+            <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-20 hidden sm:block">
                 <div className="hidden">{/* Chat box */}</div>
                 <div className="h-fit w-fit">
                     <Image
@@ -90,10 +78,17 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             </div>
 
             {!isMobile && (
-                <header className="sticky top-0 start-0 w-full h-16 flex items-center z-20 bg-background/60 backdrop-blur-sm">
-                    <div className="container mx-auto h-full flex justify-between items-center px-4">
-                        <div className="flex justify-start items-center w-full max-w-xs">
-                            <InputGroup className="rounded-full px-1.5 !py-5 w-full border border-primary/20 bg-white/30 backdrop-blur-sm">
+                <header
+                    className={cn(
+                        "sticky top-0 left-0 w-full h-16 flex items-center z-20 transition-backdrop transition-background duration-150",
+                        scrolled
+                            ? "bg-background/90 backdrop-blur-sm border-border/50 border-b"
+                            : "border-b border-transparent",
+                    )}
+                >
+                    <div className="mx-auto h-full flex justify-between items-center w-full px-8">
+                        {/* <div className="flex justify-start items-center w-full max-w-sm">
+                            <InputGroup className="rounded-full px-1.5 !py-5 w-full border border-primary/20 bg-white/30 backdrop-blur-sm max-w-xs">
                                 <InputGroupInput
                                     placeholder={t("common.placeholders.search-for-a-pension")}
                                     className="px-2 placeholder:text-base"
@@ -108,10 +103,14 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                     </InputGroupButton>
                                 </InputGroupAddon>
                             </InputGroup>
+                        </div> */}
+                        <div className="max-w-sm w-full">
+                            <LanguageSwitcher showDetails />
                         </div>
+
                         <Link
                             href={routes.Home()}
-                            className="relative w-full h-full flex justify-center items-center font-semibold text-lg"
+                            className="relative w-full max-w-xs h-full flex justify-center items-center font-semibold text-lg"
                         >
                             <Image
                                 className="object-cover max-h-full h-1/2 w-auto"
@@ -121,13 +120,17 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                 alt="Kennelo logo"
                             />
                         </Link>
-                        <div className="flex justify-end items-center">
+                        <div className="flex justify-end items-center max-w-sm w-full">
                             {!isAuthenticated ? (
                                 <div className="flex gap-1">
                                     <NavButton variant="ghost">
                                         {t("common.actions.becomePro")}
                                     </NavButton>
-                                    <NavButton>{t("ui.navigation.bookOnline")}</NavButton>
+                                    <NavButton asChild>
+                                        <Link href={routes.Login()}>
+                                            {t("ui.navigation.bookOnline")}
+                                        </Link>
+                                    </NavButton>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-3">
@@ -153,17 +156,19 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                     </div>
                 </header>
             )}
+
             <main
                 className={cn(
-                    "relative h-full",
+                    "w-full h-full",
                     // isMobile ? "pb-16" : "mt-16",
                     className,
                 )}
             >
                 {children}
             </main>
+
             {isMobile && (
-                <nav className="fixed bottom-0 w-full h-14 bg-background border-t border-primary/10 flex items-center z-10">
+                <nav className="fixed bottom-0 w-full h-16 bg-background border-t border-primary/10 flex items-center z-10 pb-3">
                     <div className="container mx-auto h-full flex justify-between items-center px-4 sm:px-6">
                         {navigationItems.map((item) => (
                             <NavItem
