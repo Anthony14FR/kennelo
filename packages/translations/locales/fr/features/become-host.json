@@ -1,0 +1,39 @@
+{
+    "title": "Devenir Hôte",
+    "description": "Référencez votre établissement d'accueil pour animaux sur Kennelo",
+    "steps": {
+        "welcome": {
+            "title": "Bienvenue",
+            "subtitle": "Configurons votre établissement",
+            "description": "En quelques étapes, vous serez prêt à accueillir des animaux dans votre établissement. Nous vous guidons tout au long de la configuration.",
+            "cta": "C'est parti"
+        },
+        "establishmentInfo": {
+            "title": "Votre établissement",
+            "subtitle": "Parlez-nous de votre lieu"
+        },
+        "contactDetails": {
+            "title": "Coordonnées",
+            "subtitle": "Comment les propriétaires peuvent-ils vous joindre ?"
+        },
+        "address": {
+            "title": "Localisation",
+            "subtitle": "Où se trouve votre établissement ?"
+        },
+        "businessInfo": {
+            "title": "Informations légales",
+            "subtitle": "Détails juridiques optionnels"
+        },
+        "review": {
+            "title": "Vérification & confirmation",
+            "subtitle": "Assurez-vous que tout est correct",
+            "submitButton": "Créer mon établissement",
+            "submitting": "Création..."
+        }
+    },
+    "success": {
+        "title": "Félicitations !",
+        "description": "Votre établissement a été créé avec succès. Vous pouvez maintenant commencer à accueillir des animaux !",
+        "cta": "Voir mon établissement"
+    }
+}

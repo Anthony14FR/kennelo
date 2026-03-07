@@ -4,9 +4,22 @@
 
 import { buildRoute } from "./config/routes.config";
 
+type BecomeHostParams = {
+    locale?: string | number;
+};
+
 type HostDetailsParams = {
     locale?: string | number;
     uuid: string;
+};
+
+type MyEstablishmentsParams = {
+    locale?: string | number;
+};
+
+type EstablishmentDetailParams = {
+    locale?: string | number;
+    id: string | number;
 };
 
 type HomeParams = {
@@ -41,8 +54,20 @@ function RootPage(): string {
     return "/";
 }
 
+function BecomeHost(params?: BecomeHostParams): string {
+    return buildRoute("/[locale]/become-host", params);
+}
+
 function HostDetails(params: HostDetailsParams): string {
     return buildRoute("/[locale]/host/[uuid]", params);
+}
+
+function MyEstablishments(params?: MyEstablishmentsParams): string {
+    return buildRoute("/[locale]/my-establishments", params);
+}
+
+function EstablishmentDetail(params: EstablishmentDetailParams): string {
+    return buildRoute("/[locale]/my-establishments/[id]", params);
 }
 
 function Home(params?: HomeParams): string {
@@ -75,7 +100,10 @@ function MyProfilePreferencesNotification(params?: MyProfilePreferencesNotificat
 
 export const routes = {
     RootPage,
+    BecomeHost,
     HostDetails,
+    MyEstablishments,
+    EstablishmentDetail,
     Home,
     Login,
     Register,
