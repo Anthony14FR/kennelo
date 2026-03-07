@@ -69,14 +69,14 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
     return (
         <div className="bg-background h-full relative">
             {/* <Image
-                className="absolute top-0 left-0 w-168"
+                className="absolute top-0 start-0 w-168"
                 src="/left-shape.svg"
                 width={120}
                 height={100}
                 alt="Kennelo logo"
             /> */}
 
-            <div className="fixed bottom-8 right-8 flex flex-col items-end gap-4 z-20">
+            <div className="fixed bottom-8 end-8 flex flex-col items-end gap-4 z-20">
                 <div className="hidden">{/* Chat box */}</div>
                 <div className="h-fit w-fit">
                     <Image
@@ -90,7 +90,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             </div>
 
             {!isMobile && (
-                <header className="sticky top-0 left-0 w-full h-16 flex items-center z-20 bg-background/60 backdrop-blur-sm">
+                <header className="sticky top-0 start-0 w-full h-16 flex items-center z-20 bg-background/60 backdrop-blur-sm">
                     <div className="container mx-auto h-full flex justify-between items-center px-4">
                         <div className="flex justify-start items-center w-full max-w-xs">
                             <InputGroup className="rounded-full px-1.5 !py-5 w-full border border-primary/20 bg-white/30 backdrop-blur-sm">
@@ -127,7 +127,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                                     <NavButton variant="ghost">
                                         {t("common.actions.becomePro")}
                                     </NavButton>
-                                    <NavButton>Réserver en ligne</NavButton>
+                                    <NavButton>{t("ui.navigation.bookOnline")}</NavButton>
                                 </div>
                             ) : (
                                 <div className="flex items-center gap-3">
@@ -185,7 +185,9 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                         {isAuthenticated && (
                             <div className="flex flex-col items-center gap-0.5">
                                 <UserMenu user={user ?? undefined} onLogout={logout} />
-                                <span className="text-xs text-muted-foreground">Profile</span>
+                                <span className="text-xs text-muted-foreground">
+                                    {t("ui.navigation.profile")}
+                                </span>
                             </div>
                         )}
                     </div>

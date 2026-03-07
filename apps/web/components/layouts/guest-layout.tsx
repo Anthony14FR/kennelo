@@ -20,7 +20,7 @@ export default function GuestLayout({
     return (
         <div className="bg-background h-full overflow-hidden">
             {!isMobile && (
-                <header className="fixed top-0 left-0 w-full h-16 flex items-center z-10">
+                <header className="fixed top-0 start-0 w-full h-16 flex items-center z-10">
                     <div className="container mx-auto max-w-7xl h-full flex justify-between items-center px-6">
                         <Link
                             href={routes.Home()}
@@ -41,7 +41,7 @@ export default function GuestLayout({
             <main className={cn("container mx-auto relative h-full", className)}>
                 <div className="grid relative lg:grid-cols-2">
                     <Image
-                        className="absolute z-0 w-full rotate-90 -top-8/12 md:max-w-unset md:-right-1/12 md:-top-11/12 opacity-40"
+                        className="absolute z-0 w-full rotate-90 -top-8/12 md:max-w-unset md:-end-1/12 md:-top-11/12 opacity-40"
                         src="/simple_shape_1.svg"
                         width={600}
                         height={600}

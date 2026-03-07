@@ -11,5 +11,9 @@
     "passwordDescription": "8 أحرف على الأقل مع مزيج من الحروف والأرقام والرموز",
     "passwordHide": "مقنع",
     "passwordShow": "أفيتشر",
-    "newPassword": "كلمة المرور الجديدة"
+    "newPassword": "كلمة المرور الجديدة",
+    "notProvided": "غير مُدخل",
+    "emailVerified": "البريد الإلكتروني موثق",
+    "idVerified": "الهوية موثقة",
+    "status": "الحالة"
 }

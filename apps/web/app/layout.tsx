@@ -28,6 +28,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                     fontMono.variable,
                     "font-sans antialiased bg-background text-foreground",
                 )}
+                suppressHydrationWarning
             >
                 <Providers initialIsAuthenticated={initialIsAuthenticated}>
                     <Suspense>{children}</Suspense>

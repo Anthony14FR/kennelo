@@ -19,6 +19,8 @@
     "loading": "Chargement...",
     "becomePro": "Devenez un pro",
     "update": "Mettre à jour",
+    "yes": "Oui",
+    "no": "Non",
     "features": {
         "auth": {
             "deleteAccount": "Supprimer mon compte",
