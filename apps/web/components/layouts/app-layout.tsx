@@ -52,7 +52,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             icon: KHeart,
             text: t("ui.navigation.pets"),
             active: false,
-            href: "/my-pets",
+            href: routes.MyPets(),
         },
         {
             icon: KMessage,
