@@ -8,12 +8,17 @@ use App\Models\AnimalType;
 use App\Models\AttributeDefinition;
 use App\Models\Pet;
 use App\Models\PetAttribute;
+use App\Models\PetImage;
 use App\Models\User;
+use App\Services\User\Exceptions\AvatarUploadException;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class PetService
 {
@@ -45,6 +50,63 @@ class PetService
     public function delete(Pet $pet): void
     {
         $pet->delete();
+    }
+
+    public function uploadAvatar(Pet $pet, UploadedFile $avatar): Pet
+    {
+        $oldAvatarPath = $pet->avatar_url;
+        $newPath = null;
+
+        try {
+            $newPath = $avatar->store('pet-avatars', 'public');
+
+            if (! $newPath) {
+                throw AvatarUploadException::storageError('Unable to store file');
+            }
+
+            DB::transaction(function () use ($pet, $newPath) {
+                $pet->update(['avatar_url' => $newPath]);
+            });
+
+            if ($oldAvatarPath) {
+                Storage::disk('public')->delete($oldAvatarPath);
+            }
+
+            return $pet->fresh(['animalType', 'petImages']);
+        } catch (Throwable $e) {
+            if ($newPath) {
+                Storage::disk('public')->delete($newPath);
+            }
+
+            if ($e instanceof AvatarUploadException) {
+                throw $e;
+            }
+
+            throw AvatarUploadException::storageError($e->getMessage());
+        }
+    }
+
+    public function addImage(Pet $pet, UploadedFile $image): PetImage
+    {
+        $path = $image->store('pet-images', 'public');
+
+        if (! $path) {
+            throw AvatarUploadException::storageError('Unable to store file');
+        }
+
+        $order = $pet->petImages()->max('order') + 1;
+
+        return PetImage::create([
+            'pet_id' => $pet->id,
+            'path' => $path,
+            'order' => $order,
+        ]);
+    }
+
+    public function deleteImage(Pet $pet, PetImage $petImage): void
+    {
+        Storage::disk('public')->delete($petImage->path);
+        $petImage->delete();
     }
 
     public function getAttributesForAnimalType(AnimalType $animalType): Collection

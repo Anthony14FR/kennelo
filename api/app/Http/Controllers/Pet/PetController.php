@@ -35,7 +35,7 @@ class PetController extends Controller
     {
         $this->authorize('view', $pet);
 
-        $pet->load(['animalType', 'petAttributes.attributeDefinition', 'petAttributes.attributeOption']);
+        $pet->load(['animalType', 'petAttributes.attributeDefinition', 'petAttributes.attributeOption', 'petImages']);
 
         return (new PetResource($pet))
             ->additional(['status' => ApiStatus::SUCCESS, 'timestamp' => human_date(now())])

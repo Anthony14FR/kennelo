@@ -6,6 +6,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /** @mixin \App\Models\Pet */
 class PetResource extends JsonResource
@@ -26,9 +27,11 @@ class PetResource extends JsonResource
             'microchip_number' => $this->microchip_number,
             'adoption_date' => $this->adoption_date?->toDateString(),
             'about' => $this->about,
+            'avatar_url' => $this->avatar_url ? Storage::url($this->avatar_url) : null,
             'health_notes' => $this->health_notes,
             'animal_type' => new AnimalTypeResource($this->whenLoaded('animalType')),
             'attributes' => PetAttributeResource::collection($this->whenLoaded('petAttributes')),
+            'images' => PetImageResource::collection($this->whenLoaded('petImages')),
             'created_at' => human_date($this->created_at),
             'updated_at' => human_date($this->updated_at),
         ];
