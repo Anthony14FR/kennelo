@@ -49,7 +49,7 @@ class PetImageController extends Controller
     {
         $this->authorize('view', $pet);
 
-        $images = $pet->petImages()->orderBy('order')->get();
+        $images = $pet->petImages()->get();
 
         return PetImageResource::collection($images)
             ->additional([

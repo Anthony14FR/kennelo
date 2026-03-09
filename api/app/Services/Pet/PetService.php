@@ -94,13 +94,18 @@ class PetService
             throw AvatarUploadException::storageError('Unable to store file');
         }
 
-        $order = $pet->petImages()->max('order') + 1;
+        try {
+            $order = $pet->petImages()->max('order') + 1;
 
-        return PetImage::create([
-            'pet_id' => $pet->id,
-            'path' => $path,
-            'order' => $order,
-        ]);
+            return PetImage::create([
+                'pet_id' => $pet->id,
+                'path' => $path,
+                'order' => $order,
+            ]);
+        } catch (Throwable $e) {
+            Storage::disk('public')->delete($path);
+            throw AvatarUploadException::storageError($e->getMessage());
+        }
     }
 
     public function deleteImage(Pet $pet, PetImage $petImage): void
