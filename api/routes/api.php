@@ -9,6 +9,7 @@ use App\Http\Controllers\Establishment\EstablishmentDashboardController;
 use App\Http\Controllers\Pet\AnimalTypeController;
 use App\Http\Controllers\Pet\PetAttributeController;
 use App\Http\Controllers\Pet\PetController;
+use App\Http\Controllers\Pet\PetImageController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,10 @@ Route::middleware(['auth.jwt'])->group(function () {
     // Pets
     Route::apiResource('pets', PetController::class);
     Route::put('/pets/{pet}/attributes', [PetAttributeController::class, 'upsert']);
+    Route::post('/pets/{pet}/avatar', [PetImageController::class, 'uploadAvatar']);
+    Route::get('/pets/{pet}/images', [PetImageController::class, 'index']);
+    Route::post('/pets/{pet}/images', [PetImageController::class, 'store']);
+    Route::delete('/pets/{pet}/images/{petImage}', [PetImageController::class, 'destroy']);
 
     // Users (admin)
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);

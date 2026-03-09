@@ -24,6 +24,7 @@ class Pet extends Model
         'microchip_number',
         'adoption_date',
         'about',
+        'avatar_url',
         'health_notes',
     ];
 
@@ -48,6 +49,11 @@ class Pet extends Model
     public function petAttributes(): HasMany
     {
         return $this->hasMany(PetAttribute::class);
+    }
+
+    public function petImages(): HasMany
+    {
+        return $this->hasMany(PetImage::class)->orderBy('order');
     }
 
     public function scopeForUser(Builder $query, string $userId): Builder
