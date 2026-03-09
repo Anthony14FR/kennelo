@@ -9,9 +9,12 @@ use App\Models\AttributeDefinition;
 use App\Models\AttributeOption;
 use App\Models\Pet;
 use App\Models\PetAttribute;
+use App\Models\PetImage;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class PetSeeder extends Seeder
 {
@@ -53,6 +56,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($rexId, 'labrador', 3, true);
+
         $this->addPetAttribute($rexId, 'energy_level', 'high');
         $this->addPetAttribute($rexId, 'potty_trained', 'trained');
         $this->addPetAttribute($rexId, 'friendly_with_kids', 'yes');
@@ -81,6 +86,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($minouId, 'cat', 2, true);
+
         $this->addPetAttribute($minouId, 'energy_level', 'low');
         $this->addPetAttribute($minouId, 'litter_trained', 'trained');
         $this->addPetAttribute($minouId, 'friendly_with_kids', 'no');
@@ -108,6 +115,8 @@ class PetSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $this->seedPetImages($kiwiId, 'parakeet', 2, false);
 
         $this->addPetAttributeText($kiwiId, 'bird_species', 'Perruche ondulée');
         $this->addPetAttribute($kiwiId, 'can_fly', 'yes');
@@ -138,6 +147,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($bulleId, 'goldfish', 1, false);
+
         $this->addPetAttribute($bulleId, 'water_type', 'freshwater');
         $this->addPetAttributeInteger($bulleId, 'tank_size_liters', 50);
         $this->addPetAttributeDecimal($bulleId, 'water_temperature', 20.0);
@@ -163,6 +174,8 @@ class PetSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $this->seedPetImages($caramelId, 'rabbit', 2, true);
 
         $this->addPetAttribute($caramelId, 'cage_type', 'enclosure');
         $this->addPetAttributeBoolean($caramelId, 'is_nocturnal', false);
@@ -191,6 +204,8 @@ class PetSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $this->seedPetImages($maxId, 'german-shepherd', 2, true);
 
         $this->addPetAttribute($maxId, 'energy_level', 'low');
         $this->addPetAttribute($maxId, 'potty_trained', 'trained');
@@ -221,6 +236,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($lunaId, 'maine-coon', 3, true);
+
         $this->addPetAttribute($lunaId, 'energy_level', 'high');
         $this->addPetAttribute($lunaId, 'litter_trained', 'trained');
         $this->addPetAttribute($lunaId, 'friendly_with_kids', 'yes');
@@ -249,6 +266,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($nemoId, 'clownfish', 1, false);
+
         $this->addPetAttribute($nemoId, 'water_type', 'saltwater');
         $this->addPetAttributeInteger($nemoId, 'tank_size_liters', 100);
         $this->addPetAttributeDecimal($nemoId, 'water_temperature', 26.0);
@@ -256,6 +275,41 @@ class PetSeeder extends Seeder
         $this->addPetAttributeText($nemoId, 'equipment_needed', 'Filtre puissant, chauffage, écumeur, éclairage LED, pierres vivantes');
         $this->addPetAttribute($nemoId, 'feeding_frequency', 'twice_daily');
         $this->addPetAttributeText($nemoId, 'diet_specifics', 'Granulés pour poissons marins, artémias congelées, algues nori');
+    }
+
+    private function seedPetImages(int $petId, string $category, int $count, bool $withAvatar): void
+    {
+        for ($i = 0; $i < $count; $i++) {
+            try {
+                $response = Http::withOptions(['allow_redirects' => true])->timeout(10)->get("https://loremflickr.com/600/400/{$category}");
+
+                if ($response->successful()) {
+                    $path = "pet-images/pet_{$petId}_{$i}.jpg";
+                    Storage::disk('public')->put($path, $response->body());
+
+                    PetImage::create([
+                        'pet_id' => $petId,
+                        'path' => $path,
+                        'order' => $i + 1,
+                    ]);
+                }
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+
+        if ($withAvatar) {
+            try {
+                $response = Http::withOptions(['allow_redirects' => true])->timeout(10)->get("https://loremflickr.com/400/400/{$category}");
+
+                if ($response->successful()) {
+                    $path = "pet-avatars/pet_{$petId}_avatar.jpg";
+                    Storage::disk('public')->put($path, $response->body());
+                    DB::table('pets')->where('id', $petId)->update(['avatar_url' => $path]);
+                }
+            } catch (\Throwable) {
+            }
+        }
     }
 
     private function loadDependencies(): void
