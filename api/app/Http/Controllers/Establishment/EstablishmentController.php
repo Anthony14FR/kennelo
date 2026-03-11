@@ -17,6 +17,9 @@ use App\Services\Establishment\EstablishmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 
+/**
+ * @tags Establishments
+ */
 class EstablishmentController extends Controller
 {
     public function __construct(

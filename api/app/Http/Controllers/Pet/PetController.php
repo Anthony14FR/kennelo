@@ -13,6 +13,9 @@ use App\Models\Pet;
 use App\Services\Pet\PetService;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Pets
+ */
 class PetController extends Controller
 {
     public function __construct(

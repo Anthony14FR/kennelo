@@ -12,7 +12,11 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 
+/**
+ * @tags Auth
+ */
 class RegisteredUserController extends Controller
 {
     /**
@@ -29,9 +33,11 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
+     * Register
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @unauthenticated
+     *
+     * @throws ValidationException
      */
     public function store(Request $request): JsonResponse
     {

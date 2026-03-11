@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enums\IdentityVerificationStatus;
 use App\Enums\UserStatus;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 // ─── Profile ─────────────────────────────────────────────────────────────────
@@ -226,7 +227,7 @@ it('submits identity verification document', function () {
     Storage::fake('private');
 
     $user = User::factory()->create();
-    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+    $file = UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
 
     $this->withHeaders(asUser($user))
         ->postJson('/api/user/identity-verification', ['document' => $file])
@@ -238,7 +239,7 @@ it('returns latest verification status', function () {
     Storage::fake('private');
 
     $user = User::factory()->create();
-    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+    $file = UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
 
     $this->withHeaders(asUser($user))
         ->postJson('/api/user/identity-verification', ['document' => $file]);
@@ -366,7 +367,7 @@ it('admin can approve identity verification', function () {
     Storage::fake('private');
 
     $user = User::factory()->create();
-    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+    $file = UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
 
     $this->withHeaders(asUser($user))
         ->postJson('/api/user/identity-verification', ['document' => $file]);
@@ -385,7 +386,7 @@ it('admin can reject identity verification', function () {
     Storage::fake('private');
 
     $user = User::factory()->create();
-    $file = \Illuminate\Http\UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
+    $file = UploadedFile::fake()->create('document.pdf', 100, 'application/pdf');
 
     $this->withHeaders(asUser($user))
         ->postJson('/api/user/identity-verification', ['document' => $file]);

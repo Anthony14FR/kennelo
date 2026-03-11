@@ -16,6 +16,9 @@ use App\Services\Pet\PetService;
 use App\Services\User\Exceptions\AvatarUploadException;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Pets
+ */
 class PetImageController extends Controller
 {
     public function __construct(

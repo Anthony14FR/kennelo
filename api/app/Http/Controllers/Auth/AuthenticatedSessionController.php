@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @tags Auth
+ */
 class AuthenticatedSessionController extends Controller
 {
     /**
@@ -28,7 +31,9 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Login
+     *
+     * @unauthenticated
      */
     public function store(LoginRequest $request): JsonResponse
     {
@@ -61,7 +66,9 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Refresh an access token using a refresh token.
+     * Refresh token
+     *
+     * @unauthenticated
      */
     public function refresh(Request $request): JsonResponse
     {
@@ -92,7 +99,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Destroy an authenticated session (logout).
+     * Logout
      */
     public function destroy(Request $request): Response
     {
