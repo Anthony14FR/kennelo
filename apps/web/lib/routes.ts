@@ -13,15 +13,6 @@ type HostDetailsParams = {
     uuid: string;
 };
 
-type MyEstablishmentsParams = {
-    locale?: string | number;
-};
-
-type EstablishmentDetailParams = {
-    locale?: string | number;
-    id: string | number;
-};
-
 type HomeParams = {
     locale?: string | number;
 };
@@ -32,6 +23,15 @@ type LoginParams = {
 
 type RegisterParams = {
     locale?: string | number;
+};
+
+type MyEstablishmentsParams = {
+    locale?: string | number;
+};
+
+type EstablishmentDetailParams = {
+    locale?: string | number;
+    id: string | number;
 };
 
 type MyProfileAboutParams = {
@@ -62,14 +62,6 @@ function HostDetails(params: HostDetailsParams): string {
     return buildRoute("/[locale]/host/[uuid]", params);
 }
 
-function MyEstablishments(params?: MyEstablishmentsParams): string {
-    return buildRoute("/[locale]/my-establishments", params);
-}
-
-function EstablishmentDetail(params: EstablishmentDetailParams): string {
-    return buildRoute("/[locale]/my-establishments/[id]", params);
-}
-
 function Home(params?: HomeParams): string {
     return buildRoute("/[locale]", params);
 }
@@ -80,6 +72,14 @@ function Login(params?: LoginParams): string {
 
 function Register(params?: RegisterParams): string {
     return buildRoute("/[locale]/s/accounts/register", params);
+}
+
+function MyEstablishments(params?: MyEstablishmentsParams): string {
+    return buildRoute("/[locale]/s/app/establishments", params);
+}
+
+function EstablishmentDetail(params: EstablishmentDetailParams): string {
+    return buildRoute("/[locale]/s/app/establishments/[id]", params);
 }
 
 function MyProfileAbout(params?: MyProfileAboutParams): string {
@@ -102,11 +102,11 @@ export const routes = {
     RootPage,
     BecomeHost,
     HostDetails,
-    MyEstablishments,
-    EstablishmentDetail,
     Home,
     Login,
     Register,
+    MyEstablishments,
+    EstablishmentDetail,
     MyProfileAbout,
     MyProfileChangePassword,
     MyProfileEmailPreferences,

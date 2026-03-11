@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { Building2, Phone, Mail, Globe, MapPin, FileText, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
+import { cn } from "@workspace/ui/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/card";
 import { Badge } from "@workspace/ui/components/badge";
 import { Separator } from "@workspace/ui/components/separator";
@@ -65,7 +66,10 @@ function InfoItem({
             <div className="flex-1 min-w-0">
                 <p className="text-xs text-muted-foreground">{label}</p>
                 <p
-                    className={`text-sm font-medium mt-0.5 ${value ? "" : "text-muted-foreground italic"}`}
+                    className={cn(
+                        "text-sm font-medium mt-0.5",
+                        !value && "text-muted-foreground italic",
+                    )}
                 >
                     {value || empty}
                 </p>
@@ -100,7 +104,10 @@ function EstablishmentViewMode({
                             {t("common.fields.description")}
                         </p>
                         <p
-                            className={`text-sm leading-relaxed ${establishment.description ? "" : "text-muted-foreground italic"}`}
+                            className={cn(
+                                "text-sm leading-relaxed",
+                                !establishment.description && "text-muted-foreground italic",
+                            )}
                         >
                             {establishment.description ||
                                 t("features.my-establishments.detail.empty.description")}
@@ -305,25 +312,25 @@ function EditAddressSection({ control, isLoading }: EditFieldProps) {
     );
 }
 
-function s(val: string | null | undefined): string {
+function orEmpty(val: string | null | undefined): string {
     return val || "";
 }
 
 function buildEditDefaults(e: EstablishmentModel): UpdateEstablishmentInput {
     return {
         name: e.name,
-        description: s(e.description),
-        phone: s(e.phone),
-        email: s(e.email),
-        website: s(e.website),
-        siret: s(e.siret),
+        description: orEmpty(e.description),
+        phone: orEmpty(e.phone),
+        email: orEmpty(e.email),
+        website: orEmpty(e.website),
+        siret: orEmpty(e.siret),
         address: {
-            line1: s(e.address?.line1),
-            line2: s(e.address?.line2),
-            city: s(e.address?.city),
-            postalCode: s(e.address?.postalCode),
-            region: s(e.address?.region),
-            country: s(e.address?.country),
+            line1: orEmpty(e.address?.line1),
+            line2: orEmpty(e.address?.line2),
+            city: orEmpty(e.address?.city),
+            postalCode: orEmpty(e.address?.postalCode),
+            region: orEmpty(e.address?.region),
+            country: orEmpty(e.address?.country),
         },
     };
 }

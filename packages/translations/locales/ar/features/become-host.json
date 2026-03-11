@@ -8,6 +8,30 @@
             "description": "في بضع خطوات فقط، ستكون جاهزًا لاستقبال الحيوانات الأليفة في مؤسستك. سنرشدك خلال عملية الإعداد.",
             "cta": "هيا نبدأ"
         },
+        "hostType": {
+            "title": "ملفك الشخصي",
+            "subtitle": "ما نوع المضيف الذي أنت عليه؟",
+            "professional": "محترف",
+            "professionalDescription": "فندق حيوانات، تربية، حضانة، ملجأ أو منشأة أخرى برقم SIRET",
+            "individual": "فردي",
+            "individualDescription": "جليس حيوانات أليفة، رعاية منزلية أو استضافة عرضية",
+            "error": "يرجى اختيار نوع الملف الشخصي"
+        },
+        "establishmentType": {
+            "title": "نوع المؤسسة",
+            "subtitle": "ما نوع المنشأة التي تديرها؟",
+            "pension": "فندق حيوانات",
+            "pensionDescription": "إقامة ورعاية الحيوانات الأليفة أثناء الإقامات",
+            "breeding": "تربية",
+            "breedingDescription": "تربية حيوانات احترافية",
+            "daycare": "حضانة",
+            "daycareDescription": "خدمات رعاية الحيوانات الأليفة النهارية",
+            "shelter": "ملجأ",
+            "shelterDescription": "إنقاذ وتبني الحيوانات",
+            "other": "أخرى",
+            "otherDescription": "نوع آخر من منشآت الحيوانات",
+            "error": "يرجى اختيار نوع المؤسسة"
+        },
         "establishmentInfo": {
             "title": "مؤسستك",
             "subtitle": "أخبرنا عن مكانك"
@@ -28,7 +52,8 @@
             "title": "المراجعة والتأكيد",
             "subtitle": "تأكد من أن كل شيء يبدو جيدًا",
             "submitButton": "إنشاء مؤسستي",
-            "submitting": "جاري الإنشاء..."
+            "submitting": "جاري الإنشاء...",
+            "autoFilledFromProfile": "تم ملؤه تلقائيًا من ملفك الشخصي"
         }
     },
     "success": {

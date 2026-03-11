@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { CheckCircle, PawPrint } from "lucide-react";
@@ -17,24 +17,33 @@ import {
 import { useAsyncState } from "@/hooks/use-async-state";
 import { useNavigation } from "@/hooks/use-navigation";
 import { useAuth } from "@/features/auth";
-import { useStepper, steps } from "../stepper";
+import { useStepper, steps, type StepId } from "../stepper";
 import { WelcomeStep } from "./steps/welcome-step";
+import { HostTypeStep } from "./steps/host-type-step";
+import { EstablishmentTypeStep, type EstablishmentType } from "./steps/establishment-type-step";
 import { EstablishmentInfoStep } from "./steps/establishment-info-step";
 import { ContactDetailsStep } from "./steps/contact-details-step";
 import { AddressStep } from "./steps/address-step";
 import { BusinessInfoStep } from "./steps/business-info-step";
 import { ReviewStep } from "./steps/review-step";
 
+type HostType = "professional" | "individual";
+
+const ADDRESS_LINE1 = "address.line1";
+const ADDRESS_CITY = "address.city";
+const ADDRESS_POSTAL_CODE = "address.postalCode";
+const ADDRESS_COUNTRY = "address.country";
+
 const STEP_FIELDS: Record<string, string[]> = {
     "establishment-info": ["name", "description"],
     "contact-details": ["phone", "email", "website"],
     address: [
-        "address.line1",
+        ADDRESS_LINE1,
         "address.line2",
-        "address.city",
-        "address.postalCode",
+        ADDRESS_CITY,
+        ADDRESS_POSTAL_CODE,
         "address.region",
-        "address.country",
+        ADDRESS_COUNTRY,
     ],
     "business-info": ["siret"],
 };
@@ -61,20 +70,56 @@ function findStepForField(fieldName: string): string | undefined {
     return undefined;
 }
 
-const FORM_STEPS = steps.filter((s) => s.id !== "welcome");
+function getActiveSteps(hostType: HostType | null): StepId[] {
+    if (!hostType) {
+        return ["welcome", "host-type"];
+    }
+
+    if (hostType === "individual") {
+        return ["welcome", "host-type", "contact-details", "address", "review"];
+    }
+
+    return [
+        "welcome",
+        "host-type",
+        "establishment-type",
+        "establishment-info",
+        "contact-details",
+        "address",
+        "business-info",
+        "review",
+    ];
+}
+
+function getNextStep(currentId: StepId, activeSteps: StepId[]): StepId | undefined {
+    const currentIndex = activeSteps.indexOf(currentId);
+    if (currentIndex === -1 || currentIndex >= activeSteps.length - 1) return undefined;
+    return activeSteps[currentIndex + 1];
+}
+
+function getPrevStep(currentId: StepId, activeSteps: StepId[]): StepId | undefined {
+    const currentIndex = activeSteps.indexOf(currentId);
+    if (currentIndex <= 0) return undefined;
+    return activeSteps[currentIndex - 1];
+}
 
 export function BecomeHostStepper() {
     const t = useTranslations();
     const { routes, router } = useNavigation();
     const { execute, isLoading } = useAsyncState();
-    const { refreshUser } = useAuth();
+    const { user, refreshUser } = useAuth();
     const stepper = useStepper();
     const [isSuccess, setIsSuccess] = useState(false);
     const [submitError, setSubmitError] = useState<string | undefined>();
+    const [hostType, setHostType] = useState<HostType | null>(null);
+    const [establishmentType, setEstablishmentType] = useState<EstablishmentType | null>(null);
+    const [selectionError, setSelectionError] = useState<string | undefined>();
     const directionRef = useRef<"forward" | "backward">("forward");
     const isJumpRef = useRef(false);
     const prevIndexRef = useRef(stepper.state.current.index);
     const submitIntentRef = useRef(false);
+
+    const activeSteps = useMemo(() => getActiveSteps(hostType), [hostType]);
 
     const currentIndex = stepper.state.current.index;
     if (prevIndexRef.current !== currentIndex) {
@@ -84,44 +129,122 @@ export function BecomeHostStepper() {
         prevIndexRef.current = currentIndex;
     }
 
-    const { handleSubmit, control, trigger, setError, watch } = useForm<CreateEstablishmentInput>({
-        resolver: zodResolver(createEstablishmentSchema),
-        defaultValues: {
-            name: "",
-            description: "",
-            phone: "",
-            email: "",
-            website: "",
-            siret: "",
-            address: {
-                line1: "",
-                line2: "",
-                city: "",
-                postalCode: "",
-                region: "",
-                country: "",
+    const { handleSubmit, control, trigger, setError, watch, setValue } =
+        useForm<CreateEstablishmentInput>({
+            resolver: zodResolver(createEstablishmentSchema),
+            defaultValues: {
+                name: "",
+                description: "",
+                phone: "",
+                email: "",
+                website: "",
+                siret: "",
+                address: {
+                    line1: "",
+                    line2: "",
+                    city: "",
+                    postalCode: "",
+                    region: "",
+                    country: "",
+                },
             },
+        });
+
+    const handleHostTypeChange = useCallback(
+        (type: HostType) => {
+            setHostType(type);
+            setSelectionError(undefined);
+            if (type === "individual" && user) {
+                setValue("name", user.getFullName());
+                if (user.phone) setValue("phone", user.phone);
+                if (user.email) setValue("email", user.email);
+            } else {
+                setValue("name", "");
+                setValue("phone", "");
+                setValue("email", "");
+            }
         },
-    });
+        [user, setValue],
+    );
+
+    const currentStepId = stepper.state.current.data.id as StepId;
+
+    const validateRequiredFields = (stepId: StepId): boolean => {
+        const requiredByStep: Record<string, string[]> = {
+            "establishment-info": ["name"],
+            "contact-details": ["phone", "email"],
+            address: [ADDRESS_LINE1, ADDRESS_CITY, ADDRESS_POSTAL_CODE, ADDRESS_COUNTRY],
+        };
+
+        const required = requiredByStep[stepId];
+        if (!required) return true;
+
+        const values = watch();
+        let valid = true;
+        const requiredMessage = t("errors.validation.required");
+        for (const field of required) {
+            const parts = field.split(".");
+            let fieldValue: unknown = values;
+            for (const part of parts) {
+                fieldValue = (fieldValue as Record<string, unknown>)?.[part];
+            }
+            if (!fieldValue || (typeof fieldValue === "string" && fieldValue.trim() === "")) {
+                setError(field as FieldPath<CreateEstablishmentInput>, {
+                    type: "required",
+                    message: requiredMessage,
+                });
+                valid = false;
+            }
+        }
+        return valid;
+    };
 
     const handleNext = async () => {
-        const fields = STEP_FIELDS[stepper.state.current.data.id];
+        if (currentStepId === "host-type") {
+            if (!hostType) {
+                setSelectionError(t("features.become-host.steps.hostType.error"));
+                return;
+            }
+            setSelectionError(undefined);
+        }
+
+        if (currentStepId === "establishment-type") {
+            if (!establishmentType) {
+                setSelectionError(t("features.become-host.steps.establishmentType.error"));
+                return;
+            }
+            setSelectionError(undefined);
+        }
+
+        if (!validateRequiredFields(currentStepId)) return;
+
+        const fields = STEP_FIELDS[currentStepId];
         if (fields) {
             const valid = await trigger(fields as (keyof CreateEstablishmentInput)[]);
             if (!valid) return;
         }
+
         setSubmitError(undefined);
-        stepper.navigation.next();
+        setSelectionError(undefined);
+        const nextStep = getNextStep(currentStepId, activeSteps);
+        if (nextStep) {
+            stepper.navigation.goTo(nextStep);
+        }
     };
 
     const handleBack = () => {
         setSubmitError(undefined);
-        stepper.navigation.prev();
+        const prevStep = getPrevStep(currentStepId, activeSteps);
+        if (prevStep) {
+            stepper.navigation.goTo(prevStep);
+        }
     };
 
     const handleGoTo = (stepId: string) => {
         setSubmitError(undefined);
-        stepper.navigation.goTo(stepId as (typeof steps)[number]["id"]);
+        if (activeSteps.includes(stepId as StepId)) {
+            stepper.navigation.goTo(stepId as (typeof steps)[number]["id"]);
+        }
     };
 
     const onSubmit = useCallback(
@@ -138,12 +261,11 @@ export function BecomeHostStepper() {
                 },
                 setFieldError: (field: string, error: { message: string }) => {
                     const formField = API_TO_FORM_FIELD[field] || field;
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    setError(formField as any, error);
+                    setError(formField as FieldPath<CreateEstablishmentInput>, error);
 
                     if (!navigatedToStep) {
                         const targetStep = findStepForField(formField);
-                        if (targetStep) {
+                        if (targetStep && activeSteps.includes(targetStep as StepId)) {
                             navigatedToStep = true;
                             stepper.navigation.goTo(targetStep as (typeof steps)[number]["id"]);
                         }
@@ -156,7 +278,7 @@ export function BecomeHostStepper() {
                 setIsSuccess(true);
             }
         },
-        [execute, setError, stepper.navigation, refreshUser],
+        [execute, setError, stepper.navigation, refreshUser, activeSteps],
     );
 
     const onFormSubmit = useCallback(
@@ -203,8 +325,10 @@ export function BecomeHostStepper() {
         );
     }
 
-    const isWelcome = stepper.flow.is("welcome");
-    const formStepIndex = FORM_STEPS.findIndex((s) => s.id === stepper.state.current.data.id);
+    const isPreForm = currentStepId === "welcome" || currentStepId === "host-type";
+    const formSteps = activeSteps.filter((s): s is StepId => s !== "welcome" && s !== "host-type");
+    const formStepIndex = (formSteps as StepId[]).indexOf(currentStepId);
+    const showFooter = !isPreForm;
 
     return (
         <div className="flex flex-col min-h-dvh bg-background">
@@ -227,7 +351,7 @@ export function BecomeHostStepper() {
             >
                 <div className="w-full max-w-xl">
                     <div
-                        key={stepper.state.current.data.id}
+                        key={currentStepId}
                         className={cn(
                             "animate-in fade-in duration-300",
                             directionRef.current === "forward"
@@ -237,6 +361,23 @@ export function BecomeHostStepper() {
                     >
                         {stepper.flow.switch({
                             welcome: () => <WelcomeStep onNext={handleNext} />,
+                            "host-type": () => (
+                                <HostTypeStep
+                                    value={hostType}
+                                    onChange={handleHostTypeChange}
+                                    error={selectionError}
+                                />
+                            ),
+                            "establishment-type": () => (
+                                <EstablishmentTypeStep
+                                    value={establishmentType}
+                                    onChange={(type) => {
+                                        setEstablishmentType(type);
+                                        setSelectionError(undefined);
+                                    }}
+                                    error={selectionError}
+                                />
+                            ),
                             "establishment-info": () => (
                                 <EstablishmentInfoStep control={control} isLoading={isLoading} />
                             ),
@@ -248,19 +389,48 @@ export function BecomeHostStepper() {
                                 <BusinessInfoStep control={control} isLoading={isLoading} />
                             ),
                             review: () => (
-                                <ReviewStep watch={watch} onGoTo={handleGoTo} error={submitError} />
+                                <ReviewStep
+                                    watch={watch}
+                                    onGoTo={handleGoTo}
+                                    error={submitError}
+                                    hostType={hostType}
+                                />
                             ),
                         })}
                     </div>
                 </div>
             </form>
 
-            {!isWelcome && (
+            {currentStepId === "host-type" && (
+                <footer className="fixed bottom-0 inset-x-0 bg-background z-10 border-t">
+                    <div className="flex items-center justify-between px-6 md:px-12 py-4">
+                        <Button
+                            type="button"
+                            variant="link"
+                            className="text-base font-medium underline underline-offset-4 px-0"
+                            onClick={handleBack}
+                            disabled={isLoading}
+                        >
+                            {t("common.actions.back")}
+                        </Button>
+                        <Button
+                            type="button"
+                            className="rounded-4xl px-8 py-6 text-base"
+                            onClick={handleNext}
+                            disabled={!hostType}
+                        >
+                            {t("common.actions.next")}
+                        </Button>
+                    </div>
+                </footer>
+            )}
+
+            {showFooter && (
                 <footer className="fixed bottom-0 inset-x-0 bg-background z-10 border-t">
                     <div className="flex gap-1.5 px-6 md:px-12 pt-3">
-                        {FORM_STEPS.map((step, index) => (
+                        {formSteps.map((stepId, index) => (
                             <div
-                                key={step.id}
+                                key={stepId}
                                 className="flex-1 h-1 rounded-full overflow-hidden bg-muted"
                             >
                                 <div
@@ -286,7 +456,7 @@ export function BecomeHostStepper() {
                         >
                             {t("common.actions.back")}
                         </Button>
-                        {stepper.flow.is("review") ? (
+                        {currentStepId === "review" ? (
                             <Button
                                 type="submit"
                                 form="become-host-form"

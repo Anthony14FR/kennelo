@@ -2,7 +2,7 @@
 
 import { UseFormWatch } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { Pencil, Building2, Phone, MapPin, FileText, AlertCircle } from "lucide-react";
+import { Pencil, Building2, Phone, MapPin, FileText, AlertCircle, Info } from "lucide-react";
 import { Button } from "@workspace/ui/components/button";
 import type { CreateEstablishmentInput } from "@workspace/modules/establishments";
 
@@ -10,6 +10,7 @@ type ReviewStepProps = {
     watch: UseFormWatch<CreateEstablishmentInput>;
     onGoTo: (stepId: string) => void;
     error?: string;
+    hostType: "professional" | "individual" | null;
 };
 
 function ReviewSection({
@@ -20,7 +21,7 @@ function ReviewSection({
 }: {
     title: string;
     icon: React.ElementType;
-    onEdit: () => void;
+    onEdit?: () => void;
     children: React.ReactNode;
 }) {
     return (
@@ -30,15 +31,17 @@ function ReviewSection({
                     <Icon className="size-4 text-muted-foreground" />
                     {title}
                 </h3>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="text-sm text-primary hover:text-primary gap-1.5 rounded-4xl"
-                    onClick={onEdit}
-                >
-                    <Pencil className="size-3" />
-                </Button>
+                {onEdit && (
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="text-sm text-primary hover:text-primary gap-1.5 rounded-4xl"
+                        onClick={onEdit}
+                    >
+                        <Pencil className="size-3" />
+                    </Button>
+                )}
             </div>
             <div className="p-5 space-y-2">{children}</div>
         </div>
@@ -57,9 +60,11 @@ function ReviewItem({ label, value }: { label: string; value: string | undefined
     );
 }
 
-export function ReviewStep({ watch, onGoTo, error }: ReviewStepProps) {
+export function ReviewStep({ watch, onGoTo, error, hostType }: ReviewStepProps) {
     const t = useTranslations();
     const values = watch();
+
+    const isIndividual = hostType === "individual";
 
     return (
         <div className="flex flex-col gap-8">
@@ -80,14 +85,32 @@ export function ReviewStep({ watch, onGoTo, error }: ReviewStepProps) {
             )}
 
             <div className="flex flex-col gap-4">
-                <ReviewSection
-                    title={t("features.become-host.steps.establishmentInfo.title")}
-                    icon={Building2}
-                    onEdit={() => onGoTo("establishment-info")}
-                >
-                    <ReviewItem label={t("common.fields.establishmentName")} value={values.name} />
-                    <ReviewItem label={t("common.fields.description")} value={values.description} />
-                </ReviewSection>
+                {isIndividual ? (
+                    <div className="flex items-start gap-3 rounded-2xl border border-primary/30 bg-primary/5 p-4">
+                        <Info className="size-5 text-primary shrink-0 mt-0.5" />
+                        <div className="flex flex-col gap-1">
+                            <p className="text-sm font-medium">
+                                {t("features.become-host.steps.review.autoFilledFromProfile")}
+                            </p>
+                            <p className="text-sm text-muted-foreground">{values.name}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <ReviewSection
+                        title={t("features.become-host.steps.establishmentInfo.title")}
+                        icon={Building2}
+                        onEdit={() => onGoTo("establishment-info")}
+                    >
+                        <ReviewItem
+                            label={t("common.fields.establishmentName")}
+                            value={values.name}
+                        />
+                        <ReviewItem
+                            label={t("common.fields.description")}
+                            value={values.description}
+                        />
+                    </ReviewSection>
+                )}
 
                 <ReviewSection
                     title={t("features.become-host.steps.contactDetails.title")}
@@ -124,13 +147,15 @@ export function ReviewStep({ watch, onGoTo, error }: ReviewStepProps) {
                     />
                 </ReviewSection>
 
-                <ReviewSection
-                    title={t("features.become-host.steps.businessInfo.title")}
-                    icon={FileText}
-                    onEdit={() => onGoTo("business-info")}
-                >
-                    <ReviewItem label={t("common.fields.siret")} value={values.siret} />
-                </ReviewSection>
+                {!isIndividual && (
+                    <ReviewSection
+                        title={t("features.become-host.steps.businessInfo.title")}
+                        icon={FileText}
+                        onEdit={() => onGoTo("business-info")}
+                    >
+                        <ReviewItem label={t("common.fields.siret")} value={values.siret} />
+                    </ReviewSection>
+                )}
             </div>
         </div>
     );

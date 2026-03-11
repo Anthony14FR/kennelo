@@ -40,10 +40,16 @@ interface UserMenuProps {
         email?: string | null;
     };
     hasEstablishment?: boolean;
+    hostSpaceHref?: string;
     onLogout?: () => void;
 }
 
-export default function UserMenu({ user, hasEstablishment, onLogout }: UserMenuProps) {
+export default function UserMenu({
+    user,
+    hasEstablishment,
+    hostSpaceHref,
+    onLogout,
+}: UserMenuProps) {
     const { theme, setTheme } = useTheme();
     const locale = useLocale() as Locale;
     const t = useTranslations();
@@ -72,27 +78,27 @@ export default function UserMenu({ user, hasEstablishment, onLogout }: UserMenuP
                 <DropdownMenuGroup>
                     <DropdownMenuItem asChild>
                         <Link href={`/${locale}/profile`} className="cursor-pointer">
-                            <UserCircle className="mr-2 h-4 w-4" />
+                            <UserCircle className="me-2 h-4 w-4" />
                             <span>{t("ui.navigation.my-profile")}</span>
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link href={`/${locale}/notifications`} className="cursor-pointer">
-                            <Bell className="mr-2 h-4 w-4" />
+                            <Bell className="me-2 h-4 w-4" />
                             <span>{t("ui.navigation.notifications")}</span>
                         </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <Link href={routes.MyProfileAbout()} className="cursor-pointer">
-                            <Settings className="mr-2 h-4 w-4" />
+                            <Settings className="me-2 h-4 w-4" />
                             <span>{t("ui.navigation.settings")}</span>
                         </Link>
                     </DropdownMenuItem>
-                    {hasEstablishment && (
+                    {hasEstablishment && hostSpaceHref && (
                         <DropdownMenuItem asChild>
-                            <Link href={routes.MyEstablishments()} className="cursor-pointer">
+                            <Link href={hostSpaceHref} className="cursor-pointer">
                                 <Building2 className="me-2 h-4 w-4" />
-                                <span>{t("common.actions.myEstablishments")}</span>
+                                <span>{t("common.actions.hostSpace")}</span>
                             </Link>
                         </DropdownMenuItem>
                     )}
@@ -105,7 +111,7 @@ export default function UserMenu({ user, hasEstablishment, onLogout }: UserMenuP
                 </DropdownMenuLabel>
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
-                        <Monitor className="mr-2 h-4 w-4" />
+                        <Monitor className="me-2 h-4 w-4" />
                         <span>{t("ui.navigation.theme")}</span>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
@@ -121,9 +127,9 @@ export default function UserMenu({ user, hasEstablishment, onLogout }: UserMenuP
                                         key={option.value}
                                         onClick={() => setTheme(option.value)}
                                     >
-                                        <Icon className="mr-2 h-4 w-4" />
+                                        <Icon className="me-2 h-4 w-4" />
                                         <span className="flex-1">{option.label}</span>
-                                        {isActive && <CheckIcon className="h-4 w-4 ml-auto" />}
+                                        {isActive && <CheckIcon className="h-4 w-4 ms-auto" />}
                                     </DropdownMenuItem>
                                 );
                             })}
@@ -133,7 +139,7 @@ export default function UserMenu({ user, hasEstablishment, onLogout }: UserMenuP
 
                 <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
-                        <Languages className="mr-2 h-4 w-4" />
+                        <Languages className="me-2 h-4 w-4" />
                         <span>{t("ui.navigation.language")}</span>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
@@ -144,7 +150,7 @@ export default function UserMenu({ user, hasEstablishment, onLogout }: UserMenuP
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem variant="destructive" onClick={onLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="me-2 h-4 w-4" />
                     <span>{t("features.auth.logout")}</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
