@@ -2,7 +2,6 @@
 
 import { cn } from "@workspace/ui/lib/utils";
 import { Input } from "@workspace/ui/components/input";
-import { Separator } from "@workspace/ui/components/separator";
 import { Badge } from "@workspace/ui/components/badge";
 import { Search } from "lucide-react";
 import Link from "next/link";
@@ -35,10 +34,8 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
 
     return (
         <div className="min-h-screen bg-card">
-            <Separator />
-
             <div className="h-18 flex items-center">
-                <div className="flex items-center justify-between px-8 w-full">
+                <div className="flex items-center justify-between w-full">
                     <h1 className="text-3xl font-semibold tracking-tight">
                         {t("ui.navigation.profileSettings")}
                     </h1>
@@ -49,7 +46,7 @@ export default function ProfileSettingsLayout({ children }: { children: React.Re
                 </div>
             </div>
 
-            <div className="flex items-center justify-between px-8 w-full">
+            <div className="flex items-center justify-between w-full">
                 <div className="flex gap-6">
                     <aside className="relative min-w-64 shrink-0 py-6 pt-0">
                         <nav className="sticky top-22 flex flex-col gap-1">

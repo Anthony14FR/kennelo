@@ -25,9 +25,9 @@ type MyPetsParams = {
     locale?: string | number;
 };
 
-type MyPetsDetailsParams = {
+type PetDetailsParams = {
     locale?: string | number;
-    id: string;
+    id: string | number;
 };
 
 type MyProfileAboutParams = {
@@ -70,7 +70,7 @@ function MyPets(params?: MyPetsParams): string {
     return buildRoute("/[locale]/s/my/pets", params);
 }
 
-function MyPetsDetails(params: MyPetsDetailsParams): string {
+function PetDetails(params: PetDetailsParams): string {
     return buildRoute("/[locale]/s/my/pets/[id]", params);
 }
 
@@ -97,7 +97,7 @@ export const routes = {
     Login,
     Register,
     MyPets,
-    MyPetsDetails,
+    PetDetails,
     MyProfileAbout,
     MyProfileChangePassword,
     MyProfileEmailPreferences,

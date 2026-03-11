@@ -15,5 +15,6 @@
     "notProvided": "Not provided",
     "emailVerified": "Email Verified",
     "idVerified": "ID Verified",
-    "status": "Status"
+    "status": "Status",
+    "phoneVerified": "Phone Verified"
 }
