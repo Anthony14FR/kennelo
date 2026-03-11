@@ -16,7 +16,7 @@ class UpdatePetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'animal_type_id' => ['sometimes', 'integer', 'exists:animal_types,id'],
+            'animal_type_id' => ['sometimes', 'uuid', 'exists:animal_types,id'],
             'name' => ['sometimes', 'string', 'max:255'],
             'breed' => ['sometimes', 'nullable', 'string', 'max:255'],
             'birth_date' => ['sometimes', 'nullable', 'date', 'before:today'],
