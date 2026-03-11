@@ -14,12 +14,17 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @tags Auth
+ */
 class NewPasswordController extends Controller
 {
     /**
-     * Handle an incoming new password request.
+     * Reset password
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @unauthenticated
+     *
+     * @throws ValidationException
      */
     public function store(Request $request): JsonResponse
     {

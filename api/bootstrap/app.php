@@ -3,15 +3,20 @@
 declare(strict_types=1);
 
 use App\Enums\ApiStatus;
+use App\Http\Middleware\AuthenticateJWT;
+use App\Http\Middleware\EnsureEmailIsVerified;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 use Sentry\Laravel\Integration;
+use Spatie\Permission\Middleware\RoleMiddleware;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -24,14 +29,14 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
 
         $middleware->api([
-            \Illuminate\Http\Middleware\HandleCors::class,
-            \App\Http\Middleware\SetLocale::class,
+            HandleCors::class,
+            SetLocale::class,
         ]);
 
         $middleware->alias([
-            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'auth.jwt' => \App\Http\Middleware\AuthenticateJWT::class,
+            'verified' => EnsureEmailIsVerified::class,
+            'role' => RoleMiddleware::class,
+            'auth.jwt' => AuthenticateJWT::class,
         ]);
 
     })

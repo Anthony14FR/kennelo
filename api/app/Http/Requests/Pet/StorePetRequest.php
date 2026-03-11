@@ -16,7 +16,7 @@ class StorePetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'animal_type_id' => ['required', 'integer', 'exists:animal_types,id'],
+            'animal_type_id' => ['required', 'uuid', 'exists:animal_types,id'],
             'name' => ['required', 'string', 'max:255'],
             'breed' => ['sometimes', 'nullable', 'string', 'max:255'],
             'birth_date' => ['sometimes', 'nullable', 'date', 'before:today'],

@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\AnimalType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin \App\Models\AnimalType */
+/** @mixin AnimalType */
 class AnimalTypeResource extends JsonResource
 {
     public function toArray(Request $request): array

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained();
             $table->foreignUuid('establishment_id')->constrained();
             $table->date('check_in_date');

@@ -14,8 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('message_files', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('message_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('message_id')->constrained()->onDelete('cascade');
             $table->string('file_name', 255);
             $table->string('file_path', 500);
             $table->string('file_type', 50);

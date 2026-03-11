@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('establishment_availabilities', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('establishment_id')->constrained()->onDelete('cascade');
             $table->date('date');
             $table->string('status', 10)->default('open');

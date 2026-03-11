@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\EstablishmentPermission;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class EstablishmentCollaboratorPermission extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'establishment_id',
         'user_id',

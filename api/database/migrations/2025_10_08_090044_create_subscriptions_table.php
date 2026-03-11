@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('establishment_id')->constrained('establishments')->onDelete('cascade');
-            $table->foreignId('subscription_plan_id')->constrained('subscription_plans')->onDelete('restrict');
+            $table->foreignUuid('subscription_plan_id')->constrained('subscription_plans')->onDelete('restrict');
             $table->string('stripe_subscription_id', 50)->unique();
             $table->string('stripe_customer_id', 50)->index();
             $table->enum('status', ['active', 'canceled', 'past_due', 'unpaid', 'trialing'])->index();

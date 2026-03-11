@@ -19,8 +19,8 @@ class UpsertPetAttributesRequest extends FormRequest
     {
         return [
             'attributes' => ['required', 'array', 'min:1'],
-            'attributes.*.attribute_definition_id' => ['required', 'integer', 'exists:attribute_definitions,id'],
-            'attributes.*.attribute_option_id' => ['sometimes', 'nullable', 'integer', 'exists:attribute_options,id'],
+            'attributes.*.attribute_definition_id' => ['required', 'uuid', 'exists:attribute_definitions,id'],
+            'attributes.*.attribute_option_id' => ['sometimes', 'nullable', 'uuid', 'exists:attribute_options,id'],
             'attributes.*.value_text' => ['sometimes', 'nullable', 'string'],
             'attributes.*.value_integer' => ['sometimes', 'nullable', 'integer'],
             'attributes.*.value_decimal' => ['sometimes', 'nullable', 'numeric'],

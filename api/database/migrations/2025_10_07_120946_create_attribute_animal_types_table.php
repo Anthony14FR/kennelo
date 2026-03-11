@@ -14,8 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attribute_animal_types', function (Blueprint $table) {
-            $table->foreignId('attribute_definition_id')->constrained()->onDelete('cascade');
-            $table->foreignId('animal_type_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('attribute_definition_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('animal_type_id')->constrained()->onDelete('cascade');
 
             $table->primary(['attribute_definition_id', 'animal_type_id']);
         });

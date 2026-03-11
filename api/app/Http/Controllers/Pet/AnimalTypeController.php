@@ -10,6 +10,9 @@ use App\Http\Resources\AnimalTypeResource;
 use App\Models\AnimalType;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Pets
+ */
 class AnimalTypeController extends Controller
 {
     public function index(): JsonResponse

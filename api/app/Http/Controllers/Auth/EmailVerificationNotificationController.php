@@ -8,10 +8,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Auth
+ */
 class EmailVerificationNotificationController extends Controller
 {
     /**
-     * Send a new email verification notification.
+     * Resend verification email
+     *
+     * @unauthenticated
      */
     public function store(Request $request): JsonResponse
     {

@@ -31,6 +31,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
+/**
+ * @tags Users
+ */
 class UserController extends Controller
 {
     public function __construct(

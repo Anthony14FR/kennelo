@@ -39,7 +39,7 @@ if (! function_exists('is_admin')) {
 
         try {
             return auth()->user()->hasRole('admin');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }

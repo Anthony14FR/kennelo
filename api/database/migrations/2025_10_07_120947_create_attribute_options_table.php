@@ -14,8 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attribute_options', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('attribute_definition_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('attribute_definition_id')->constrained()->onDelete('cascade');
             $table->string('value', 100);
             $table->string('label', 255);
             $table->integer('sort_order')->default(0);

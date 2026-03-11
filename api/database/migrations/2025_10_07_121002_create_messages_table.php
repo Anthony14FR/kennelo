@@ -14,9 +14,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('conversation_id')->constrained()->onDelete('cascade');
-            $table->foreignId('booking_id')->nullable()->constrained()->onDelete('set null');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('conversation_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('booking_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignUuid('sender_id')->nullable()->constrained('users');
             $table->enum('sender_type', ['user', 'establishment', 'system'])->index();
             $table->enum('message_type', ['text', 'file', 'booking_reference', 'system'])->default('text')->index();
