@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Booking extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'user_id',
         'establishment_id',

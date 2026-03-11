@@ -18,3 +18,10 @@ start: ## Start API and Web
 
 larastan: ## Run larastan
 	cd api && ./vendor/bin/phpstan analyse --memory-limit=2G
+
+setup:
+	cd api && cp .env.example .env
+	cd api && composer install
+	cd api && php artisan key:generate
+	cd api && make refresh
+	make update

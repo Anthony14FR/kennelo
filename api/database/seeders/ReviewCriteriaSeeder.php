@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ReviewCriteriaSeeder extends Seeder
 {
@@ -73,13 +74,18 @@ class ReviewCriteriaSeeder extends Seeder
         $allCriteria = array_merge($establishmentCriteria, $userCriteria);
 
         foreach ($allCriteria as $criteria) {
-            DB::table('review_criteria_definitions')->updateOrInsert(
-                ['code' => $criteria['code']],
-                array_merge($criteria, [
+            $exists = DB::table('review_criteria_definitions')->where('code', $criteria['code'])->exists();
+            if ($exists) {
+                DB::table('review_criteria_definitions')->where('code', $criteria['code'])->update(array_merge($criteria, [
+                    'updated_at' => now(),
+                ]));
+            } else {
+                DB::table('review_criteria_definitions')->insert(array_merge($criteria, [
+                    'id' => (string) Str::uuid(),
                     'created_at' => now(),
                     'updated_at' => now(),
-                ])
-            );
+                ]));
+            }
         }
     }
 }

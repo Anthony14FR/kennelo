@@ -7,6 +7,7 @@ namespace Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ConversationSeeder extends Seeder
 {
@@ -44,7 +45,8 @@ class ConversationSeeder extends Seeder
                 'updated_at' => Carbon::now()->subHours(2),
             ]);
         } else {
-            $conversation1Id = DB::table('conversations')->insertGetId([
+            $conversation1Id = (string) Str::uuid();
+            DB::table('conversations')->insert(['id' => $conversation1Id,
                 'user_id' => $userId,
                 'establishment_id' => $establishment1Id,
                 'last_message_at' => Carbon::now()->subHours(2),
@@ -54,7 +56,8 @@ class ConversationSeeder extends Seeder
         }
 
         // Initial contact message
-        $message1Id = DB::table('messages')->insertGetId([
+        $message1Id = (string) Str::uuid();
+        DB::table('messages')->insert(['id' => $message1Id,
             'conversation_id' => $conversation1Id,
             'booking_id' => null,
             'sender_id' => $userId,
@@ -65,7 +68,8 @@ class ConversationSeeder extends Seeder
             'updated_at' => Carbon::now()->subDays(30),
         ]);
 
-        $message2Id = DB::table('messages')->insertGetId([
+        $message2Id = (string) Str::uuid();
+        DB::table('messages')->insert(['id' => $message2Id,
             'conversation_id' => $conversation1Id,
             'booking_id' => null,
             'sender_id' => $managerId,
@@ -78,7 +82,8 @@ class ConversationSeeder extends Seeder
 
         // Booking reference message (booking 1)
         if ($booking1Id) {
-            $message3Id = DB::table('messages')->insertGetId([
+            $message3Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message3Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking1Id,
                 'sender_id' => null,
@@ -92,7 +97,7 @@ class ConversationSeeder extends Seeder
             // Create booking thread
             $existingThread1 = DB::table('booking_threads')->where('booking_id', $booking1Id)->first();
             if (! $existingThread1) {
-                $thread1Id = DB::table('booking_threads')->insertGetId([
+                DB::table('booking_threads')->insert([
                     'conversation_id' => $conversation1Id,
                     'booking_id' => $booking1Id,
                     'is_active' => false, // Completed booking, archived
@@ -105,7 +110,8 @@ class ConversationSeeder extends Seeder
             }
 
             // Messages in booking thread
-            $message4Id = DB::table('messages')->insertGetId([
+            $message4Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message4Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking1Id,
                 'sender_id' => null,
@@ -116,7 +122,8 @@ class ConversationSeeder extends Seeder
                 'updated_at' => Carbon::now()->subDays(25),
             ]);
 
-            $message5Id = DB::table('messages')->insertGetId([
+            $message5Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message5Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking1Id,
                 'sender_id' => $userId,
@@ -129,6 +136,7 @@ class ConversationSeeder extends Seeder
 
             // File attached to message
             DB::table('message_files')->insert([
+                'id' => (string) Str::uuid(),
                 'message_id' => $message5Id,
                 'file_name' => 'carnet_vaccination_rex.pdf',
                 'file_path' => 'messages/files/carnet_vaccination_rex.pdf',
@@ -138,7 +146,8 @@ class ConversationSeeder extends Seeder
                 'created_at' => Carbon::now()->subDays(22),
             ]);
 
-            $message6Id = DB::table('messages')->insertGetId([
+            $message6Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message6Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking1Id,
                 'sender_id' => $managerId,
@@ -150,7 +159,8 @@ class ConversationSeeder extends Seeder
             ]);
 
             // During stay - photo message
-            $message7Id = DB::table('messages')->insertGetId([
+            $message7Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message7Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking1Id,
                 'sender_id' => $managerId,
@@ -162,6 +172,7 @@ class ConversationSeeder extends Seeder
             ]);
 
             DB::table('message_files')->insert([
+                'id' => (string) Str::uuid(),
                 'message_id' => $message7Id,
                 'file_name' => 'rex_parc.jpg',
                 'file_path' => 'messages/photos/rex_parc.jpg',
@@ -171,7 +182,8 @@ class ConversationSeeder extends Seeder
                 'created_at' => Carbon::now()->subDays(18),
             ]);
 
-            $message8Id = DB::table('messages')->insertGetId([
+            $message8Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message8Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking1Id,
                 'sender_id' => $userId,
@@ -185,7 +197,8 @@ class ConversationSeeder extends Seeder
 
         // Booking reference message (booking 2)
         if ($booking2Id) {
-            $message9Id = DB::table('messages')->insertGetId([
+            $message9Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message9Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking2Id,
                 'sender_id' => null,
@@ -199,7 +212,7 @@ class ConversationSeeder extends Seeder
             // Create active booking thread
             $existingThread2 = DB::table('booking_threads')->where('booking_id', $booking2Id)->first();
             if (! $existingThread2) {
-                $thread2Id = DB::table('booking_threads')->insertGetId([
+                DB::table('booking_threads')->insert([
                     'conversation_id' => $conversation1Id,
                     'booking_id' => $booking2Id,
                     'is_active' => true,
@@ -212,7 +225,8 @@ class ConversationSeeder extends Seeder
             }
 
             // Messages in active booking thread
-            $message10Id = DB::table('messages')->insertGetId([
+            $message10Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message10Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking2Id,
                 'sender_id' => null,
@@ -223,7 +237,8 @@ class ConversationSeeder extends Seeder
                 'updated_at' => Carbon::now()->subDays(3),
             ]);
 
-            $message11Id = DB::table('messages')->insertGetId([
+            $message11Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message11Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking2Id,
                 'sender_id' => $userId,
@@ -234,7 +249,8 @@ class ConversationSeeder extends Seeder
                 'updated_at' => Carbon::now()->subDays(2),
             ]);
 
-            $message12Id = DB::table('messages')->insertGetId([
+            $message12Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message12Id,
                 'conversation_id' => $conversation1Id,
                 'booking_id' => $booking2Id,
                 'sender_id' => $managerId,
@@ -247,7 +263,8 @@ class ConversationSeeder extends Seeder
         }
 
         // General conversation message (outside threads)
-        $message13Id = DB::table('messages')->insertGetId([
+        $message13Id = (string) Str::uuid();
+        DB::table('messages')->insert(['id' => $message13Id,
             'conversation_id' => $conversation1Id,
             'booking_id' => null,
             'sender_id' => $userId,
@@ -268,7 +285,8 @@ class ConversationSeeder extends Seeder
             if ($existingConv2) {
                 $conversation2Id = $existingConv2->id;
             } else {
-                $conversation2Id = DB::table('conversations')->insertGetId([
+                $conversation2Id = (string) Str::uuid();
+                DB::table('conversations')->insert(['id' => $conversation2Id,
                     'user_id' => $userId,
                     'establishment_id' => $establishment2Id,
                     'last_message_at' => Carbon::now()->subDays(5),
@@ -277,7 +295,8 @@ class ConversationSeeder extends Seeder
                 ]);
             }
 
-            $message14Id = DB::table('messages')->insertGetId([
+            $message14Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message14Id,
                 'conversation_id' => $conversation2Id,
                 'booking_id' => null,
                 'sender_id' => $userId,
@@ -288,7 +307,8 @@ class ConversationSeeder extends Seeder
                 'updated_at' => Carbon::now()->subDays(10),
             ]);
 
-            $message15Id = DB::table('messages')->insertGetId([
+            $message15Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message15Id,
                 'conversation_id' => $conversation2Id,
                 'booking_id' => null,
                 'sender_id' => $managerId,
@@ -299,7 +319,8 @@ class ConversationSeeder extends Seeder
                 'updated_at' => Carbon::now()->subDays(10)->addHours(3),
             ]);
 
-            $message16Id = DB::table('messages')->insertGetId([
+            $message16Id = (string) Str::uuid();
+            DB::table('messages')->insert(['id' => $message16Id,
                 'conversation_id' => $conversation2Id,
                 'booking_id' => null,
                 'sender_id' => $userId,

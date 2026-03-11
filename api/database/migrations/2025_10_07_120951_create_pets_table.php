@@ -14,9 +14,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pets', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('animal_type_id')->constrained()->index();
+            $table->foreignUuid('animal_type_id')->constrained()->index();
             $table->string('name', 255);
             $table->string('breed', 255)->nullable();
             $table->date('birth_date')->nullable();

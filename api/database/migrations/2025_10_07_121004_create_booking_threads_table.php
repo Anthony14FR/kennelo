@@ -14,9 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('booking_threads', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('conversation_id')->constrained()->onDelete('cascade');
-            $table->foreignId('booking_id')->unique()->constrained()->onDelete('cascade');
+            $table->foreignUuid('conversation_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('booking_id')->primary()->constrained()->onDelete('cascade');
             $table->boolean('is_active')->default(true);
             $table->timestamp('archived_at')->nullable();
             $table->timestamps();

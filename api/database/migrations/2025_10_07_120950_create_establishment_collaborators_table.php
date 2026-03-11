@@ -14,13 +14,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('establishment_collaborators', function (Blueprint $table) {
-            $table->id();
             $table->foreignUuid('establishment_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('role', 50)->nullable();
             $table->timestamps();
 
-            $table->unique(['establishment_id', 'user_id']);
+            $table->primary(['establishment_id', 'user_id']);
         });
     }
 

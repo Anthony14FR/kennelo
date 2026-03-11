@@ -14,15 +14,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('booking_pets', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('booking_id')->constrained()->onDelete('cascade');
-            $table->foreignId('pet_id')->constrained();
+            $table->foreignUuid('booking_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('pet_id')->constrained();
             $table->decimal('price_per_night', 8, 2);
             $table->integer('number_of_nights');
             $table->decimal('subtotal', 10, 2);
             $table->timestamps();
 
-            $table->unique(['booking_id', 'pet_id']);
+            $table->primary(['booking_id', 'pet_id']);
         });
     }
 

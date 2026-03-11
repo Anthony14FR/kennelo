@@ -14,8 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('booking_id')->constrained();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('booking_id')->constrained();
             $table->foreignUuid('reviewer_id')->constrained('users');
             $table->enum('reviewer_type', ['user', 'establishment']);
             $table->decimal('overall_rating', 2, 1);

@@ -14,10 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pet_attributes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('pet_id')->constrained()->onDelete('cascade');
-            $table->foreignId('attribute_definition_id')->constrained();
-            $table->foreignId('attribute_option_id')->nullable()->constrained();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('pet_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('attribute_definition_id')->constrained();
+            $table->foreignUuid('attribute_option_id')->nullable()->constrained();
             $table->text('value_text')->nullable();
             $table->integer('value_integer')->nullable();
             $table->decimal('value_decimal', 10, 2)->nullable();
