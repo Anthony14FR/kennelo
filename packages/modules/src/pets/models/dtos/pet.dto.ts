@@ -1,5 +1,6 @@
 import type { AnimalTypeDto } from "./animal-type.dto";
 import type { PetAttributeDto } from "./pet-attribute.dto";
+import type { PetImageDto } from "./pet-image.dto";
 
 export type PetDto = {
     id: string;
@@ -16,8 +17,10 @@ export type PetDto = {
     adoption_date: string | null;
     about: string | null;
     health_notes: string | null;
+    avatar_url: string | null;
     animal_type?: AnimalTypeDto | null;
     attributes?: PetAttributeDto[];
+    images?: PetImageDto[];
     created_at: string;
     updated_at: string;
 };

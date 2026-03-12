@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import {
     Baby,
     Calendar,
-    Camera,
     Cpu,
     Heart,
     PawPrint,
@@ -58,6 +58,7 @@ function getAttributeIcon(code: string): ElementType {
 const YES_KEY = "features.pets.values.yes" as const;
 const NO_KEY = "features.pets.values.no" as const;
 const MUTED_TEXT = "text-muted-foreground";
+const ILLUSTRATED_TYPES = ["dog", "cat", "bird", "reptile"];
 
 function getAttrMeta(attr: PetAttributeModel) {
     return {
@@ -180,12 +181,89 @@ function PetStatusBadges({ pet }: { pet: PetModel }) {
     );
 }
 
-function PetHeroSection({ pet, ageDisplay }: PetHeroSectionProps) {
+function PetHeroAvatar({
+    avatarUrl,
+    typeCode,
+    hasIllustration,
+    animalTypeName,
+    petName,
+}: {
+    avatarUrl: string | null;
+    typeCode: string;
+    hasIllustration: boolean;
+    animalTypeName: string;
+    petName: string;
+}) {
+    if (avatarUrl) {
+        return <Image src={avatarUrl} alt={petName} fill className="object-cover" />;
+    }
+    if (hasIllustration) {
+        return (
+            <Image
+                src={`/illustrations/pets/${typeCode}.svg`}
+                alt={animalTypeName}
+                fill
+                className="object-contain p-8"
+            />
+        );
+    }
+    return (
+        <div className="absolute inset-0 flex items-center justify-center">
+            <PawPrint className="size-20 text-muted-foreground/15" />
+        </div>
+    );
+}
+
+function PetHeroStats({ pet, ageDisplay }: PetHeroSectionProps) {
     const t = useTranslations();
     return (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {ageDisplay && (
+                <div className="bg-muted rounded-2xl p-4">
+                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                        <Calendar className="size-4 shrink-0" />
+                        <span className="text-xs">{t("features.pets.fields.age")}</span>
+                    </div>
+                    <p className="font-semibold text-sm">{ageDisplay}</p>
+                </div>
+            )}
+            {pet.weight && (
+                <div className="bg-muted rounded-2xl p-4">
+                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                        <Weight className="size-4 shrink-0" />
+                        <span className="text-xs">{t("features.pets.fields.weight")}</span>
+                    </div>
+                    <p className="font-semibold text-sm">{pet.weight} kg</p>
+                </div>
+            )}
+            {pet.sex && (
+                <div className="bg-muted rounded-2xl p-4">
+                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                        <PawPrint className="size-4 shrink-0" />
+                        <span className="text-xs">{t("features.pets.fields.sex")}</span>
+                    </div>
+                    <p className="font-semibold text-sm capitalize">
+                        {t(`features.pets.sex.${pet.sex}`)}
+                    </p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function PetHeroSection({ pet, ageDisplay }: PetHeroSectionProps) {
+    const typeCode = pet.animalType?.code?.toLowerCase() ?? "";
+    const hasIllustration = ILLUSTRATED_TYPES.includes(typeCode);
+    return (
         <div className="flex gap-4">
-            <div className="flex-1 bg-muted rounded-2xl flex flex-col items-center justify-center gap-3 relative overflow-hidden min-w-40">
-                <PawPrint className="size-20 text-muted-foreground/15" />
+            <div className="flex-1 rounded-2xl relative overflow-hidden min-w-40 bg-muted aspect-square max-w-40">
+                <PetHeroAvatar
+                    avatarUrl={pet.avatarUrl}
+                    typeCode={typeCode}
+                    hasIllustration={hasIllustration}
+                    animalTypeName={pet.animalType?.name ?? ""}
+                    petName={pet.name}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
             </div>
             <div className="flex flex-col gap-4 w-full">
@@ -216,37 +294,7 @@ function PetHeroSection({ pet, ageDisplay }: PetHeroSectionProps) {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {ageDisplay && (
-                        <div className="bg-muted rounded-2xl p-4">
-                            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                                <Calendar className="size-4 shrink-0" />
-                                <span className="text-xs">{t("features.pets.fields.age")}</span>
-                            </div>
-                            <p className="font-semibold text-sm">{ageDisplay}</p>
-                        </div>
-                    )}
-                    {pet.weight && (
-                        <div className="bg-muted rounded-2xl p-4">
-                            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                                <Weight className="size-4 shrink-0" />
-                                <span className="text-xs">{t("features.pets.fields.weight")}</span>
-                            </div>
-                            <p className="font-semibold text-sm">{pet.weight} kg</p>
-                        </div>
-                    )}
-                    {pet.sex && (
-                        <div className="bg-muted rounded-2xl p-4">
-                            <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                                <PawPrint className="size-4 shrink-0" />
-                                <span className="text-xs">{t("features.pets.fields.sex")}</span>
-                            </div>
-                            <p className="font-semibold text-sm capitalize">
-                                {t(`features.pets.sex.${pet.sex}`)}
-                            </p>
-                        </div>
-                    )}
-                </div>
+                <PetHeroStats pet={pet} ageDisplay={ageDisplay} />
             </div>
         </div>
     );
@@ -386,18 +434,20 @@ export function PetProfileInfo({ pet, ageDisplay }: PetProfileInfoProps) {
             <div className="space-y-3">
                 <h3 className="font-semibold text-base">{t("features.pets.profile.gallery")}</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {Array.from({ length: 6 }).map((_, i) => (
+                    {pet.images.map((img) => (
                         <div
-                            key={i}
-                            className="aspect-square bg-muted rounded-2xl flex items-center justify-center"
+                            key={img.id}
+                            className="aspect-square rounded-2xl overflow-hidden relative"
                         >
-                            <Camera className="size-5 text-muted-foreground/30" />
+                            <Image src={img.url} alt={pet.name} fill className="object-cover" />
                         </div>
                     ))}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                    {t("features.pets.profile.photosPlaceholderDescription")}
-                </p>
+                {pet.images.length === 0 && (
+                    <p className="text-xs text-muted-foreground">
+                        {t("features.pets.profile.photosPlaceholderDescription")}
+                    </p>
+                )}
             </div>
         </div>
     );

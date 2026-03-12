@@ -290,7 +290,7 @@ class PetSeeder extends Seeder
     {
         for ($i = 0; $i < $count; $i++) {
             try {
-                $response = Http::withOptions(['allow_redirects' => true])->timeout(10)->get("https://loremflickr.com/600/400/{$category}");
+                $response = Http::withoutVerifying()->withOptions(['allow_redirects' => true])->timeout(15)->get("https://loremflickr.com/600/400/{$category}");
 
                 if ($response->successful()) {
                     $path = "pet-images/pet_{$petId}_{$i}.jpg";
@@ -309,7 +309,7 @@ class PetSeeder extends Seeder
 
         if ($withAvatar) {
             try {
-                $response = Http::withOptions(['allow_redirects' => true])->timeout(10)->get("https://loremflickr.com/400/400/{$category}");
+                $response = Http::withoutVerifying()->withOptions(['allow_redirects' => true])->timeout(15)->get("https://loremflickr.com/400/400/{$category}");
 
                 if ($response->successful()) {
                     $path = "pet-avatars/pet_{$petId}_avatar.jpg";

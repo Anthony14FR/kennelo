@@ -32,7 +32,46 @@ function getAge(birthDate: string): { years: number; months: number } {
     return { years, months };
 }
 
+type PetMediaImageProps = {
+    avatarUrl: string | null;
+    typeCode: string;
+    hasIllustration: boolean;
+    animalTypeName: string;
+};
+
+function PetMediaImage({
+    avatarUrl,
+    typeCode,
+    hasIllustration,
+    animalTypeName,
+}: PetMediaImageProps) {
+    if (avatarUrl) {
+        return (
+            <Image
+                src={avatarUrl}
+                alt={animalTypeName}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+        );
+    }
+    if (hasIllustration) {
+        return (
+            <Image
+                src={`/illustrations/pets/${typeCode}.svg`}
+                alt={animalTypeName}
+                fill
+                className="object-contain p-6 group-hover:scale-105 transition-transform duration-300"
+            />
+        );
+    }
+    return (
+        <PawPrint className="size-16 text-muted-foreground/20 group-hover:scale-110 transition-transform duration-300" />
+    );
+}
+
 type PetCardMediaProps = {
+    avatarUrl: string | null;
     typeCode: string;
     hasIllustration: boolean;
     animalType: PetModel["animalType"];
@@ -41,6 +80,7 @@ type PetCardMediaProps = {
 };
 
 function PetCardMedia({
+    avatarUrl,
     typeCode,
     hasIllustration,
     animalType,
@@ -50,16 +90,12 @@ function PetCardMedia({
     const t = useTranslations();
     return (
         <div className="relative aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden">
-            {hasIllustration ? (
-                <Image
-                    src={`/illustrations/pets/${typeCode}.svg`}
-                    alt={animalType?.name ?? ""}
-                    fill
-                    className="object-contain p-6 group-hover:scale-105 transition-transform duration-300"
-                />
-            ) : (
-                <PawPrint className="size-16 text-muted-foreground/20 group-hover:scale-110 transition-transform duration-300" />
-            )}
+            <PetMediaImage
+                avatarUrl={avatarUrl}
+                typeCode={typeCode}
+                hasIllustration={hasIllustration}
+                animalTypeName={animalType?.name ?? ""}
+            />
 
             {animalType && (
                 <div className="absolute top-2.5 start-2.5">
@@ -150,6 +186,7 @@ export function PetCard({ pet }: PetCardProps) {
             onClick={() => push(routes.PetDetails({ id: pet.id }))}
         >
             <PetCardMedia
+                avatarUrl={pet.avatarUrl}
                 typeCode={typeCode}
                 hasIllustration={hasIllustration}
                 animalType={pet.animalType}

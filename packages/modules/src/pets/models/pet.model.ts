@@ -1,6 +1,7 @@
 import type { PetDto } from "./dtos/pet.dto";
 import { AnimalTypeModel } from "./animal-type.model";
 import { PetAttributeModel } from "./pet-attribute.model";
+import { PetImageModel } from "./pet-image.model";
 
 export class PetModel {
     private constructor(
@@ -18,8 +19,10 @@ export class PetModel {
         public readonly adoptionDate: string | null,
         public readonly about: string | null,
         public readonly healthNotes: string | null,
+        public readonly avatarUrl: string | null,
         public readonly animalType: AnimalTypeModel | null,
         public readonly attributes: PetAttributeModel[] | null,
+        public readonly images: PetImageModel[],
         public readonly createdAt: string,
         public readonly updatedAt: string,
     ) {}
@@ -40,8 +43,10 @@ export class PetModel {
             dto.adoption_date,
             dto.about,
             dto.health_notes,
+            dto.avatar_url ?? null,
             dto.animal_type ? AnimalTypeModel.from(dto.animal_type) : null,
             dto.attributes ? dto.attributes.map(PetAttributeModel.from) : null,
+            dto.images ? dto.images.map(PetImageModel.from) : [],
             dto.created_at,
             dto.updated_at,
         );

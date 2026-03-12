@@ -20,19 +20,11 @@ const nextConfig = {
         return config
     },
     images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'picsum.photos',
-            },
-        ],
+        unoptimized: true,
     },
 
     ...(isMobileBuild && {
         output: 'export',
-        images: {
-            unoptimized: true,
-        },
     }),
 }
 
