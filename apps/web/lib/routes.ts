@@ -21,6 +21,15 @@ type RegisterParams = {
     locale?: string | number;
 };
 
+type MyPetsParams = {
+    locale?: string | number;
+};
+
+type PetDetailsParams = {
+    locale?: string | number;
+    id: string | number;
+};
+
 type MyProfileAboutParams = {
     locale?: string | number;
 };
@@ -57,6 +66,14 @@ function Register(params?: RegisterParams): string {
     return buildRoute("/[locale]/s/accounts/register", params);
 }
 
+function MyPets(params?: MyPetsParams): string {
+    return buildRoute("/[locale]/s/my/pets", params);
+}
+
+function PetDetails(params: PetDetailsParams): string {
+    return buildRoute("/[locale]/s/my/pets/[id]", params);
+}
+
 function MyProfileAbout(params?: MyProfileAboutParams): string {
     return buildRoute("/[locale]/s/my/profile/about", params);
 }
@@ -79,6 +96,8 @@ export const routes = {
     Home,
     Login,
     Register,
+    MyPets,
+    PetDetails,
     MyProfileAbout,
     MyProfileChangePassword,
     MyProfileEmailPreferences,

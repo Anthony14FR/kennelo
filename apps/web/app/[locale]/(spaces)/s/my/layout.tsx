@@ -1,5 +1,13 @@
 import AppLayout from "@/components/layouts/app-layout";
+import { Separator } from "@workspace/ui/components/separator";
 
 export default async function MainAppLayout({ children }: { children: React.ReactNode }) {
-    return <AppLayout>{children}</AppLayout>;
+    return (
+        <AppLayout>
+            <Separator />
+            <div className="w-full bg-card">
+                <div className="container mx-auto w-full px-8">{children}</div>
+            </div>
+        </AppLayout>
+    );
 }

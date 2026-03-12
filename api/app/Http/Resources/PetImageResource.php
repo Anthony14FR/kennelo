@@ -17,7 +17,7 @@ class PetImageResource extends JsonResource
         return [
             'id' => $this->id,
             'pet_id' => $this->pet_id,
-            'url' => Storage::url($this->path),
+            'url' => Storage::disk('public')->url($this->path),
             'order' => $this->order,
             'created_at' => human_date($this->created_at),
         ];
