@@ -1,0 +1,93 @@
+{
+    "title": "حيواناتي",
+    "description": "إدارة حيواناتك الأليفة",
+    "addPet": "إضافة حيوان",
+    "noPets": "لا توجد حيوانات بعد",
+    "noPetsDescription": "أضف حيوانك الأول لبدء إدارة ملفه الشخصي",
+    "searchPlaceholder": "البحث عن حيوان...",
+    "profile": {
+        "about": "حول",
+        "health": "الصحة والرعاية",
+        "characteristics": "الخصائص",
+        "gallery": "المعرض",
+        "owner": "المالك",
+        "reviews": "التقييمات",
+        "reviewsEmpty": "لا توجد تقييمات بعد",
+        "reviewsEmptyDescription": "ستظهر هنا التقييمات التي تركها المضيفون الذين اعتنوا بهذا الحيوان",
+        "photosPlaceholder": "الصور قادمة قريباً",
+        "photosPlaceholderDescription": "ستتوفر صورة الملف الشخصي والمعرض عند إطلاق الميزة",
+        "quickInfo": "معلومات سريعة",
+        "edit": "تعديل",
+        "save": "حفظ",
+        "behaviors": "السلوك والشخصية",
+        "care": "الرعاية والعناية",
+        "compatibility": "التوافق والتفضيلات",
+        "healthTracking": "الصحة ومتابعة الطبيب البيطري",
+        "importantDates": "التواريخ المهمة",
+        "vetReferent": "الطبيب البيطري المرجعي",
+        "medicalNotes": "الملاحظات الطبية",
+        "viewPhotos": "عرض {count} صور",
+        "memberSince": "عضو منذ {date}",
+        "verifiedProfile": "ملف موثق",
+        "staysCompleted": "الإقامات المكتملة",
+        "responseRate": "معدل الرد",
+        "animalsCount": "الحيوانات",
+        "sendMessage": "إرسال رسالة",
+        "healthIndicators": "مؤشرات الصحة",
+        "vaccination": "التطعيم",
+        "lastCheckup": "آخر فحص",
+        "nextReminder": "التذكير القادم",
+        "verifiedStay": "إقامة موثقة",
+        "stayNights": "{count, plural, =1 {إقامة ليلة واحدة} other {إقامة # ليالٍ}}",
+        "nextVaccine": "اللقاح القادم",
+        "lastVetVisit": "آخر زيارة",
+        "hostsReviews": "تقييمات المضيفين",
+        "viewProfile": "عرض الملف الشخصي"
+    },
+    "fields": {
+        "breed": "السلالة",
+        "birthDate": "تاريخ الميلاد",
+        "age": "العمر",
+        "sex": "الجنس",
+        "weight": "الوزن",
+        "sterilized": "معقم",
+        "microchip": "الشريحة الإلكترونية",
+        "microchipNumber": "رقم الشريحة الإلكترونية",
+        "adoptionDate": "تاريخ التبني",
+        "about": "حول",
+        "healthNotes": "ملاحظات صحية",
+        "animalType": "نوع الحيوان"
+    },
+    "sex": {
+        "male": "ذكر",
+        "female": "أنثى",
+        "unknown": "غير معروف"
+    },
+    "badges": {
+        "sterilized": "معقم",
+        "notSterilized": "غير معقم",
+        "microchipped": "مزود بشريحة",
+        "noMicrochip": "بدون شريحة",
+        "vaccinationsUpToDate": "التطعيمات محدثة"
+    },
+    "age": {
+        "years": "{count, plural, =1 {سنة واحدة} other {# سنوات}}",
+        "months": "{count, plural, =1 {شهر واحد} other {# أشهر}}"
+    },
+    "values": {
+        "yes": "نعم",
+        "no": "لا"
+    },
+    "filters": {
+        "all": "الكل",
+        "sort": "ترتيب",
+        "sortNameAsc": "الاسم أ → ي",
+        "sortNameDesc": "الاسم ي → أ",
+        "sortYoungest": "الأصغر أولاً",
+        "sortOldest": "الأكبر أولاً",
+        "sortNewest": "الأحدث إضافةً",
+        "resultsCount": "{count, plural, =0 {لا نتائج} =1 {حيوان واحد} other {# حيوانات}}",
+        "allTypes": "جميع الأنواع",
+        "clearFilters": "إعادة تعيين الفلاتر"
+    }
+}

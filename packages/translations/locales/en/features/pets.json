@@ -1,0 +1,93 @@
+{
+    "title": "My Pets",
+    "description": "Manage your pets",
+    "addPet": "Add a pet",
+    "noPets": "No pets yet",
+    "noPetsDescription": "Add your first pet to start managing their profile",
+    "searchPlaceholder": "Search a pet...",
+    "profile": {
+        "about": "About",
+        "health": "Health & Care",
+        "characteristics": "Characteristics",
+        "gallery": "Gallery",
+        "owner": "Owner",
+        "reviews": "Reviews",
+        "reviewsEmpty": "No reviews yet",
+        "reviewsEmptyDescription": "Reviews from hosts who have cared for this pet will appear here",
+        "photosPlaceholder": "Photos coming soon",
+        "photosPlaceholderDescription": "Profile photo and gallery will be available once the feature is released",
+        "quickInfo": "Quick Info",
+        "edit": "Edit",
+        "save": "Save",
+        "behaviors": "Behavior & Character",
+        "care": "Care & Grooming",
+        "compatibility": "Compatibility & Preferences",
+        "healthTracking": "Health & Vet Tracking",
+        "importantDates": "Important Dates",
+        "vetReferent": "Primary Vet",
+        "medicalNotes": "Medical Notes",
+        "viewPhotos": "View {count} photos",
+        "memberSince": "Member since {date}",
+        "verifiedProfile": "Verified profile",
+        "staysCompleted": "Stays completed",
+        "responseRate": "Response rate",
+        "animalsCount": "Animals",
+        "sendMessage": "Send a message",
+        "healthIndicators": "Health indicators",
+        "vaccination": "Vaccination",
+        "lastCheckup": "Last checkup",
+        "nextReminder": "Next reminder",
+        "verifiedStay": "Verified stay",
+        "stayNights": "{count, plural, =1 {Stay of 1 night} other {Stay of # nights}}",
+        "nextVaccine": "Next vaccine",
+        "lastVetVisit": "Last visit",
+        "hostsReviews": "Host reviews",
+        "viewProfile": "View profile"
+    },
+    "fields": {
+        "breed": "Breed",
+        "birthDate": "Date of birth",
+        "age": "Age",
+        "sex": "Sex",
+        "weight": "Weight",
+        "sterilized": "Sterilized",
+        "microchip": "Microchip",
+        "microchipNumber": "Microchip number",
+        "adoptionDate": "Adoption date",
+        "about": "About",
+        "healthNotes": "Health notes",
+        "animalType": "Animal type"
+    },
+    "sex": {
+        "male": "Male",
+        "female": "Female",
+        "unknown": "Unknown"
+    },
+    "badges": {
+        "sterilized": "Sterilized",
+        "notSterilized": "Not sterilized",
+        "microchipped": "Microchipped",
+        "noMicrochip": "No microchip",
+        "vaccinationsUpToDate": "Vaccinations up to date"
+    },
+    "age": {
+        "years": "{count, plural, =1 {1 year} other {# years}}",
+        "months": "{count, plural, =1 {1 month} other {# months}}"
+    },
+    "values": {
+        "yes": "Yes",
+        "no": "No"
+    },
+    "filters": {
+        "all": "All",
+        "sort": "Sort",
+        "sortNameAsc": "Name A → Z",
+        "sortNameDesc": "Name Z → A",
+        "sortYoungest": "Youngest first",
+        "sortOldest": "Oldest first",
+        "sortNewest": "Most recent",
+        "resultsCount": "{count, plural, =0 {No results} =1 {1 pet} other {# pets}}",
+        "allTypes": "All types",
+        "clearFilters": "Clear filters"
+    }
+}

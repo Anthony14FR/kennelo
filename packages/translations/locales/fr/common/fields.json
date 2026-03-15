@@ -15,5 +15,6 @@
     "notProvided": "Non renseigné",
     "emailVerified": "Email vérifié",
     "idVerified": "Identité vérifiée",
-    "status": "Statut"
+    "status": "Statut",
+    "phoneVerified": "Téléphone vérifié"
 }
