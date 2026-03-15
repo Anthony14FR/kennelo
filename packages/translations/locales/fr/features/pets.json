@@ -41,7 +41,8 @@
         "stayNights": "{count, plural, =1 {Séjour de 1 nuit} other {Séjour de # nuits}}",
         "nextVaccine": "Prochain vaccin",
         "lastVetVisit": "Dernière visite",
-        "hostsReviews": "Avis des hosts"
+        "hostsReviews": "Avis des hosts",
+        "viewProfile": "Voir le profil"
     },
     "fields": {
         "breed": "Race",

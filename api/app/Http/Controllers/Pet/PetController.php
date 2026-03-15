@@ -36,7 +36,7 @@ class PetController extends Controller
 
     public function show(Pet $pet): JsonResponse
     {
-        // $this->authorize('view', $pet);
+        $this->authorize('view', $pet);
 
         $pet->load(['animalType', 'petAttributes.attributeDefinition', 'petAttributes.attributeOption', 'petImages']);
 

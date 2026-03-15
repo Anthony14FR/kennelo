@@ -6,7 +6,9 @@ export default async function MainAppLayout({ children }: { children: React.Reac
         <AppLayout>
             <Separator />
             <div className="w-full bg-card">
-                <div className="container mx-auto w-full px-8">{children}</div>
+                <div className="container mx-auto w-full px-4 pb-16 sm:pb-0 sm:px-8">
+                    {children}
+                </div>
             </div>
         </AppLayout>
     );

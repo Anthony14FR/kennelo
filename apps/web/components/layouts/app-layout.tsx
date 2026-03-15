@@ -188,9 +188,9 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                             </NavItem>
                         ))}
                         {isAuthenticated && (
-                            <div className="flex flex-col items-center gap-0.5">
+                            <div className="flex flex-col items-center gap-0.5 mt-1">
                                 <UserMenu user={user ?? undefined} onLogout={logout} />
-                                <span className="text-xs text-muted-foreground">
+                                <span className="text-xs font-medium text-muted-foreground">
                                     {t("ui.navigation.profile")}
                                 </span>
                             </div>

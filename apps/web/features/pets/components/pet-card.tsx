@@ -37,10 +37,9 @@ export function PetCard({ pet }: PetCardProps) {
                 avatarUrl={pet.avatarUrl}
                 typeCode={typeCode}
                 animalType={pet.animalType}
-                ageDisplay={ageDisplay}
-                sex={pet.sex}
+                isSterilized={pet.isSterilized}
             />
-            <PetCardStats pet={pet} />
+            <PetCardStats pet={pet} ageDisplay={ageDisplay} />
         </Card>
     );
 }
@@ -49,18 +48,20 @@ export function PetCardSkeleton() {
     return (
         <div className="rounded-2xl overflow-hidden border bg-card">
             <Skeleton className="aspect-[4/3] w-full rounded-none" />
-            <div className="p-3.5 space-y-2">
-                <div className="space-y-1.5">
-                    <Skeleton className="h-4 w-2/3" />
-                    <Skeleton className="h-3 w-1/2" />
-                </div>
-                <div className="flex items-center justify-between">
-                    <Skeleton className="h-3 w-10" />
-                    <div className="flex gap-1.5">
-                        <Skeleton className="size-2 rounded-full" />
-                        <Skeleton className="size-2 rounded-full" />
+            <div className="p-3.5 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                    <div className="space-y-1.5 flex-1">
+                        <Skeleton className="h-4 w-2/3" />
+                        <Skeleton className="h-3 w-1/2" />
                     </div>
+                    <Skeleton className="size-6 rounded-lg shrink-0" />
                 </div>
+                <div className="grid grid-cols-3 gap-2">
+                    <Skeleton className="h-16 rounded-2xl" />
+                    <Skeleton className="h-16 rounded-2xl" />
+                    <Skeleton className="h-16 rounded-2xl" />
+                </div>
+                <Skeleton className="h-10 rounded-2xl" />
             </div>
         </div>
     );

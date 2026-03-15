@@ -41,7 +41,8 @@
         "stayNights": "{count, plural, =1 {إقامة ليلة واحدة} other {إقامة # ليالٍ}}",
         "nextVaccine": "اللقاح القادم",
         "lastVetVisit": "آخر زيارة",
-        "hostsReviews": "تقييمات المضيفين"
+        "hostsReviews": "تقييمات المضيفين",
+        "viewProfile": "عرض الملف الشخصي"
     },
     "fields": {
         "breed": "السلالة",

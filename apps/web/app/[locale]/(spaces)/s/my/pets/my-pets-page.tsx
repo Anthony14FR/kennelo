@@ -35,7 +35,7 @@ export default function MyPetsPage() {
     let petsContent: React.ReactNode;
     if (isLoading) {
         petsContent = (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {Array.from({ length: 8 }).map((_, i) => (
                     <PetCardSkeleton key={i} />
                 ))}
@@ -67,7 +67,7 @@ export default function MyPetsPage() {
         );
     } else {
         petsContent = (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4">
                 {filteredPets.map((pet) => (
                     <PetCard key={pet.id} pet={pet} />
                 ))}

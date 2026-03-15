@@ -20,6 +20,19 @@ type RecapItem = {
     highlight?: boolean;
 };
 
+function getSterilizationValue(
+    isSterilized: boolean | null,
+    t: (key: string) => string,
+): string | null {
+    if (isSterilized === null) return null;
+    return isSterilized ? t("features.pets.values.yes") : t("features.pets.values.no");
+}
+
+function getMicrochipValue(pet: PetModel, t: (key: string) => string): string {
+    if (pet.microchipNumber) return pet.microchipNumber;
+    return t("features.pets.badges.microchipped");
+}
+
 function buildRecapItems(
     pet: PetModel,
     ageDisplay: string | null,
@@ -62,18 +75,21 @@ function buildRecapItems(
             value: `${pet.weight} kg`,
         });
     }
-    if (pet.isSterilized !== null) {
+
+    const sterilizationValue = getSterilizationValue(pet.isSterilized, t);
+    if (sterilizationValue !== null) {
         items.push({
             icon: <Scissors className="size-3.5" />,
             label: t("features.pets.fields.sterilized"),
-            value: pet.isSterilized ? t("features.pets.values.yes") : t("features.pets.values.no"),
+            value: sterilizationValue,
         });
     }
+
     if (pet.hasMicrochip) {
         items.push({
             icon: <Cpu className="size-3.5" />,
             label: t("features.pets.fields.microchip"),
-            value: pet.microchipNumber ?? t("features.pets.badges.microchipped"),
+            value: getMicrochipValue(pet, t),
             highlight: !!pet.microchipNumber,
         });
     }

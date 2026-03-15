@@ -24,12 +24,12 @@ export function PetHealthSection({ pet }: PetHealthSectionProps) {
         ? { bg: "bg-blue-100 dark:bg-blue-900/30", color: "text-blue-700 dark:text-blue-400" }
         : { bg: "bg-muted", color: "text-muted-foreground" };
 
-    const sterilizationLabel =
-        pet.isSterilized === true
-            ? t("features.pets.badges.sterilized")
-            : pet.isSterilized === false
-              ? t("features.pets.badges.notSterilized")
-              : "—";
+    let sterilizationLabel = "—";
+    if (pet.isSterilized === true) {
+        sterilizationLabel = t("features.pets.badges.sterilized");
+    } else if (pet.isSterilized === false) {
+        sterilizationLabel = t("features.pets.badges.notSterilized");
+    }
 
     return (
         <div className="space-y-5">
