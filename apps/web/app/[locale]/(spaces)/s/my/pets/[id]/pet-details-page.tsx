@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Share2 } from "lucide-react";
+import { ArrowLeft, Bookmark, Pencil } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@workspace/ui/components/button";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -10,49 +10,32 @@ import { PetProfileOwner } from "@/features/pets/components/pet-profile-owner";
 import { PetProfileReviews } from "@/features/pets/components/pet-profile-reviews";
 import { useAuth } from "@/features/auth";
 import { useNavigation } from "@/hooks/use-navigation";
+import { getAge } from "@/features/pets/lib/pet-age";
 
 type Query = { id: string };
-
-function getAge(birthDate: string): { years: number; months: number } {
-    const birth = new Date(birthDate);
-    const now = new Date();
-    let years = now.getFullYear() - birth.getFullYear();
-    let months = now.getMonth() - birth.getMonth();
-    if (months < 0) {
-        years--;
-        months += 12;
-    }
-    return { years, months };
-}
 
 function PetDetailsPageSkeleton() {
     return (
         <div className="min-h-screen">
             <div className="flex items-center justify-between py-4">
-                <Skeleton className="size-9 rounded-4xl" />
-                <Skeleton className="h-9 w-48 rounded-xl" />
+                <Skeleton className="h-6 w-32 rounded-xl" />
+                <div className="flex gap-2">
+                    <Skeleton className="h-9 w-24 rounded-4xl" />
+                    <Skeleton className="h-9 w-28 rounded-4xl" />
+                </div>
             </div>
             <div className="py-6">
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="flex-1 space-y-6">
-                        <div className="flex gap-4">
-                            <Skeleton className="h-32 w-32 rounded-2xl" />
-                            <div className="space-y-2">
-                                <Skeleton className="h-9 w-48 rounded-xl" />
-                                <Skeleton className="h-5 w-32 rounded-xl" />
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            {Array.from({ length: 3 }).map((_, i) => (
-                                <Skeleton key={i} className="h-20 rounded-2xl" />
-                            ))}
-                        </div>
+                        <Skeleton className="h-9 w-48 rounded-xl" />
+                        <Skeleton className="aspect-[16/10] rounded-2xl" />
+                        <Skeleton className="h-8 w-full rounded-2xl" />
                         <Skeleton className="h-36 rounded-2xl" />
                         <Skeleton className="h-72 rounded-2xl" />
                     </div>
                     <div className="lg:w-80 shrink-0 space-y-4">
-                        <Skeleton className="h-28 rounded-2xl" />
-                        <Skeleton className="h-52 rounded-2xl" />
+                        <Skeleton className="h-72 rounded-2xl" />
+                        <Skeleton className="h-36 rounded-2xl" />
                     </div>
                 </div>
             </div>
@@ -82,26 +65,30 @@ export default function PetDetailsPage() {
           })()
         : null;
 
+    const isOwner = user?.id === pet.userId;
+
     return (
         <div className="min-h-screen bg-card">
             <div className="flex justify-between items-center py-4">
-                <div className="flex items-center gap-3">
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-4xl shrink-0"
-                        onClick={back}
-                    >
-                        <ArrowLeft className="size-4" />
-                    </Button>
-                    {/* <h1 className="text-xl font-semibold truncate">{pet.name}</h1> */}
-                </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" size="icon">
-                        <Share2 className="size-4" />
-                    </Button>
-                    {user?.id === pet.userId && <Button>Modifier le profil</Button>}
-                </div>
+                <button
+                    onClick={back}
+                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                    <ArrowLeft className="size-4" />
+                    {t("features.pets.title")}
+                </button>
+                {isOwner && (
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="gap-2 rounded-4xl">
+                            <Pencil className="size-3.5" />
+                            {t("features.pets.profile.edit")}
+                        </Button>
+                        <Button variant="outline" size="sm" className="gap-2 rounded-4xl">
+                            <Bookmark className="size-3.5" />
+                            {t("features.pets.profile.save")}
+                        </Button>
+                    </div>
+                )}
             </div>
 
             <div className="pb-6">

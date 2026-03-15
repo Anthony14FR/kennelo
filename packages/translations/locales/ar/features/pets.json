@@ -16,7 +16,32 @@
         "reviewsEmptyDescription": "ستظهر هنا التقييمات التي تركها المضيفون الذين اعتنوا بهذا الحيوان",
         "photosPlaceholder": "الصور قادمة قريباً",
         "photosPlaceholderDescription": "ستتوفر صورة الملف الشخصي والمعرض عند إطلاق الميزة",
-        "quickInfo": "معلومات سريعة"
+        "quickInfo": "معلومات سريعة",
+        "edit": "تعديل",
+        "save": "حفظ",
+        "behaviors": "السلوك والشخصية",
+        "care": "الرعاية والعناية",
+        "compatibility": "التوافق والتفضيلات",
+        "healthTracking": "الصحة ومتابعة الطبيب البيطري",
+        "importantDates": "التواريخ المهمة",
+        "vetReferent": "الطبيب البيطري المرجعي",
+        "medicalNotes": "الملاحظات الطبية",
+        "viewPhotos": "عرض {count} صور",
+        "memberSince": "عضو منذ {date}",
+        "verifiedProfile": "ملف موثق",
+        "staysCompleted": "الإقامات المكتملة",
+        "responseRate": "معدل الرد",
+        "animalsCount": "الحيوانات",
+        "sendMessage": "إرسال رسالة",
+        "healthIndicators": "مؤشرات الصحة",
+        "vaccination": "التطعيم",
+        "lastCheckup": "آخر فحص",
+        "nextReminder": "التذكير القادم",
+        "verifiedStay": "إقامة موثقة",
+        "stayNights": "{count, plural, =1 {إقامة ليلة واحدة} other {إقامة # ليالٍ}}",
+        "nextVaccine": "اللقاح القادم",
+        "lastVetVisit": "آخر زيارة",
+        "hostsReviews": "تقييمات المضيفين"
     },
     "fields": {
         "breed": "السلالة",
@@ -41,7 +66,8 @@
         "sterilized": "معقم",
         "notSterilized": "غير معقم",
         "microchipped": "مزود بشريحة",
-        "noMicrochip": "بدون شريحة"
+        "noMicrochip": "بدون شريحة",
+        "vaccinationsUpToDate": "التطعيمات محدثة"
     },
     "age": {
         "years": "{count, plural, =1 {سنة واحدة} other {# سنوات}}",

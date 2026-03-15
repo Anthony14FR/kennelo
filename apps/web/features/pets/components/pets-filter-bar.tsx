@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { ChevronDown, PawPrint, Search, SlidersHorizontal, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Badge } from "@workspace/ui/components/badge";
@@ -15,24 +14,7 @@ import {
 import { Input } from "@workspace/ui/components/input";
 import { cn } from "@workspace/ui/lib/utils";
 import type { AvailableType, SortOption } from "@/features/pets/hooks/use-pets-filters";
-
-const ILLUSTRATED_TYPES = ["dog", "cat", "bird", "reptile"];
-
-function TypeIllustration({ code, className }: { code: string; className?: string }) {
-    const normalized = code.toLowerCase();
-    if (ILLUSTRATED_TYPES.includes(normalized)) {
-        return (
-            <Image
-                src={`/illustrations/pets/${normalized}.svg`}
-                alt=""
-                width={20}
-                height={20}
-                className={cn("object-contain shrink-0", className)}
-            />
-        );
-    }
-    return <PawPrint className={cn("shrink-0 text-muted-foreground", className)} />;
-}
+import { PetTypeIllustration } from "@/features/pets/components/pet-type-illustration";
 
 type PetsFilterBarProps = {
     search: string;
@@ -77,6 +59,7 @@ export function PetsFilterBar({
 }: PetsFilterBarProps) {
     const t = useTranslations();
     const typeFilterValue = typeFilter !== null ? typeFilter.toString() : "all";
+    const selectedType = availableTypes.find((type) => type.id === typeFilter);
 
     return (
         <div className="space-y-3">
@@ -102,16 +85,14 @@ export function PetsFilterBar({
                                         "border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background",
                                 )}
                             >
-                                {typeFilter !== null ? (
+                                {selectedType ? (
                                     <>
-                                        <TypeIllustration
-                                            code={
-                                                availableTypes.find((t) => t.id === typeFilter)
-                                                    ?.code ?? ""
-                                            }
+                                        <PetTypeIllustration
+                                            code={selectedType.code}
+                                            name={selectedType.name}
                                             className="size-4"
                                         />
-                                        {availableTypes.find((t) => t.id === typeFilter)?.name}
+                                        {selectedType.name}
                                     </>
                                 ) : (
                                     <>
@@ -139,7 +120,11 @@ export function PetsFilterBar({
                                         value={type.id.toString()}
                                         className="gap-2.5"
                                     >
-                                        <TypeIllustration code={type.code} className="size-4" />
+                                        <PetTypeIllustration
+                                            code={type.code}
+                                            name={type.name}
+                                            className="size-4"
+                                        />
                                         <span className="flex-1">{type.name}</span>
                                         <span className="text-xs text-muted-foreground">
                                             {type.count}

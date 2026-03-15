@@ -1,175 +1,23 @@
 "use client";
 
-import Image from "next/image";
-import { PawPrint } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Badge } from "@workspace/ui/components/badge";
-import { Card, CardContent } from "@workspace/ui/components/card";
+import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import type { PetModel } from "@workspace/modules/pets";
 import { useNavigation } from "@/hooks/use-navigation";
+import { getAge } from "@/features/pets/lib/pet-age";
+import { PetCardMedia } from "@/features/pets/components/pet-card-media";
+import { PetCardStats } from "@/features/pets/components/pet-card-stats";
 
 type PetCardProps = {
     pet: PetModel;
 };
-
-const ILLUSTRATED_TYPES = ["dog", "cat", "bird", "reptile"] as const;
-type IllustratedType = (typeof ILLUSTRATED_TYPES)[number];
-
-function isIllustratedType(code: string): code is IllustratedType {
-    return ILLUSTRATED_TYPES.includes(code as IllustratedType);
-}
-
-function getAge(birthDate: string): { years: number; months: number } {
-    const birth = new Date(birthDate);
-    const now = new Date();
-    let years = now.getFullYear() - birth.getFullYear();
-    let months = now.getMonth() - birth.getMonth();
-    if (months < 0) {
-        years--;
-        months += 12;
-    }
-    return { years, months };
-}
-
-type PetMediaImageProps = {
-    avatarUrl: string | null;
-    typeCode: string;
-    hasIllustration: boolean;
-    animalTypeName: string;
-};
-
-function PetMediaImage({
-    avatarUrl,
-    typeCode,
-    hasIllustration,
-    animalTypeName,
-}: PetMediaImageProps) {
-    if (avatarUrl) {
-        return (
-            <Image
-                src={avatarUrl}
-                alt={animalTypeName}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-        );
-    }
-    if (hasIllustration) {
-        return (
-            <Image
-                src={`/illustrations/pets/${typeCode}.svg`}
-                alt={animalTypeName}
-                fill
-                className="object-contain p-6 group-hover:scale-105 transition-transform duration-300"
-            />
-        );
-    }
-    return (
-        <PawPrint className="size-16 text-muted-foreground/20 group-hover:scale-110 transition-transform duration-300" />
-    );
-}
-
-type PetCardMediaProps = {
-    avatarUrl: string | null;
-    typeCode: string;
-    hasIllustration: boolean;
-    animalType: PetModel["animalType"];
-    ageDisplay: string | null;
-    sex: PetModel["sex"];
-};
-
-function PetCardMedia({
-    avatarUrl,
-    typeCode,
-    hasIllustration,
-    animalType,
-    ageDisplay,
-    sex,
-}: PetCardMediaProps) {
-    const t = useTranslations();
-    return (
-        <div className="relative aspect-[4/3] bg-muted flex items-center justify-center overflow-hidden">
-            <PetMediaImage
-                avatarUrl={avatarUrl}
-                typeCode={typeCode}
-                hasIllustration={hasIllustration}
-                animalTypeName={animalType?.name ?? ""}
-            />
-
-            {animalType && (
-                <div className="absolute top-2.5 start-2.5">
-                    <Badge
-                        variant="secondary"
-                        className="rounded-4xl text-xs bg-background/85 backdrop-blur-sm"
-                    >
-                        {animalType.name}
-                    </Badge>
-                </div>
-            )}
-
-            {ageDisplay && (
-                <div className="absolute bottom-2.5 start-2.5">
-                    <span className="text-xs font-medium bg-background/85 backdrop-blur-sm rounded-4xl px-2 py-0.5">
-                        {ageDisplay}
-                    </span>
-                </div>
-            )}
-
-            {sex && sex !== "unknown" && (
-                <div className="absolute bottom-2.5 end-2.5">
-                    <span className="text-xs font-medium bg-background/85 backdrop-blur-sm rounded-4xl px-2 py-0.5 capitalize">
-                        {t(`features.pets.sex.${sex}`)}
-                    </span>
-                </div>
-            )}
-        </div>
-    );
-}
-
-function PetCardStats({ pet }: { pet: PetModel }) {
-    const t = useTranslations();
-    return (
-        <CardContent className="p-3.5 space-y-2">
-            <div>
-                <h3 className="font-semibold text-base leading-tight truncate">{pet.name}</h3>
-                <p className="text-xs text-muted-foreground truncate mt-0.5">
-                    {pet.breed ?? pet.animalType?.name ?? ""}
-                </p>
-            </div>
-
-            <div className="flex items-center justify-between">
-                {pet.weight ? (
-                    <span className="text-xs text-muted-foreground">{pet.weight} kg</span>
-                ) : (
-                    <span />
-                )}
-
-                <div className="flex items-center gap-1.5">
-                    {pet.isSterilized && (
-                        <span
-                            className="size-2 rounded-full bg-emerald-400 shrink-0"
-                            title={t("features.pets.badges.sterilized")}
-                        />
-                    )}
-                    {pet.hasMicrochip && (
-                        <span
-                            className="size-2 rounded-full bg-sky-400 shrink-0"
-                            title={t("features.pets.badges.microchipped")}
-                        />
-                    )}
-                </div>
-            </div>
-        </CardContent>
-    );
-}
 
 export function PetCard({ pet }: PetCardProps) {
     const t = useTranslations();
     const { routes, push } = useNavigation();
 
     const typeCode = pet.animalType?.code?.toLowerCase() ?? "";
-    const hasIllustration = isIllustratedType(typeCode);
 
     const ageDisplay = pet.birthDate
         ? (() => {
@@ -188,7 +36,6 @@ export function PetCard({ pet }: PetCardProps) {
             <PetCardMedia
                 avatarUrl={pet.avatarUrl}
                 typeCode={typeCode}
-                hasIllustration={hasIllustration}
                 animalType={pet.animalType}
                 ageDisplay={ageDisplay}
                 sex={pet.sex}

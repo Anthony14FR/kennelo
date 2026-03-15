@@ -16,7 +16,32 @@
         "reviewsEmptyDescription": "Reviews from hosts who have cared for this pet will appear here",
         "photosPlaceholder": "Photos coming soon",
         "photosPlaceholderDescription": "Profile photo and gallery will be available once the feature is released",
-        "quickInfo": "Quick Info"
+        "quickInfo": "Quick Info",
+        "edit": "Edit",
+        "save": "Save",
+        "behaviors": "Behavior & Character",
+        "care": "Care & Grooming",
+        "compatibility": "Compatibility & Preferences",
+        "healthTracking": "Health & Vet Tracking",
+        "importantDates": "Important Dates",
+        "vetReferent": "Primary Vet",
+        "medicalNotes": "Medical Notes",
+        "viewPhotos": "View {count} photos",
+        "memberSince": "Member since {date}",
+        "verifiedProfile": "Verified profile",
+        "staysCompleted": "Stays completed",
+        "responseRate": "Response rate",
+        "animalsCount": "Animals",
+        "sendMessage": "Send a message",
+        "healthIndicators": "Health indicators",
+        "vaccination": "Vaccination",
+        "lastCheckup": "Last checkup",
+        "nextReminder": "Next reminder",
+        "verifiedStay": "Verified stay",
+        "stayNights": "{count, plural, =1 {Stay of 1 night} other {Stay of # nights}}",
+        "nextVaccine": "Next vaccine",
+        "lastVetVisit": "Last visit",
+        "hostsReviews": "Host reviews"
     },
     "fields": {
         "breed": "Breed",
@@ -41,7 +66,8 @@
         "sterilized": "Sterilized",
         "notSterilized": "Not sterilized",
         "microchipped": "Microchipped",
-        "noMicrochip": "No microchip"
+        "noMicrochip": "No microchip",
+        "vaccinationsUpToDate": "Vaccinations up to date"
     },
     "age": {
         "years": "{count, plural, =1 {1 year} other {# years}}",
