@@ -29,7 +29,7 @@ class StorePetImageRequest extends FormRequest
             'image' => [
                 'required',
                 'image',
-                'mimetypes:image/jpeg,image/png,image/gif',
+                'mimetypes:image/jpeg,image/png,image/gif,image/webp',
                 'max:5120',
             ],
         ];

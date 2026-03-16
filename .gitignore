@@ -9,7 +9,6 @@ node_modules
 .pnp
 .pnp.js
 vendor/
-composer.lock
 
 # Local env files
 .env

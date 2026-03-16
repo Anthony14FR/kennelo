@@ -10,6 +10,7 @@ use App\Models\Pet;
 use App\Models\PetAttribute;
 use App\Models\PetImage;
 use App\Models\User;
+use App\Services\ImageService;
 use App\Services\User\Exceptions\AvatarUploadException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -22,6 +23,10 @@ use Throwable;
 
 class PetService
 {
+    public function __construct(
+        private readonly ImageService $imageService,
+    ) {}
+
     public function getUserPets(User $user, array $filters = []): LengthAwarePaginator
     {
         $perPage = $filters['per_page'] ?? 15;
@@ -58,7 +63,7 @@ class PetService
         $newPath = null;
 
         try {
-            $newPath = $avatar->store('pet-avatars', 'public');
+            $newPath = $this->imageService->storeAsWebP($avatar, 'pet-avatars');
 
             if (! $newPath) {
                 throw AvatarUploadException::storageError('Unable to store file');
@@ -88,7 +93,7 @@ class PetService
 
     public function addImage(Pet $pet, UploadedFile $image): PetImage
     {
-        $path = $image->store('pet-images', 'public');
+        $path = $this->imageService->storeAsWebP($image, 'pet-images');
 
         if (! $path) {
             throw AvatarUploadException::storageError('Unable to store file');
