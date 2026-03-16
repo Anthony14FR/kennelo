@@ -11,6 +11,7 @@ use App\Models\Address;
 use App\Models\Booking;
 use App\Models\IdentityVerification;
 use App\Models\User;
+use App\Services\ImageService;
 use App\Services\User\Exceptions\AvatarUploadException;
 use App\Services\User\Exceptions\InvalidCurrentPasswordException;
 use App\Services\User\Exceptions\UserHasActiveBookingsException;
@@ -24,6 +25,10 @@ use Throwable;
 
 class UserService
 {
+    public function __construct(
+        private readonly ImageService $imageService,
+    ) {}
+
     public function getAllPaginated(array $filters = []): LengthAwarePaginator
     {
         $perPage = $filters['per_page'] ?? PaginationEnum::DEFAULT_PAGINATION->value();
@@ -61,7 +66,7 @@ class UserService
         $newPath = null;
 
         try {
-            $newPath = $avatar->store('avatars', 'public');
+            $newPath = $this->imageService->storeAsWebP($avatar, 'avatars');
 
             if (! $newPath) {
                 throw AvatarUploadException::storageError('Unable to store file');
