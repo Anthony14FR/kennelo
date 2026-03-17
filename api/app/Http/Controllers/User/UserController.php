@@ -22,7 +22,6 @@ use App\Http\Resources\AddressResource;
 use App\Http\Resources\IdentityVerificationResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Services\User\Exceptions\AvatarUploadException;
 use App\Services\User\Exceptions\InvalidCurrentPasswordException;
 use App\Services\User\Exceptions\UserHasActiveBookingsException;
 use App\Services\User\UserService;
@@ -146,24 +145,16 @@ class UserController extends Controller
 
     public function uploadAvatar(UploadAvatarRequest $request): JsonResponse
     {
-        try {
-            $user = $request->user();
-            $updatedUser = $this->userService->uploadAvatar($user, $request->file('avatar'));
+        $user = $request->user();
+        $updatedUser = $this->userService->uploadAvatar($user, $request->file('avatar'));
 
-            return (new UserResource($updatedUser))
-                ->additional([
-                    'message' => 'Avatar uploaded successfully',
-                    'status' => ApiStatus::SUCCESS,
-                    'timestamp' => human_date(Carbon::now()),
-                ])
-                ->response();
-        } catch (AvatarUploadException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'status' => ApiStatus::ERROR,
+        return (new UserResource($updatedUser))
+            ->additional([
+                'message' => 'Avatar uploaded successfully',
+                'status' => ApiStatus::SUCCESS,
                 'timestamp' => human_date(Carbon::now()),
-            ], 500);
-        }
+            ])
+            ->response();
     }
 
     public function updateLocale(UpdateLocaleRequest $request): JsonResponse

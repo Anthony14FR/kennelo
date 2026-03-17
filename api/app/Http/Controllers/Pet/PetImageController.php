@@ -11,10 +11,10 @@ use App\Http\Requests\Pet\UploadPetAvatarRequest;
 use App\Http\Resources\PetImageResource;
 use App\Http\Resources\PetResource;
 use App\Models\Pet;
-use App\Models\PetImage;
+use App\Services\MediaService;
 use App\Services\Pet\PetService;
-use App\Services\User\Exceptions\AvatarUploadException;
 use Illuminate\Http\JsonResponse;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 /**
  * @tags Pets
@@ -29,30 +29,22 @@ class PetImageController extends Controller
     {
         $this->authorize('update', $pet);
 
-        try {
-            $pet = $this->petService->uploadAvatar($pet, $request->file('avatar'));
+        $pet = $this->petService->uploadAvatar($pet, $request->file('avatar'));
 
-            return (new PetResource($pet))
-                ->additional([
-                    'message' => 'Avatar uploaded successfully',
-                    'status' => ApiStatus::SUCCESS,
-                    'timestamp' => human_date(now()),
-                ])
-                ->response();
-        } catch (AvatarUploadException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'status' => ApiStatus::ERROR,
+        return (new PetResource($pet))
+            ->additional([
+                'message' => 'Avatar uploaded successfully',
+                'status' => ApiStatus::SUCCESS,
                 'timestamp' => human_date(now()),
-            ], 500);
-        }
+            ])
+            ->response();
     }
 
     public function index(Pet $pet): JsonResponse
     {
         $this->authorize('view', $pet);
 
-        $images = $pet->petImages()->get();
+        $images = $pet->getMedia(MediaService::COLLECTION_IMAGES);
 
         return PetImageResource::collection($images)
             ->additional([
@@ -66,31 +58,23 @@ class PetImageController extends Controller
     {
         $this->authorize('update', $pet);
 
-        try {
-            $image = $this->petService->addImage($pet, $request->file('image'));
+        $media = $this->petService->addImage($pet, $request->file('image'));
 
-            return (new PetImageResource($image))
-                ->additional([
-                    'message' => 'Image added successfully',
-                    'status' => ApiStatus::SUCCESS,
-                    'timestamp' => human_date(now()),
-                ])
-                ->response()
-                ->setStatusCode(201);
-        } catch (AvatarUploadException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'status' => ApiStatus::ERROR,
+        return (new PetImageResource($media))
+            ->additional([
+                'message' => 'Image added successfully',
+                'status' => ApiStatus::SUCCESS,
                 'timestamp' => human_date(now()),
-            ], 500);
-        }
+            ])
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function destroy(Pet $pet, PetImage $petImage): JsonResponse
+    public function destroy(Pet $pet, Media $media): JsonResponse
     {
         $this->authorize('update', $pet);
 
-        if ($petImage->pet_id !== $pet->id) {
+        if ($media->model_id !== $pet->id || $media->collection_name !== MediaService::COLLECTION_IMAGES) {
             return response()->json([
                 'message' => 'Image does not belong to this pet',
                 'status' => ApiStatus::ERROR,
@@ -98,7 +82,7 @@ class PetImageController extends Controller
             ], 403);
         }
 
-        $this->petService->deleteImage($pet, $petImage);
+        $this->petService->deleteImage($pet, $media);
 
         return response()->json(null, 204);
     }

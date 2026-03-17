@@ -4,15 +4,19 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Services\MediaService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Pet extends Model
+class Pet extends Model implements HasMedia
 {
-    use HasUuids;
+    use HasUuids, InteractsWithMedia;
 
     protected $fillable = [
         'user_id',
@@ -27,7 +31,6 @@ class Pet extends Model
         'microchip_number',
         'adoption_date',
         'about',
-        'avatar_url',
         'health_notes',
     ];
 
@@ -38,6 +41,21 @@ class Pet extends Model
         'is_sterilized' => 'boolean',
         'has_microchip' => 'boolean',
     ];
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(MediaService::COLLECTION_AVATAR)
+            ->singleFile();
+
+        $this->addMediaCollection(MediaService::COLLECTION_IMAGES)
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        MediaService::registerAvatarConversion($this);
+        MediaService::registerImagesConversion($this);
+    }
 
     public function user(): BelongsTo
     {
@@ -52,11 +70,6 @@ class Pet extends Model
     public function petAttributes(): HasMany
     {
         return $this->hasMany(PetAttribute::class);
-    }
-
-    public function petImages(): HasMany
-    {
-        return $this->hasMany(PetImage::class)->orderBy('order');
     }
 
     public function scopeForUser(Builder $query, string $userId): Builder
