@@ -2,6 +2,12 @@ import { test, expect, type Page } from "@playwright/test";
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
+const LOGIN_URL = "/s/accounts/login";
+const PROFILE_URL = "/s/my/profile/about";
+const CHANGE_PASSWORD_URL = "/s/my/profile/change-password";
+const PLACEHOLDER_EMAIL = "Your email";
+const PLACEHOLDER_PASSWORD = "Your password";
+
 const TEST_USER = {
     firstName: "E2eTest",
     lastName: "Lifecycle",
@@ -10,9 +16,9 @@ const TEST_USER = {
 };
 
 async function loginViaUI(page: Page, email: string, password: string) {
-    await page.goto("/s/accounts/login");
-    await page.getByPlaceholder("Your email").fill(email);
-    await page.getByPlaceholder("Your password").fill(password);
+    await page.goto(LOGIN_URL);
+    await page.getByPlaceholder(PLACEHOLDER_EMAIL).fill(email);
+    await page.getByPlaceholder(PLACEHOLDER_PASSWORD).fill(password);
     await page.getByRole("button", { name: "Login" }).click();
     await expect(page).not.toHaveURL(/\/login/, { timeout: 15000 });
 }
@@ -23,8 +29,8 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
 
         await page.getByPlaceholder("John").fill(TEST_USER.firstName);
         await page.getByPlaceholder("Doe").fill(TEST_USER.lastName);
-        await page.getByPlaceholder("Your email").fill(TEST_USER.email);
-        await page.getByPlaceholder("Your password").first().fill(TEST_USER.password);
+        await page.getByPlaceholder(PLACEHOLDER_EMAIL).fill(TEST_USER.email);
+        await page.getByPlaceholder(PLACEHOLDER_PASSWORD).first().fill(TEST_USER.password);
         await page.getByPlaceholder("Confirm your password").fill(TEST_USER.password);
         await page.getByRole("button", { name: /create account/i }).click();
 
@@ -38,7 +44,7 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
     test("3. Update profile (first name, last name) via UI", async ({ page }) => {
         await loginViaUI(page, TEST_USER.email, TEST_USER.password);
 
-        await page.goto("/s/my/profile/about");
+        await page.goto(PROFILE_URL);
         await expect(page.getByRole("textbox", { name: "First Name" })).toHaveValue(/.+/, {
             timeout: 15000,
         });
@@ -65,7 +71,7 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
     test("4. Change password via UI", async ({ page }) => {
         await loginViaUI(page, TEST_USER.email, TEST_USER.password);
 
-        await page.goto("/s/my/profile/change-password");
+        await page.goto(CHANGE_PASSWORD_URL);
         await expect(page.getByRole("textbox", { name: "Password", exact: true })).toBeVisible({
             timeout: 10000,
         });
@@ -91,7 +97,7 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
         await loginViaUI(page, TEST_USER.email, TEST_USER.password);
 
         const newEmail = `e2e-updated-${Date.now()}@test.com`;
-        await page.goto("/s/my/profile/about");
+        await page.goto(PROFILE_URL);
         await expect(page.getByRole("textbox", { name: "First Name" })).toHaveValue(/.+/, {
             timeout: 15000,
         });
@@ -103,7 +109,7 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
         const passwordField = page
             .locator("form")
             .filter({ has: page.getByRole("textbox", { name: "Email" }) })
-            .getByPlaceholder("Your password");
+            .getByPlaceholder(PLACEHOLDER_PASSWORD);
         await passwordField.fill(TEST_USER.password);
 
         await page.getByRole("button", { name: /save/i }).click();
@@ -111,7 +117,7 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
         const emailFormPassword = page
             .locator("form")
             .filter({ has: page.getByRole("textbox", { name: "Email" }) })
-            .getByPlaceholder("Your password");
+            .getByPlaceholder(PLACEHOLDER_PASSWORD);
         await expect(emailFormPassword).toHaveValue("", { timeout: 15000 });
         await expect(page.getByRole("textbox", { name: "Email" })).toHaveValue(newEmail);
 
@@ -125,7 +131,7 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
     test("8. Delete account via UI and verify cannot login", async ({ page }) => {
         await loginViaUI(page, TEST_USER.email, TEST_USER.password);
 
-        await page.goto("/s/my/profile/about");
+        await page.goto(PROFILE_URL);
         await expect(page.getByRole("textbox", { name: "First Name" })).toHaveValue(/.+/, {
             timeout: 15000,
         });
@@ -140,9 +146,9 @@ test.describe.serial("User Full Lifecycle (CRUD)", () => {
 
         await page.waitForTimeout(3000);
 
-        await page.goto("/s/accounts/login");
-        await page.getByPlaceholder("Your email").fill(TEST_USER.email);
-        await page.getByPlaceholder("Your password").fill(TEST_USER.password);
+        await page.goto(LOGIN_URL);
+        await page.getByPlaceholder(PLACEHOLDER_EMAIL).fill(TEST_USER.email);
+        await page.getByPlaceholder(PLACEHOLDER_PASSWORD).fill(TEST_USER.password);
         await page.getByRole("button", { name: "Login" }).click();
 
         await expect(page.getByRole("alert")).toBeVisible({ timeout: 10000 });

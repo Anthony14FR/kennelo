@@ -1,6 +1,10 @@
 import { test, expect } from "@playwright/test";
 
 const API_BASE = "http://localhost:8000/api";
+const PET_NAME = "E2E-TestPet";
+const PET_BREED = "Test Breed";
+const UPDATED_NAME = "E2E-Updated";
+const UPDATED_BREED = "Updated Breed";
 
 const TEST_USER = {
     email: "user@orus.com",
@@ -54,8 +58,8 @@ test.describe.serial("Pet Full Lifecycle (CRUD via API + UI verification)", () =
     test("1. Create a pet via API", async () => {
         const response = await apiRequest("POST", "/pets", authToken, {
             animal_type_id: animalTypeId,
-            name: "E2E-TestPet",
-            breed: "Test Breed",
+            name: PET_NAME,
+            breed: PET_BREED,
             sex: "male",
             weight: 5.5,
             is_sterilized: true,
@@ -64,7 +68,7 @@ test.describe.serial("Pet Full Lifecycle (CRUD via API + UI verification)", () =
         });
 
         expect(response.status).toBe(201);
-        expect(response.data.name).toBe("E2E-TestPet");
+        expect(response.data.name).toBe(PET_NAME);
         createdPetId = response.data.id;
     });
 
@@ -74,15 +78,15 @@ test.describe.serial("Pet Full Lifecycle (CRUD via API + UI verification)", () =
             timeout: 15000,
         });
 
-        await expect(page.getByText("E2E-TestPet").first()).toBeVisible();
+        await expect(page.getByText(PET_NAME).first()).toBeVisible();
     });
 
     test("3. Read - verify pet details via API", async () => {
         const response = await apiRequest("GET", `/pets/${createdPetId}`, authToken);
 
         expect(response.status).toBe(200);
-        expect(response.data.name).toBe("E2E-TestPet");
-        expect(response.data.breed).toBe("Test Breed");
+        expect(response.data.name).toBe(PET_NAME);
+        expect(response.data.breed).toBe(PET_BREED);
         expect(response.data.sex).toBe("male");
         expect(response.data.is_sterilized).toBe(true);
         expect(response.data.has_microchip).toBe(false);
@@ -91,27 +95,27 @@ test.describe.serial("Pet Full Lifecycle (CRUD via API + UI verification)", () =
 
     test("4. Read - verify pet details in UI", async ({ page }) => {
         await page.goto("/s/my/pets");
-        await expect(page.getByText("E2E-TestPet").first()).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText(PET_NAME).first()).toBeVisible({ timeout: 15000 });
 
-        await page.getByText("E2E-TestPet").first().click();
+        await page.getByText(PET_NAME).first().click();
         await expect(page).toHaveURL(/\/s\/my\/pets\/[a-f0-9-]+/);
 
         await expect(page.locator("h1")).toBeVisible({ timeout: 15000 });
-        await expect(page.locator("h1")).toContainText("E2E-TestPet");
-        await expect(page.getByText("Test Breed").first()).toBeVisible();
+        await expect(page.locator("h1")).toContainText(PET_NAME);
+        await expect(page.getByText(PET_BREED).first()).toBeVisible();
     });
 
     test("5. Update pet via API", async () => {
         const response = await apiRequest("PUT", `/pets/${createdPetId}`, authToken, {
-            name: "E2E-Updated",
-            breed: "Updated Breed",
+            name: UPDATED_NAME,
+            breed: UPDATED_BREED,
             weight: 7.2,
             about: "Updated by e2e test",
         });
 
         expect(response.status).toBe(200);
-        expect(response.data.name).toBe("E2E-Updated");
-        expect(response.data.breed).toBe("Updated Breed");
+        expect(response.data.name).toBe(UPDATED_NAME);
+        expect(response.data.breed).toBe(UPDATED_BREED);
     });
 
     test("6. Verify update reflected in UI", async ({ page }) => {
@@ -120,12 +124,12 @@ test.describe.serial("Pet Full Lifecycle (CRUD via API + UI verification)", () =
             timeout: 15000,
         });
 
-        await expect(page.getByText("E2E-Updated").first()).toBeVisible();
+        await expect(page.getByText(UPDATED_NAME).first()).toBeVisible();
 
-        await page.getByText("E2E-Updated").first().click();
+        await page.getByText(UPDATED_NAME).first().click();
         await expect(page.locator("h1")).toBeVisible({ timeout: 15000 });
-        await expect(page.locator("h1")).toContainText("E2E-Updated");
-        await expect(page.getByText("Updated Breed").first()).toBeVisible();
+        await expect(page.locator("h1")).toContainText(UPDATED_NAME);
+        await expect(page.getByText(UPDATED_BREED).first()).toBeVisible();
     });
 
     test("7. Delete pet via API", async () => {
@@ -139,7 +143,7 @@ test.describe.serial("Pet Full Lifecycle (CRUD via API + UI verification)", () =
             timeout: 15000,
         });
 
-        await expect(page.getByText("E2E-Updated")).toHaveCount(0);
+        await expect(page.getByText(UPDATED_NAME)).toHaveCount(0);
     });
 
     test("9. Verify deleted pet returns 404 via API", async () => {
