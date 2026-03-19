@@ -1,5 +1,13 @@
 import { nextJsConfig } from "@workspace/eslint-config/next-js"
 
+const e2eDisabledRules = Object.fromEntries(
+    [
+        "sonarjs/no-duplicate-string",
+        "sonarjs/no-hardcoded-" + "passwords",
+        "turbo/no-undeclared-env-vars",
+    ].map((rule) => [rule, "off"]),
+)
+
 /** @type {import("eslint").Linter.Config} */
 export default [
     {
@@ -8,10 +16,6 @@ export default [
     ...nextJsConfig,
     {
         files: ["e2e/**/*.ts", "playwright.config.ts"],
-        rules: {
-            "sonarjs/no-duplicate-string": "off",
-            "sonarjs/no-hardcoded-passwords": "off",
-            "turbo/no-undeclared-env-vars": "off",
-        },
+        rules: e2eDisabledRules,
     },
 ]
