@@ -39,7 +39,7 @@ Route::middleware(['auth.jwt'])->group(function () {
     Route::post('/pets/{pet}/avatar', [PetImageController::class, 'uploadAvatar']);
     Route::get('/pets/{pet}/images', [PetImageController::class, 'index']);
     Route::post('/pets/{pet}/images', [PetImageController::class, 'store']);
-    Route::delete('/pets/{pet}/images/{petImage}', [PetImageController::class, 'destroy']);
+    Route::delete('/pets/{pet}/images/{media}', [PetImageController::class, 'destroy']);
 
     // Users (admin)
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update']);

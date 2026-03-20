@@ -9,12 +9,11 @@ use App\Models\AttributeDefinition;
 use App\Models\AttributeOption;
 use App\Models\Pet;
 use App\Models\PetAttribute;
-use App\Models\PetImage;
 use App\Models\User;
+use App\Services\MediaService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PetSeeder extends Seeder
@@ -288,19 +287,20 @@ class PetSeeder extends Seeder
 
     private function seedPetImages(string $petId, string $category, int $count, bool $withAvatar): void
     {
+        $pet = Pet::find($petId);
+
+        if (! $pet) {
+            return;
+        }
+
         for ($i = 0; $i < $count; $i++) {
             try {
                 $response = Http::withoutVerifying()->withOptions(['allow_redirects' => true])->timeout(15)->get("https://loremflickr.com/600/400/{$category}");
 
                 if ($response->successful()) {
-                    $path = "pet-images/pet_{$petId}_{$i}.jpg";
-                    Storage::disk('public')->put($path, $response->body());
-
-                    PetImage::create([
-                        'pet_id' => $petId,
-                        'path' => $path,
-                        'order' => $i + 1,
-                    ]);
+                    $tmpPath = tempnam(sys_get_temp_dir(), 'pet_image_').'.jpg';
+                    file_put_contents($tmpPath, $response->body());
+                    $pet->addMedia($tmpPath)->toMediaCollection(MediaService::COLLECTION_IMAGES);
                 }
             } catch (\Throwable) {
                 continue;
@@ -312,9 +312,9 @@ class PetSeeder extends Seeder
                 $response = Http::withoutVerifying()->withOptions(['allow_redirects' => true])->timeout(15)->get("https://loremflickr.com/400/400/{$category}");
 
                 if ($response->successful()) {
-                    $path = "pet-avatars/pet_{$petId}_avatar.jpg";
-                    Storage::disk('public')->put($path, $response->body());
-                    DB::table('pets')->where('id', $petId)->update(['avatar_url' => $path]);
+                    $tmpPath = tempnam(sys_get_temp_dir(), 'pet_avatar_').'.jpg';
+                    file_put_contents($tmpPath, $response->body());
+                    $pet->addMedia($tmpPath)->toMediaCollection(MediaService::COLLECTION_AVATAR);
                 }
             } catch (\Throwable) {
             }

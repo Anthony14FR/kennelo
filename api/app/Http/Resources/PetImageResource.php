@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
-use App\Models\PetImage;
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-/** @mixin PetImage */
+/** @mixin Media */
 class PetImageResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'pet_id' => $this->pet_id,
-            'url' => Storage::disk('public')->url($this->path),
-            'order' => $this->order,
+            'id' => $this->uuid,
+            'url' => $this->getUrl(MediaService::CONVERSION_WEBP),
+            'order' => $this->order_column,
             'created_at' => human_date($this->created_at),
         ];
     }

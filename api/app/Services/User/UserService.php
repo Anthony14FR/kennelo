@@ -11,8 +11,7 @@ use App\Models\Address;
 use App\Models\Booking;
 use App\Models\IdentityVerification;
 use App\Models\User;
-use App\Services\ImageService;
-use App\Services\User\Exceptions\AvatarUploadException;
+use App\Services\MediaService;
 use App\Services\User\Exceptions\InvalidCurrentPasswordException;
 use App\Services\User\Exceptions\UserHasActiveBookingsException;
 use Illuminate\Http\UploadedFile;
@@ -20,15 +19,9 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Throwable;
 
 class UserService
 {
-    public function __construct(
-        private readonly ImageService $imageService,
-    ) {}
-
     public function getAllPaginated(array $filters = []): LengthAwarePaginator
     {
         $perPage = $filters['per_page'] ?? PaginationEnum::DEFAULT_PAGINATION->value();
@@ -62,36 +55,10 @@ class UserService
 
     public function uploadAvatar(User $user, UploadedFile $avatar): User
     {
-        $oldAvatarPath = $user->avatar_url;
-        $newPath = null;
+        $user->addMedia($avatar)
+            ->toMediaCollection(MediaService::COLLECTION_AVATAR);
 
-        try {
-            $newPath = $this->imageService->storeAsWebP($avatar, 'avatars');
-
-            if (! $newPath) {
-                throw AvatarUploadException::storageError('Unable to store file');
-            }
-
-            DB::transaction(function () use ($user, $newPath) {
-                $user->update(['avatar_url' => $newPath]);
-            });
-
-            if ($oldAvatarPath) {
-                Storage::disk('public')->delete($oldAvatarPath);
-            }
-
-            return $user->fresh(['roles']);
-        } catch (Throwable $e) {
-            if ($newPath) {
-                Storage::disk('public')->delete($newPath);
-            }
-
-            if ($e instanceof AvatarUploadException) {
-                throw $e;
-            }
-
-            throw AvatarUploadException::storageError($e->getMessage());
-        }
+        return $user->fresh(['roles', 'media']);
     }
 
     public function deleteAccount(User $user): void

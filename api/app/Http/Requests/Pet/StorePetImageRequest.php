@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Pet;
 
 use App\Models\Pet;
+use App\Services\MediaService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
 
@@ -14,7 +15,7 @@ class StorePetImageRequest extends FormRequest
     {
         $pet = $this->route('pet');
 
-        if ($pet instanceof Pet && $pet->petImages()->count() >= 5) {
+        if ($pet instanceof Pet && $pet->getMedia(MediaService::COLLECTION_IMAGES)->count() >= 5) {
             throw ValidationException::withMessages([
                 'image' => ['This pet has reached the maximum number of images (5).'],
             ]);

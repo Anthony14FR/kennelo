@@ -8,30 +8,23 @@ use App\Models\AnimalType;
 use App\Models\AttributeDefinition;
 use App\Models\Pet;
 use App\Models\PetAttribute;
-use App\Models\PetImage;
 use App\Models\User;
-use App\Services\ImageService;
-use App\Services\User\Exceptions\AvatarUploadException;
+use App\Services\MediaService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Throwable;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class PetService
 {
-    public function __construct(
-        private readonly ImageService $imageService,
-    ) {}
-
     public function getUserPets(User $user, array $filters = []): LengthAwarePaginator
     {
         $perPage = $filters['per_page'] ?? 15;
 
-        return Pet::with(['animalType'])
+        return Pet::with(['animalType', 'media'])
             ->forUser((string) $user->id)
             ->latest()
             ->paginate($perPage);
@@ -39,7 +32,7 @@ class PetService
 
     public function findById(int $id): Pet
     {
-        return Pet::with(['animalType', 'petAttributes.attributeDefinition', 'petAttributes.attributeOption'])->findOrFail($id);
+        return Pet::with(['animalType', 'petAttributes.attributeDefinition', 'petAttributes.attributeOption', 'media'])->findOrFail($id);
     }
 
     public function create(User $user, array $data): Pet
@@ -59,64 +52,21 @@ class PetService
 
     public function uploadAvatar(Pet $pet, UploadedFile $avatar): Pet
     {
-        $oldAvatarPath = $pet->avatar_url;
-        $newPath = null;
+        $pet->addMedia($avatar)
+            ->toMediaCollection(MediaService::COLLECTION_AVATAR);
 
-        try {
-            $newPath = $this->imageService->storeAsWebP($avatar, 'pet-avatars');
-
-            if (! $newPath) {
-                throw AvatarUploadException::storageError('Unable to store file');
-            }
-
-            DB::transaction(function () use ($pet, $newPath) {
-                $pet->update(['avatar_url' => $newPath]);
-            });
-
-            if ($oldAvatarPath) {
-                Storage::disk('public')->delete($oldAvatarPath);
-            }
-
-            return $pet->fresh(['animalType', 'petImages']);
-        } catch (Throwable $e) {
-            if ($newPath) {
-                Storage::disk('public')->delete($newPath);
-            }
-
-            if ($e instanceof AvatarUploadException) {
-                throw $e;
-            }
-
-            throw AvatarUploadException::storageError($e->getMessage());
-        }
+        return $pet->fresh(['animalType', 'media']);
     }
 
-    public function addImage(Pet $pet, UploadedFile $image): PetImage
+    public function addImage(Pet $pet, UploadedFile $image): Media
     {
-        $path = $this->imageService->storeAsWebP($image, 'pet-images');
-
-        if (! $path) {
-            throw AvatarUploadException::storageError('Unable to store file');
-        }
-
-        try {
-            $order = $pet->petImages()->max('order') + 1;
-
-            return PetImage::create([
-                'pet_id' => $pet->id,
-                'path' => $path,
-                'order' => $order,
-            ]);
-        } catch (Throwable $e) {
-            Storage::disk('public')->delete($path);
-            throw AvatarUploadException::storageError($e->getMessage());
-        }
+        return $pet->addMedia($image)
+            ->toMediaCollection(MediaService::COLLECTION_IMAGES);
     }
 
-    public function deleteImage(Pet $pet, PetImage $petImage): void
+    public function deleteImage(Pet $pet, Media $media): void
     {
-        Storage::disk('public')->delete($petImage->path);
-        $petImage->delete();
+        $media->delete();
     }
 
     public function getAttributesForAnimalType(AnimalType $animalType): Collection
