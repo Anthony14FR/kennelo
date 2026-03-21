@@ -28,6 +28,6 @@
     "pricePerNight": "ex : 25.00",
     "note": "Note facultative...",
     "selectAnimalType": "Sélectionner un type d'animal",
-    "selectStatus": "Sélectionner un statut"
+    "selectStatus": "Sélectionner un statut",
     "search": "Rechercher..."
 }

@@ -28,10 +28,9 @@
     "note": "ملاحظة",
     "startDate": "تاريخ البدء",
     "endDate": "تاريخ الانتهاء",
-    "status": "الحالة"
+    "status": "الحالة",
     "notProvided": "غير مُدخل",
     "emailVerified": "البريد الإلكتروني موثق",
     "idVerified": "الهوية موثقة",
-    "status": "الحالة",
     "phoneVerified": "الهاتف موثق"
 }
