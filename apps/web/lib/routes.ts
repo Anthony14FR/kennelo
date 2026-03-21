@@ -30,6 +30,10 @@ type MyEstablishmentsParams = {
 };
 
 type EstablishmentDetailParams = {
+    locale?: string | number;
+    id: string | number;
+};
+
 type MyPetsParams = {
     locale?: string | number;
 };
@@ -85,6 +89,8 @@ function MyEstablishments(params?: MyEstablishmentsParams): string {
 
 function EstablishmentDetail(params: EstablishmentDetailParams): string {
     return buildRoute("/[locale]/s/app/establishments/[id]", params);
+}
+
 function MyPets(params?: MyPetsParams): string {
     return buildRoute("/[locale]/s/my/pets", params);
 }

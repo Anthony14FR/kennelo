@@ -14,6 +14,13 @@ import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
 import { useScrolled } from "@/hooks/use-scrolled";
 import { LanguageSwitcher } from "../i18n/language-switcher";
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupInput,
+} from "@workspace/ui/components/input-group";
+import { Search } from "lucide-react";
 
 interface NavigationItem {
     icon: KIcon;
@@ -127,6 +134,7 @@ function DesktopHeader({ navigationItems }: { navigationItems: NavigationItem[] 
 
 export default function AppLayout({ children, className }: AppLayoutProps) {
     const isMobile = useIsMobile();
+    const { routes } = useNavigation();
     const { user, isAuthenticated, logout } = useAuth();
     const scrolled = useScrolled(0);
     const t = useTranslations();
