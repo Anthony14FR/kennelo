@@ -12,8 +12,6 @@ import { useAuth } from "@/features/auth";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
-import { useScrolled } from "@/hooks/use-scrolled";
-import { LanguageSwitcher } from "../i18n/language-switcher";
 import {
     InputGroup,
     InputGroupAddon,
@@ -136,7 +134,6 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
     const isMobile = useIsMobile();
     const { routes } = useNavigation();
     const { user, isAuthenticated, logout } = useAuth();
-    const scrolled = useScrolled(0);
     const t = useTranslations();
 
     const navigationItems: NavigationItem[] = [
