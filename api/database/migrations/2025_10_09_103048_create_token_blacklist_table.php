@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('token_blacklist', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('token_hash', 64)->unique()->comment('SHA-256 hash of the blacklisted token');
             $table->timestamp('expires_at')->index()->comment('When the token expires (for cleanup)');
             $table->timestamp('created_at')->useCurrent()->comment('When the token was blacklisted');

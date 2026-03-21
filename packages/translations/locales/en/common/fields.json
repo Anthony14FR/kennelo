@@ -29,4 +29,9 @@
     "startDate": "Start date",
     "endDate": "End date",
     "status": "Status"
+    "notProvided": "Not provided",
+    "emailVerified": "Email Verified",
+    "idVerified": "ID Verified",
+    "status": "Status",
+    "phoneVerified": "Phone Verified"
 }

@@ -1,16 +1,9 @@
 "use client";
 
 import { cn } from "@workspace/ui/lib/utils";
-import {
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButton,
-    InputGroupInput,
-} from "@workspace/ui/components/input-group";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { KHome, KCompass, KMessage, KHeart } from "@workspace/ui/components/icons";
 import type { KIcon } from "@workspace/ui/components/icons";
-import { Search } from "lucide-react";
 import NavButton from "@/components/navigation/nav-button";
 import NavItem from "@/components/navigation/nav-item";
 import UserMenu from "@/components/navigation/user-menu";
@@ -19,6 +12,8 @@ import { useAuth } from "@/features/auth";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useNavigation } from "@/hooks/use-navigation";
+import { useScrolled } from "@/hooks/use-scrolled";
+import { LanguageSwitcher } from "../i18n/language-switcher";
 
 interface NavigationItem {
     icon: KIcon;
@@ -133,6 +128,7 @@ function DesktopHeader({ navigationItems }: { navigationItems: NavigationItem[] 
 export default function AppLayout({ children, className }: AppLayoutProps) {
     const isMobile = useIsMobile();
     const { user, isAuthenticated, logout } = useAuth();
+    const scrolled = useScrolled(0);
     const t = useTranslations();
 
     const navigationItems: NavigationItem[] = [
@@ -152,7 +148,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             icon: KHeart,
             text: t("ui.navigation.pets"),
             active: false,
-            href: "/my-pets",
+            href: routes.MyPets(),
         },
         {
             icon: KMessage,
@@ -180,7 +176,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
             {!isMobile && <DesktopHeader navigationItems={navigationItems} />}
             <main className={cn("relative h-full", className)}>{children}</main>
             {isMobile && (
-                <nav className="fixed bottom-0 w-full h-14 bg-background border-t border-primary/10 flex items-center z-10">
+                <nav className="fixed bottom-0 w-full h-16 bg-background border-t border-primary/10 flex items-center z-10 pb-3">
                     <div className="container mx-auto h-full flex justify-between items-center px-4 sm:px-6">
                         {navigationItems.map((item) => (
                             <NavItem
@@ -200,7 +196,7 @@ export default function AppLayout({ children, className }: AppLayoutProps) {
                             </NavItem>
                         ))}
                         {isAuthenticated && (
-                            <div className="flex flex-col items-center gap-0.5">
+                            <div className="flex flex-col items-center gap-0.5 mt-1">
                                 <UserMenu user={user ?? undefined} onLogout={logout} />
                                 <span className="text-xs text-muted-foreground">
                                     {t("ui.navigation.profile")}

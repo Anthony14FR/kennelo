@@ -19,7 +19,7 @@ class StoreCapacityRequest extends FormRequest
         return [
             'animal_type_id' => [
                 'required',
-                'integer',
+                'uuid',
                 'exists:animal_types,id',
                 Rule::unique('establishment_capacities', 'animal_type_id')
                     ->where('establishment_id', $this->route('establishment')->id),

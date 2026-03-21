@@ -10,12 +10,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @tags Auth
+ */
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Handle an incoming password reset link request.
+     * Forgot password
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @unauthenticated
+     *
+     * @throws ValidationException
      */
     public function store(Request $request): JsonResponse
     {

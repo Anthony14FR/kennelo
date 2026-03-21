@@ -18,6 +18,9 @@ use App\Services\Establishment\EstablishmentAvailabilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 
+/**
+ * @tags Establishments
+ */
 class EstablishmentAvailabilityController extends Controller
 {
     public function __construct(private EstablishmentAvailabilityService $service) {}

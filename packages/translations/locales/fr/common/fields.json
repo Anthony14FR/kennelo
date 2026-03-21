@@ -29,4 +29,9 @@
     "startDate": "Date de début",
     "endDate": "Date de fin",
     "status": "Statut"
+    "notProvided": "Non renseigné",
+    "emailVerified": "Email vérifié",
+    "idVerified": "Identité vérifiée",
+    "status": "Statut",
+    "phoneVerified": "Téléphone vérifié"
 }

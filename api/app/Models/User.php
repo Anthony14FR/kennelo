@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\UserStatus;
+use App\Services\MediaService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -16,28 +17,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property UserStatus $status
  */
-class User extends Authenticatable implements JWTSubject, MustVerifyEmail
+class User extends Authenticatable implements HasMedia, JWTSubject, MustVerifyEmail
 {
-    use HasFactory, HasRoles, HasUuids, Notifiable, SoftDeletes;
+    use HasFactory, HasRoles, HasUuids, InteractsWithMedia, Notifiable, SoftDeletes;
 
     private const PASSWORD_CAST = 'hashed';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'first_name',
         'last_name',
         'email',
         'phone',
-        'avatar_url',
         'is_id_verified',
         'status',
         'password',
@@ -45,21 +43,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'address_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, mixed>
-     */
     protected function casts(): array
     {
         return [
@@ -68,6 +56,17 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
             'status' => UserStatus::class,
             'password' => self::PASSWORD_CAST,
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(MediaService::COLLECTION_AVATAR)
+            ->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        MediaService::registerAvatarConversion($this);
     }
 
     protected static function booted(): void

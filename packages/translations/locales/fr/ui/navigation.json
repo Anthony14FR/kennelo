@@ -3,7 +3,7 @@
     "home": "Accueil",
     "dashboard": "Tableau de bord",
     "bookings": "Réservations",
-    "profile": "Profil",
+    "profile": "Profile",
     "conversations": "Messages",
     "notifications": "Notifications",
     "logout": "Déconnexion",
@@ -18,5 +18,12 @@
     "theme_system": "Système",
     "explore": "Explorer",
     "messages": "Messages",
-    "pets": "Animaux"
+    "pets": "Animaux",
+    "bookOnline": "Réserver en ligne",
+    "profileSettings": "Paramètres",
+    "editProfile": "Modifier mon profil",
+    "emailPreferences": "Préférences e-mail",
+    "notificationPreferences": "Préférences notifications",
+    "changePassword": "Changer de mot de passe",
+    "comingSoon": "Bientôt"
 }

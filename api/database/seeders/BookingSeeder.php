@@ -13,6 +13,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class BookingSeeder extends Seeder
 {
@@ -105,7 +106,8 @@ class BookingSeeder extends Seeder
         );
 
         // === BOOKING 1: Completed - Rex only ===
-        $booking1Id = DB::table('bookings')->insertGetId([
+        $booking1Id = (string) Str::uuid();
+        DB::table('bookings')->insert(['id' => $booking1Id,
             'user_id' => $userId,
             'establishment_id' => $establishmentId,
             'check_in_date' => Carbon::now()->subDays(20)->format('Y-m-d'),
@@ -138,7 +140,8 @@ class BookingSeeder extends Seeder
         ]);
 
         // === BOOKING 2: Confirmed - Rex + Minou ===
-        $booking2Id = DB::table('bookings')->insertGetId([
+        $booking2Id = (string) Str::uuid();
+        DB::table('bookings')->insert(['id' => $booking2Id,
             'user_id' => $userId,
             'establishment_id' => $establishmentId,
             'check_in_date' => Carbon::now()->addDays(5)->format('Y-m-d'),
@@ -193,7 +196,8 @@ class BookingSeeder extends Seeder
         ]);
 
         // === BOOKING 3: Confirmed - Max with medications ===
-        $booking3Id = DB::table('bookings')->insertGetId([
+        $booking3Id = (string) Str::uuid();
+        DB::table('bookings')->insert(['id' => $booking3Id,
             'user_id' => $userId,
             'establishment_id' => $establishmentId,
             'check_in_date' => Carbon::now()->addDays(10)->format('Y-m-d'),
@@ -226,7 +230,8 @@ class BookingSeeder extends Seeder
         ]);
 
         // === BOOKING 4: Pending - Kiwi (bird) ===
-        $booking4Id = DB::table('bookings')->insertGetId([
+        $booking4Id = (string) Str::uuid();
+        DB::table('bookings')->insert(['id' => $booking4Id,
             'user_id' => $userId,
             'establishment_id' => $establishmentId,
             'check_in_date' => Carbon::now()->addDays(30)->format('Y-m-d'),
@@ -249,7 +254,8 @@ class BookingSeeder extends Seeder
         ]);
 
         // === BOOKING 5: Cancelled - Rex ===
-        $booking5Id = DB::table('bookings')->insertGetId([
+        $booking5Id = (string) Str::uuid();
+        DB::table('bookings')->insert(['id' => $booking5Id,
             'user_id' => $userId,
             'establishment_id' => $establishmentId,
             'check_in_date' => Carbon::now()->addDays(15)->format('Y-m-d'),

@@ -14,9 +14,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('establishment_capacities', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('establishment_id')->constrained()->onDelete('cascade');
-            $table->foreignId('animal_type_id')->constrained();
+            $table->foreignUuid('animal_type_id')->constrained();
             $table->integer('max_capacity');
             $table->decimal('price_per_night', 8, 2);
             $table->timestamps();

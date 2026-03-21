@@ -11,6 +11,9 @@ use App\Services\Establishment\EstablishmentDashboardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 
+/**
+ * @tags Establishments
+ */
 class EstablishmentDashboardController extends Controller
 {
     public function __construct(private EstablishmentDashboardService $service) {}

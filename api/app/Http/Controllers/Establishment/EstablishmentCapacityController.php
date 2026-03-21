@@ -16,6 +16,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
+/**
+ * @tags Establishments
+ */
 class EstablishmentCapacityController extends Controller
 {
     public function __construct(private EstablishmentCapacityService $service) {}

@@ -14,7 +14,8 @@
         },
         "lint": {
             "dependsOn": ["^lint"],
-            "outputs": []
+            "outputs": [],
+            "env": ["CI"]
         },
         "lint:fix": {
             "dependsOn": ["^lint:fix"],

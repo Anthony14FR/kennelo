@@ -4,22 +4,27 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PetAttribute extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'pet_id',
         'attribute_definition_id',
+        'attribute_option_id',
         'value_text',
-        'value_number',
+        'value_integer',
+        'value_decimal',
         'value_boolean',
         'value_date',
     ];
 
     protected $casts = [
-        'value_number' => 'decimal:2',
+        'value_decimal' => 'decimal:2',
         'value_boolean' => 'boolean',
         'value_date' => 'date',
     ];
@@ -32,5 +37,10 @@ class PetAttribute extends Model
     public function attributeDefinition(): BelongsTo
     {
         return $this->belongsTo(AttributeDefinition::class);
+    }
+
+    public function attributeOption(): BelongsTo
+    {
+        return $this->belongsTo(AttributeOption::class);
     }
 }

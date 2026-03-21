@@ -14,8 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('review_criteria_scores', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('review_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('review_id')->constrained()->onDelete('cascade');
             $table->string('criteria_code', 50);
             $table->decimal('score', 2, 1);
             $table->timestamp('created_at')->nullable();

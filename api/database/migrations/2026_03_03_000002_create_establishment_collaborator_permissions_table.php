@@ -11,7 +11,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('establishment_collaborator_permissions', function (Blueprint $table): void {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('establishment_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('permission', 100);

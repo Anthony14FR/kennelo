@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\User;
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
-/** @mixin \App\Models\User */
+/** @mixin User */
 class UserResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -20,9 +21,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'locale' => $this->locale,
-            'avatar_url' => $this->avatar_url
-                ? Storage::disk('public')->url($this->avatar_url)
-                : null,
+            'avatar_url' => $this->getFirstMediaUrl(MediaService::COLLECTION_AVATAR, MediaService::CONVERSION_WEBP) ?: null,
             'is_id_verified' => $this->is_id_verified,
             'email_verified_at' => $this->email_verified_at
                 ? human_date($this->email_verified_at)

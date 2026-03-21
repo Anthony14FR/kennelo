@@ -14,9 +14,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('services', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignUuid('establishment_id')->constrained()->onDelete('cascade');
-            $table->foreignId('animal_type_id')->constrained('animal_types')->onDelete('cascade');
+            $table->foreignUuid('animal_type_id')->constrained('animal_types')->onDelete('cascade');
             $table->string('name', 255);
             $table->text('description')->nullable();
             $table->boolean('is_included')->default(true);

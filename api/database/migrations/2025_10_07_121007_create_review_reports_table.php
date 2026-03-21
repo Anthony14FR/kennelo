@@ -14,8 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('review_reports', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('review_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('review_id')->constrained()->onDelete('cascade');
             $table->foreignUuid('reporter_id')->constrained('users');
             $table->enum('reason', ['inappropriate', 'offensive', 'fake', 'spam', 'other']);
             $table->text('description')->nullable();

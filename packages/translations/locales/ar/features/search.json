@@ -1,0 +1,23 @@
+{
+    "destination": "الوجهة",
+    "dates": "التواريخ",
+    "when": "متى؟",
+    "cta": "بحث",
+    "recent-searches": "عمليات البحث الأخيرة",
+    "suggestions": "اقتراحات الوجهات",
+    "nearby": "بالقرب منك",
+    "nearby-description": "اكتشف مرابط الحيوانات القريبة",
+    "pets": {
+        "label": "الحيوانات",
+        "add": "أضف حيوانات...",
+        "count": "{count, plural, =1 {حيوان واحد} other {# حيوانات}}",
+        "dog": "كلب",
+        "dog-description": "جميع السلالات والأحجام",
+        "cat": "قط",
+        "cat-description": "جميع السلالات مرحب بها",
+        "bird": "طائر",
+        "bird-description": "جميع الأنواع مرحب بها",
+        "reptile": "زواحف",
+        "reptile-description": "سحالي وثعابين والمزيد"
+    }
+}

@@ -9,10 +9,15 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @tags Auth
+ */
 class VerifyEmailController extends Controller
 {
     /**
-     * Mark the authenticated user's email address as verified.
+     * Verify email
+     *
+     * @unauthenticated
      */
     public function __invoke(EmailVerificationRequest $request): JsonResponse
     {

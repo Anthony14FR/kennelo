@@ -5,16 +5,20 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\AvailabilityStatus;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property \Carbon\Carbon $date
+ * @property Carbon $date
  * @property AvailabilityStatus $status
  * @property-read Establishment $establishment
  */
 class EstablishmentAvailability extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'establishment_id',
         'date',

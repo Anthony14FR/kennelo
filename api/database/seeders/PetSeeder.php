@@ -10,8 +10,11 @@ use App\Models\AttributeOption;
 use App\Models\Pet;
 use App\Models\PetAttribute;
 use App\Models\User;
+use App\Services\MediaService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class PetSeeder extends Seeder
 {
@@ -32,10 +35,11 @@ class PetSeeder extends Seeder
         $catId = $this->animalTypes['cat'];
         $birdId = $this->animalTypes['bird'];
         $fishId = $this->animalTypes['fish'];
-        $smallMammalId = $this->animalTypes['small_mammal'];
+        $rabbitId = $this->animalTypes['rabbit'];
 
         // === PET 1: Rex - Chien énergique ===
-        $rexId = DB::table('pets')->insertGetId([
+        $rexId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $rexId,
             'user_id' => $this->userId,
             'animal_type_id' => $dogId,
             'name' => 'Rex',
@@ -53,6 +57,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($rexId, 'labrador', 3, true);
+
         $this->addPetAttribute($rexId, 'energy_level', 'high');
         $this->addPetAttribute($rexId, 'potty_trained', 'trained');
         $this->addPetAttribute($rexId, 'friendly_with_kids', 'yes');
@@ -63,7 +69,8 @@ class PetSeeder extends Seeder
         $this->addPetAttribute($rexId, 'can_be_left_alone', '4h');
 
         // === PET 2: Minou - Chat d'intérieur ===
-        $minouId = DB::table('pets')->insertGetId([
+        $minouId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $minouId,
             'user_id' => $this->userId,
             'animal_type_id' => $catId,
             'name' => 'Minou',
@@ -81,6 +88,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($minouId, 'cat', 2, true);
+
         $this->addPetAttribute($minouId, 'energy_level', 'low');
         $this->addPetAttribute($minouId, 'litter_trained', 'trained');
         $this->addPetAttribute($minouId, 'friendly_with_kids', 'no');
@@ -92,7 +101,8 @@ class PetSeeder extends Seeder
         $this->addPetAttributeBoolean($minouId, 'declawed', false);
 
         // === PET 3: Kiwi - Perruche bavarde ===
-        $kiwiId = DB::table('pets')->insertGetId([
+        $kiwiId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $kiwiId,
             'user_id' => $this->userId,
             'animal_type_id' => $birdId,
             'name' => 'Kiwi',
@@ -109,6 +119,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($kiwiId, 'parakeet', 2, false);
+
         $this->addPetAttributeText($kiwiId, 'bird_species', 'Perruche ondulée');
         $this->addPetAttribute($kiwiId, 'can_fly', 'yes');
         $this->addPetAttributeBoolean($kiwiId, 'wings_clipped', false);
@@ -121,7 +133,8 @@ class PetSeeder extends Seeder
         $this->addPetAttributeText($kiwiId, 'diet_specifics', 'Mélange de graines, fruits frais (pomme, carotte)');
 
         // === PET 4: Bulle - Poisson rouge ===
-        $bulleId = DB::table('pets')->insertGetId([
+        $bulleId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $bulleId,
             'user_id' => $this->userId,
             'animal_type_id' => $fishId,
             'name' => 'Bulle',
@@ -138,6 +151,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($bulleId, 'goldfish', 1, false);
+
         $this->addPetAttribute($bulleId, 'water_type', 'freshwater');
         $this->addPetAttributeInteger($bulleId, 'tank_size_liters', 50);
         $this->addPetAttributeDecimal($bulleId, 'water_temperature', 20.0);
@@ -147,9 +162,10 @@ class PetSeeder extends Seeder
         $this->addPetAttributeText($bulleId, 'diet_specifics', 'Granulés pour poissons rouges, légumes blanchis occasionnellement');
 
         // === PET 5: Caramel - Lapin nain ===
-        $caramelId = DB::table('pets')->insertGetId([
+        $caramelId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $caramelId,
             'user_id' => $this->userId,
-            'animal_type_id' => $smallMammalId,
+            'animal_type_id' => $rabbitId,
             'name' => 'Caramel',
             'breed' => 'Lapin nain bélier',
             'birth_date' => '2021-09-15',
@@ -164,6 +180,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($caramelId, 'rabbit', 2, true);
+
         $this->addPetAttribute($caramelId, 'cage_type', 'enclosure');
         $this->addPetAttributeBoolean($caramelId, 'is_nocturnal', false);
         $this->addPetAttribute($caramelId, 'can_be_handled', 'yes_easily');
@@ -174,7 +192,8 @@ class PetSeeder extends Seeder
         $this->addPetAttributeText($caramelId, 'diet_specifics', 'Foin à volonté, granulés, légumes frais (carottes, brocoli)');
 
         // === PET 6: Max - Chien âgé avec médicaments ===
-        $maxId = DB::table('pets')->insertGetId([
+        $maxId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $maxId,
             'user_id' => $this->userId,
             'animal_type_id' => $dogId,
             'name' => 'Max',
@@ -192,6 +211,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($maxId, 'german-shepherd', 2, true);
+
         $this->addPetAttribute($maxId, 'energy_level', 'low');
         $this->addPetAttribute($maxId, 'potty_trained', 'trained');
         $this->addPetAttribute($maxId, 'friendly_with_kids', 'yes');
@@ -203,7 +224,8 @@ class PetSeeder extends Seeder
         $this->addPetAttributeText($maxId, 'medications', 'Anti-inflammatoires (1 comprimé matin), glucosamine (1 gélule soir)');
 
         // === PET 7: Luna - Chatte d'extérieur ===
-        $lunaId = DB::table('pets')->insertGetId([
+        $lunaId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $lunaId,
             'user_id' => $this->userId,
             'animal_type_id' => $catId,
             'name' => 'Luna',
@@ -221,6 +243,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($lunaId, 'maine-coon', 3, true);
+
         $this->addPetAttribute($lunaId, 'energy_level', 'high');
         $this->addPetAttribute($lunaId, 'litter_trained', 'trained');
         $this->addPetAttribute($lunaId, 'friendly_with_kids', 'yes');
@@ -232,7 +256,8 @@ class PetSeeder extends Seeder
         $this->addPetAttributeBoolean($lunaId, 'declawed', false);
 
         // === PET 8: Nemo - Poisson tropical ===
-        $nemoId = DB::table('pets')->insertGetId([
+        $nemoId = (string) Str::uuid();
+        DB::table('pets')->insert(['id' => $nemoId,
             'user_id' => $this->userId,
             'animal_type_id' => $fishId,
             'name' => 'Nemo',
@@ -249,6 +274,8 @@ class PetSeeder extends Seeder
             'updated_at' => now(),
         ]);
 
+        $this->seedPetImages($nemoId, 'clownfish', 1, false);
+
         $this->addPetAttribute($nemoId, 'water_type', 'saltwater');
         $this->addPetAttributeInteger($nemoId, 'tank_size_liters', 100);
         $this->addPetAttributeDecimal($nemoId, 'water_temperature', 26.0);
@@ -258,6 +285,42 @@ class PetSeeder extends Seeder
         $this->addPetAttributeText($nemoId, 'diet_specifics', 'Granulés pour poissons marins, artémias congelées, algues nori');
     }
 
+    private function seedPetImages(string $petId, string $category, int $count, bool $withAvatar): void
+    {
+        $pet = Pet::find($petId);
+
+        if (! $pet) {
+            return;
+        }
+
+        for ($i = 0; $i < $count; $i++) {
+            try {
+                $response = Http::withoutVerifying()->withOptions(['allow_redirects' => true])->timeout(15)->get("https://loremflickr.com/600/400/{$category}");
+
+                if ($response->successful()) {
+                    $tmpPath = tempnam(sys_get_temp_dir(), 'pet_image_').'.jpg';
+                    file_put_contents($tmpPath, $response->body());
+                    $pet->addMedia($tmpPath)->toMediaCollection(MediaService::COLLECTION_IMAGES);
+                }
+            } catch (\Throwable) {
+                continue;
+            }
+        }
+
+        if ($withAvatar) {
+            try {
+                $response = Http::withoutVerifying()->withOptions(['allow_redirects' => true])->timeout(15)->get("https://loremflickr.com/400/400/{$category}");
+
+                if ($response->successful()) {
+                    $tmpPath = tempnam(sys_get_temp_dir(), 'pet_avatar_').'.jpg';
+                    file_put_contents($tmpPath, $response->body());
+                    $pet->addMedia($tmpPath)->toMediaCollection(MediaService::COLLECTION_AVATAR);
+                }
+            } catch (\Throwable) {
+            }
+        }
+    }
+
     private function loadDependencies(): void
     {
         $this->userId = User::where('email', 'user@orus.com')->value('id');
@@ -265,7 +328,7 @@ class PetSeeder extends Seeder
             throw new \RuntimeException('User with email user@orus.com not found. Run UsersSeeder first.');
         }
 
-        $types = AnimalType::whereIn('code', ['dog', 'cat', 'bird', 'fish', 'small_mammal'])
+        $types = AnimalType::whereIn('code', ['dog', 'cat', 'bird', 'fish', 'rabbit'])
             ->pluck('id', 'code')->toArray();
 
         if (count($types) !== 5) {
@@ -275,7 +338,7 @@ class PetSeeder extends Seeder
         $this->animalTypes = $types;
     }
 
-    private function getAttributeId(string $code): ?int
+    private function getAttributeId(string $code): ?string
     {
         if (! isset($this->attributeCache[$code])) {
             $this->attributeCache[$code] = AttributeDefinition::where('code', $code)->value('id');
@@ -287,7 +350,7 @@ class PetSeeder extends Seeder
     /**
      * Helper to add pet attribute with predefined option
      */
-    private function addPetAttribute(int $petId, string $attributeCode, string $optionValue): void
+    private function addPetAttribute(string $petId, string $attributeCode, string $optionValue): void
     {
         $attributeId = $this->getAttributeId($attributeCode);
         if (! $attributeId) {
@@ -311,7 +374,7 @@ class PetSeeder extends Seeder
     /**
      * Helper to add pet attribute with text value
      */
-    private function addPetAttributeText(int $petId, string $attributeCode, string $textValue): void
+    private function addPetAttributeText(string $petId, string $attributeCode, string $textValue): void
     {
         $attributeId = $this->getAttributeId($attributeCode);
         if (! $attributeId) {
@@ -329,7 +392,7 @@ class PetSeeder extends Seeder
     /**
      * Helper to add pet attribute with integer value
      */
-    private function addPetAttributeInteger(int $petId, string $attributeCode, int $intValue): void
+    private function addPetAttributeInteger(string $petId, string $attributeCode, int $intValue): void
     {
         $attributeId = $this->getAttributeId($attributeCode);
         if (! $attributeId) {
@@ -347,7 +410,7 @@ class PetSeeder extends Seeder
     /**
      * Helper to add pet attribute with decimal value
      */
-    private function addPetAttributeDecimal(int $petId, string $attributeCode, float $decimalValue): void
+    private function addPetAttributeDecimal(string $petId, string $attributeCode, float $decimalValue): void
     {
         $attributeId = $this->getAttributeId($attributeCode);
         if (! $attributeId) {
@@ -365,7 +428,7 @@ class PetSeeder extends Seeder
     /**
      * Helper to add pet attribute with boolean value
      */
-    private function addPetAttributeBoolean(int $petId, string $attributeCode, bool $boolValue): void
+    private function addPetAttributeBoolean(string $petId, string $attributeCode, bool $boolValue): void
     {
         $attributeId = $this->getAttributeId($attributeCode);
         if (! $attributeId) {

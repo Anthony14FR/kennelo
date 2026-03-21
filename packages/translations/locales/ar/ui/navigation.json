@@ -18,5 +18,12 @@
     "theme_system": "نظام",
     "explore": "يستكشف",
     "messages": "رسائل",
-    "pets": "الحيوانات"
+    "pets": "الحيوانات",
+    "bookOnline": "احجز عبر الإنترنت",
+    "profileSettings": "الإعدادات",
+    "editProfile": "تعديل ملفي الشخصي",
+    "emailPreferences": "تفضيلات البريد الإلكتروني",
+    "notificationPreferences": "تفضيلات الإشعارات",
+    "changePassword": "تغيير كلمة المرور",
+    "comingSoon": "قريباً"
 }

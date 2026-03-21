@@ -19,12 +19,12 @@ const nextConfig = {
         })
         return config
     },
+    images: {
+        unoptimized: true,
+    },
 
     ...(isMobileBuild && {
         output: 'export',
-        images: {
-            unoptimized: true,
-        },
     }),
 }
 

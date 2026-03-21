@@ -4,7 +4,7 @@
     "dashboard": "Dashboard",
     "bookings": "Bookings",
     "conversations": "Messages",
-    "profile": "Profile",
+    "profile": "Profil",
     "notifications": "Notifications",
     "settings": "Settings",
     "logout": "Logout",
@@ -18,5 +18,12 @@
     "theme_system": "System",
     "explore": "Explore",
     "messages": "Messages",
-    "pets": "Animals"
+    "pets": "Animals",
+    "bookOnline": "Book online",
+    "profileSettings": "Settings",
+    "editProfile": "Edit my profile",
+    "emailPreferences": "Email preferences",
+    "notificationPreferences": "Notification preferences",
+    "changePassword": "Change password",
+    "comingSoon": "Soon"
 }

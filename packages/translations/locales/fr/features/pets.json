@@ -1,0 +1,93 @@
+{
+    "title": "Mes animaux",
+    "description": "Gérez vos animaux de compagnie",
+    "addPet": "Ajouter un animal",
+    "noPets": "Aucun animal",
+    "noPetsDescription": "Ajoutez votre premier animal pour commencer à gérer son profil",
+    "searchPlaceholder": "Rechercher un animal...",
+    "profile": {
+        "about": "À propos",
+        "health": "Santé & Soins",
+        "characteristics": "Caractéristiques",
+        "gallery": "Galerie",
+        "owner": "Propriétaire",
+        "reviews": "Avis",
+        "reviewsEmpty": "Aucun avis pour l'instant",
+        "reviewsEmptyDescription": "Les avis laissés par les hôtes ayant gardé cet animal apparaîtront ici",
+        "photosPlaceholder": "Photos à venir",
+        "photosPlaceholderDescription": "La photo de profil et la galerie seront disponibles à la sortie de la fonctionnalité",
+        "quickInfo": "Informations rapides",
+        "edit": "Modifier",
+        "save": "Sauvegarder",
+        "behaviors": "Comportement & Caractère",
+        "care": "Soins & Entretien",
+        "compatibility": "Compatibilité & Préférences",
+        "healthTracking": "Santé & Suivi vétérinaire",
+        "importantDates": "Dates importantes",
+        "vetReferent": "Vétérinaire référent",
+        "medicalNotes": "Notes médicales",
+        "viewPhotos": "Voir les {count} photos",
+        "memberSince": "Membre depuis {date}",
+        "verifiedProfile": "Profil vérifié",
+        "staysCompleted": "Séjours effectués",
+        "responseRate": "Taux de réponse",
+        "animalsCount": "Animaux",
+        "sendMessage": "Envoyer un message",
+        "healthIndicators": "Repères santé",
+        "vaccination": "Vaccination",
+        "lastCheckup": "Dernier contrôle",
+        "nextReminder": "Prochain rappel",
+        "verifiedStay": "Séjour vérifié",
+        "stayNights": "{count, plural, =1 {Séjour de 1 nuit} other {Séjour de # nuits}}",
+        "nextVaccine": "Prochain vaccin",
+        "lastVetVisit": "Dernière visite",
+        "hostsReviews": "Avis des hosts",
+        "viewProfile": "Voir le profil"
+    },
+    "fields": {
+        "breed": "Race",
+        "birthDate": "Date de naissance",
+        "age": "Âge",
+        "sex": "Sexe",
+        "weight": "Poids",
+        "sterilized": "Stérilisé·e",
+        "microchip": "Micropuce",
+        "microchipNumber": "Numéro de micropuce",
+        "adoptionDate": "Date d'adoption",
+        "about": "À propos",
+        "healthNotes": "Notes de santé",
+        "animalType": "Type d'animal"
+    },
+    "sex": {
+        "male": "Mâle",
+        "female": "Femelle",
+        "unknown": "Inconnu"
+    },
+    "badges": {
+        "sterilized": "Stérilisé·e",
+        "notSterilized": "Non stérilisé·e",
+        "microchipped": "Micropucé·e",
+        "noMicrochip": "Sans micropuce",
+        "vaccinationsUpToDate": "Vaccinations à jour"
+    },
+    "age": {
+        "years": "{count, plural, =1 {1 an} other {# ans}}",
+        "months": "{count, plural, =1 {1 mois} other {# mois}}"
+    },
+    "values": {
+        "yes": "Oui",
+        "no": "Non"
+    },
+    "filters": {
+        "all": "Tous",
+        "sort": "Trier",
+        "sortNameAsc": "Nom A → Z",
+        "sortNameDesc": "Nom Z → A",
+        "sortYoungest": "Plus jeune d'abord",
+        "sortOldest": "Plus âgé d'abord",
+        "sortNewest": "Ajouté récemment",
+        "resultsCount": "{count, plural, =0 {Aucun résultat} =1 {1 animal} other {# animaux}}",
+        "allTypes": "Tous les types",
+        "clearFilters": "Réinitialiser les filtres"
+    }
+}

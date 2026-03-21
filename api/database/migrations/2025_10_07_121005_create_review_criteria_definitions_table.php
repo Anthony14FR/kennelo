@@ -14,7 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('review_criteria_definitions', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('code', 50)->unique();
             $table->string('label', 255);
             $table->enum('applicable_to', ['user', 'establishment', 'both']);

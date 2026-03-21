@@ -30,6 +30,11 @@ type MyEstablishmentsParams = {
 };
 
 type EstablishmentDetailParams = {
+type MyPetsParams = {
+    locale?: string | number;
+};
+
+type PetDetailsParams = {
     locale?: string | number;
     id: string | number;
 };
@@ -80,6 +85,12 @@ function MyEstablishments(params?: MyEstablishmentsParams): string {
 
 function EstablishmentDetail(params: EstablishmentDetailParams): string {
     return buildRoute("/[locale]/s/app/establishments/[id]", params);
+function MyPets(params?: MyPetsParams): string {
+    return buildRoute("/[locale]/s/my/pets", params);
+}
+
+function PetDetails(params: PetDetailsParams): string {
+    return buildRoute("/[locale]/s/my/pets/[id]", params);
 }
 
 function MyProfileAbout(params?: MyProfileAboutParams): string {
@@ -107,6 +118,8 @@ export const routes = {
     Register,
     MyEstablishments,
     EstablishmentDetail,
+    MyPets,
+    PetDetails,
     MyProfileAbout,
     MyProfileChangePassword,
     MyProfileEmailPreferences,

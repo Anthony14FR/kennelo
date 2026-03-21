@@ -64,7 +64,7 @@ export default function UserMenu({
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <button className="relative rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-                    <Avatar className="cursor-pointer">
+                    <Avatar className="cursor-pointer size-7">
                         <AvatarImage
                             src={user?.avatarUrl || undefined}
                             alt={user?.getFullName() || "User profile"}
